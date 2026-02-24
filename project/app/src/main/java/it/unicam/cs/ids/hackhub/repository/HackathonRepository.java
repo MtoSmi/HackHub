@@ -20,4 +20,10 @@ public class HackathonRepository extends Repository<Hackathon> {
         }
         return null;
     }
+
+    @Override
+    public void create(Hackathon h) {
+        setId(1L);
+        return this.hackathons.add(h);
+    }
 }
