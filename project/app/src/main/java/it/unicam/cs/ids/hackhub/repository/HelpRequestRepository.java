@@ -8,5 +8,9 @@ public class HelpRequestRepository extends Repository<HelpRequest> {
         this.helpRequests = helpRequests;
     }
 
+    @Override
+    public List<HelpRequest> getByMentor(Long id) {
+        return this.helpRequests.stream().filter(hr -> hr.getMentor().getId().equals(id)).toList();
+    }
 
 }
