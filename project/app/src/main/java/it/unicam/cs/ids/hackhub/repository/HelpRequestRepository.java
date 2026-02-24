@@ -1,5 +1,7 @@
 package it.unicam.cs.ids.hackhub.repository;
 
+import it.unicam.cs.ids.hackhub.entity.model.HelpRequest;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +14,12 @@ public class HelpRequestRepository implements Repository<HelpRequest> {
     }
 
     @Override
+    public List<HelpRequest> getAll() {
+        return helpRequests;
+    }
+
     public List<HelpRequest> getByMentor(Long id) {
-        return helpRequests.stream().filter(hr -> hr.getMentor().getId().equals(id)).toList();
+        return helpRequests.stream().filter(hr -> hr.getTo().getId().equals(id)).toList();
     }
 
     @Override
@@ -26,7 +32,7 @@ public class HelpRequestRepository implements Repository<HelpRequest> {
 
     @Override
     public void create(HelpRequest hr) {
-        setId(1L);
+        hr.setId(1L);
         helpRequests.add(hr);
     }
 
