@@ -1,6 +1,9 @@
 package it.unicam.cs.ids.hackhub.repository;
 
+import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class HackathonRepository implements Repository<Hackathon> {
 
@@ -25,7 +28,17 @@ public class HackathonRepository implements Repository<Hackathon> {
 
     @Override
     public void create(Hackathon h) {
-        setId(1L);
+        h.setId(1L);
         hackathons.add(h);
+    }
+
+    @Override
+    public void update(Hackathon newH) {
+        for(Hackathon oldH : hackathons){
+            if(oldH.getId().equals(newH.getId())){
+                hackathons.remove(oldH);
+                hackathons.add(newH);
+            }
+        }
     }
 }
