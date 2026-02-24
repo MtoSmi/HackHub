@@ -26,7 +26,7 @@ public class HelpRequestRepository implements Repository<HelpRequest> {
 
     @Override
     public void create(HelpRequest hr) {
-        setId(1l);
+        setId(1L);
         helpRequests.add(hr);
     }
 
