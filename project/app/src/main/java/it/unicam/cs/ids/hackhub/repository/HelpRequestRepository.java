@@ -8,12 +8,12 @@ public class HelpRequestRepository implements Repository<HelpRequest> {
     private List<HelpRequest> helpRequests;
 
     public HelpRequestRepository() {
-        this.helpRequests = new ArrayList<>();
+        helpRequests = new ArrayList<>();
     }
 
     @Override
     public List<HelpRequest> getByMentor(Long id) {
-        return this.helpRequests.stream().filter(hr -> hr.getMentor().getId().equals(id)).toList();
+        return helpRequests.stream().filter(hr -> hr.getMentor().getId().equals(id)).toList();
     }
 
     @Override
@@ -24,4 +24,19 @@ public class HelpRequestRepository implements Repository<HelpRequest> {
         return null;
     }
 
+    @Override
+    public void create(HelpRequest hr) {
+        setId(1l);
+        helpRequests.add(hr);
+    }
+
+    @Override
+    public void update(HelpRequest newHr) {
+        for(HelpRequest oldHr : helpRequests){
+            if(oldHr.getId().equals(newHr.getId())){
+                helpRequests.remove(oldHr);
+                helpRequests.add(newHr);
+            }
+        }
+    }
 }
