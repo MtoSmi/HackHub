@@ -11,5 +11,9 @@ public class UserRepository implements Repository<User> {
         users = new ArrayList<>();
     }
 
+    @Override
+    public List<User> getAll() {
+        return users;
+    }
 
 }
