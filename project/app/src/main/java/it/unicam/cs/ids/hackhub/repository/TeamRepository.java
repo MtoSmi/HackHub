@@ -16,4 +16,9 @@ public class TeamRepository implements Repository<Team> {
         return teams;
     }
 
+    @Override
+    public void create(Team t) {
+        setId(1L);
+        teams.add(t);
+    }
 }
