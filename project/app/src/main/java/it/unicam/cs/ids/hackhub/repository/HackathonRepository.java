@@ -1,16 +1,18 @@
 package it.unicam.cs.ids.hackhub.repository;
 
-public class HackathonRepository extends Repository<Hackathon> {
+import java.util.ArrayList;
+
+public class HackathonRepository implements Repository<Hackathon> {
 
     private List<Hackathon> hackathons;
 
-    public HackathonRepository(List<Hackathon> hackathons) {
-        this.hackathons = hackathons;
+    public HackathonRepository() {
+        hackathons = new ArrayList<>();
     }
 
     @Override
     public List<Hackathon> getAll() {
-        return this.hackathons;
+        return hackathons;
     }
 
     @Override
@@ -24,6 +26,6 @@ public class HackathonRepository extends Repository<Hackathon> {
     @Override
     public void create(Hackathon h) {
         setId(1L);
-        return this.hackathons.add(h);
+        hackathons.add(h);
     }
 }
