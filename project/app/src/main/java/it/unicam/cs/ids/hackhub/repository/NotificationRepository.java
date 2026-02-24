@@ -7,4 +7,9 @@ public class NotificationRepository extends Repository<Notification> {
     public NotificationRepository(List<Notification> notifications) {
         this.notifications = notifications;
     }
+
+    public void create(Notification n) {
+        setId(1L);
+        return this.notifications.add(n);
+    }
 }
