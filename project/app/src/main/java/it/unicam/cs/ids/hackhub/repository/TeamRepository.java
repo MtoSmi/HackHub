@@ -11,4 +11,9 @@ public class TeamRepository implements Repository<Team> {
         teams = new ArrayList<>();
     }
 
+    @Override
+    public List<Team> getAll() {
+        return teams;
+    }
+
 }
