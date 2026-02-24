@@ -3,7 +3,7 @@ package it.unicam.cs.ids.hackhub.repository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationRepository extends Repository<Notification> {
+public class NotificationRepository implements Repository<Notification> {
 
     private List<Notification> notifications;
 
