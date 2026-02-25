@@ -20,10 +20,10 @@ public interface HackathonBuilder {
     /**
      * Imposta il nome dell'hackathon.
      *
-     * @param nome il nome dell'hackathon
+     * @param name il nome dell'hackathon
      * @return questa istanza HackathonBuilder per il concatenamento dei metodi
      */
-    HackathonBuilder buildNome(String nome);
+    HackathonBuilder buildName(String name);
 
     /**
      * Imposta l'utente host (organizzatore) dell'hackathon.

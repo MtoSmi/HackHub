@@ -35,12 +35,12 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     /**
      * Imposta il nome dell'hackathon.
      *
-     * @param nome il nome dell'hackathon
+     * @param name il nome dell'hackathon
      * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
      */
     @Override
-    public HackathonBuilder buildNome(String nome) {
-        hackathon.setName(nome);
+    public HackathonBuilder buildName(String name) {
+        hackathon.setName(name);
         return this;
     }
 
