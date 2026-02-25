@@ -23,6 +23,5 @@ public interface HackathonBuilder {
     HackathonBuilder buildEndDate(LocalDateTime endDate);
     HackathonBuilder buildLocation(String location);
     HackathonBuilder buildReward(double reward);
-    HackathonBuilder buildStatus(Status status);
     Hackathon getResult();
 }
