@@ -55,36 +55,9 @@ public class Hackathon {
     private Status status;
 
     /**
-     * Costruisce un nuovo hackathon con tutti i parametri specificati.
-     *
-     * @param name il nome dell'hackathon
-     * @param host l'utente organizzatore dell'hackathon
-     * @param judge l'utente responsabile della valutazione
-     * @param mentors la lista dei mentori disponibili
-     * @param participants la lista dei team partecipanti
-     * @param maxTeams il numero massimo di team ammessi
-     * @param submissions la lista delle sottomissioni ricevute
-     * @param regulation il regolamento dell'hackathon
-     * @param deadline la scadenza per le sottomissioni
-     * @param startDate la data di inizio dell'evento
-     * @param endDate la data di fine dell'evento
-     * @param location il luogo dello svolgimento
-     * @param status lo stato iniziale dell'hackathon
+     * Costruttore di default per la classe Hackathon.
      */
-    public Hackathon(String name, User host, User judge, List<User> mentors, List<Team> participants, int maxTeams, List<Submission> submissions, String regulation, LocalDateTime deadline, LocalDateTime startDate, LocalDateTime endDate, String location, Status status) {
-        this.name = name;
-        this.host = host;
-        this.judge = judge;
-        this.mentors = mentors;
-        this.participants = participants;
-        this.maxTeams = maxTeams;
-        this.submissions = submissions;
-        this.regulation = regulation;
-        this.deadline = deadline;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.location = location;
-        this.status = Status.IN_ISCRIZIONE;
+    public Hackathon() {
     }
 
     /**
