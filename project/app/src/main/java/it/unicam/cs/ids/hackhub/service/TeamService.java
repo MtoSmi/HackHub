@@ -15,6 +15,9 @@ public class TeamService {
 
     public void creationTeam(Team t) {
         if(!teamValidator.validate(t)) return;
+        for(Team other : teamRepository.getAll()) {
+            if(t.getName().equals(other.getName())) return;
+        }
         teamRepository.create(t);
     }
 }
