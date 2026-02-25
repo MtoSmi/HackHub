@@ -1,0 +1,5 @@
+package it.unicam.cs.ids.hackhub.validator;
+
+public interface Validator {
+    boolean validate();
+}
