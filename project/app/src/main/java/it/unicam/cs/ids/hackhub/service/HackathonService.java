@@ -29,6 +29,9 @@ public class HackathonService {
 
     public void creationHackathon(Hackathon h) {
         if(!hackathonValidator.validate(h)) return;
+        for(Hackathon other : hackathonRepository.getAll()) {
+            if(h.equals(other)) return;
+        }
         hackathonRepository.create(new HackathonConcreteBuilder()
                 .buildName(h.getName()).buildHost(h.getHost()).buildJudge(h.getJudge())
                 .buildMentors(h.getMentors()).buildMaxTeam(h.getMaxTeams())
