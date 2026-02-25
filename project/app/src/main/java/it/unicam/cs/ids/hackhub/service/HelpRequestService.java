@@ -23,4 +23,13 @@ public class HelpRequestService {
         return helpRequestRepository.getById(id);
     }
 
+    public void completeHelpRequest(Long id) {
+        HelpRequest hr = helpRequestRepository.getById(id);
+        hr.setCompleted(true);
+        helpRequestRepository.update(hr);
+        notificationService.send("Richiesta di aiuto completata!",
+                "La tua richiesta di aiuto è stata completata dal mentore " + hr.getTo().getName(),
+                hr.getFrom().getId());
+    }
+
 }
