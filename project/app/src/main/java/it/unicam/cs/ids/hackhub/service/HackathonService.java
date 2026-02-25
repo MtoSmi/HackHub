@@ -8,8 +8,8 @@ import it.unicam.cs.ids.hackhub.validator.HackathonValidator;
 import java.util.List;
 
 public class HackathonService {
-    private HackathonRepository hackathonRepository;
-    private HackathonValidator hackathonValidator;
+    private final HackathonRepository hackathonRepository;
+    private final HackathonValidator hackathonValidator;
 
     public HackathonService(HackathonRepository hRepo, HackathonValidator hValid) {
         this.hackathonRepository = hRepo;
