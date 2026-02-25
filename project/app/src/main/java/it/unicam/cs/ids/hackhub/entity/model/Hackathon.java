@@ -39,7 +39,7 @@ public class Hackathon {
     /** Regolamento dell'hackathon */
     private String regulation;
 
-    /** Data e ora della scadenza per le sottomissioni */
+    /** Data e ora della scadenza per le iscrizioni */
     private LocalDateTime deadline;
 
     /** Data e ora di inizio dell'hackathon */
@@ -50,6 +50,9 @@ public class Hackathon {
 
     /** Luogo fisico dove si svolge l'hackathon */
     private String location;
+
+    /** Premio in denaro per il vincitore dell'hackathon */
+    private double reward;
 
     /** Stato attuale dell'hackathon */
     private Status status;
@@ -178,6 +181,13 @@ public class Hackathon {
     }
 
     /**
+    * Restituisce il premio in denaro per il vincitore dell'hackathon.
+    *
+    * @return il premio in denaro
+    */
+    public double getReward() {return reward;}
+
+    /**
      * Restituisce lo stato attuale dell'hackathon.
      *
      * @return lo stato dell'hackathon
@@ -304,6 +314,13 @@ public class Hackathon {
     }
 
     /**
+    * Imposta il premio in denaro per il vincitore dell'hackathon.
+    *
+    * @param reward il nuovo premio in denaro
+    */
+    public void setReward(double reward) {this.reward = reward;}
+
+    /**
      * Imposta lo stato attuale dell'hackathon.
      *
      * @param status il nuovo stato
@@ -333,6 +350,7 @@ public class Hackathon {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", location='" + location + '\'' +
+                ", reward=" + reward +
                 ", status=" + status +
                 '}';
     }
