@@ -14,7 +14,10 @@ public class UserService {
     }
 
     public void registrationUser(User u) {
-        if (!userValidator.validate(u)) return;
+        if(!userValidator.validate(u)) return;
+        for(User other : userRepository.getAll()) {
+            if(u.getEmail().equals(other.getEmail())) return;
+        }
         userRepository.create(u);
     }
 }
