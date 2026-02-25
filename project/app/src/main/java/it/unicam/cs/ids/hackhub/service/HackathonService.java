@@ -1,7 +1,10 @@
 package it.unicam.cs.ids.hackhub.service;
 
+import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.validator.HackathonValidator;
+
+import java.util.List;
 
 public class HackathonService {
     private HackathonRepository hackathonRepository;
@@ -12,5 +15,7 @@ public class HackathonService {
         this.hackathonValidator = hValid;
     }
 
-
+    public List<Hackathon> showHackathonList() {
+        return hackathonRepository.getAll();
+    }
 }
