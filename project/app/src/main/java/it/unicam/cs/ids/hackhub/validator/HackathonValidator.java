@@ -3,14 +3,9 @@ package it.unicam.cs.ids.hackhub.validator;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 
 public class HackathonValidator implements Validator<Hackathon> {
-    private final Hackathon h;
-
-    public HackathonValidator(Hackathon h) {
-        this.h = h;
-    }
 
     @Override
-    public boolean validate() {
+    public boolean validate(Hackathon h ) {
         if(h == null) return false;
         if(h.getName() == null || h.getName().isBlank()) return false;
         if(h.getHost() == null || h.getJudge() == null || h.getMentors() == null) return false;
