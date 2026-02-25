@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.hackhub.service;
 
+import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.validator.UserValidator;
 
@@ -10,5 +11,10 @@ public class UserService {
     public UserService(UserRepository uRepo, UserValidator uValid) {
         this.userRepository = uRepo;
         this.userValidator = uValid;
+    }
+
+    public void registrationUser(User u) {
+        if (!userValidator.validate(u)) return;
+        userRepository.create(u);
     }
 }
