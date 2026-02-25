@@ -18,4 +18,9 @@ public class HackathonService {
     public List<Hackathon> showHackathonList() {
         return hackathonRepository.getAll();
     }
+
+    public Hackathon showSelectedHackathon(Long id) {
+        return hackathonRepository.getById(id);
+    }
+
 }
