@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.entity.model.HelpRequest;
+import it.unicam.cs.ids.hackhub.entity.requester.HelpRequestRequester;
 import it.unicam.cs.ids.hackhub.repository.HelpRequestRepository;
 
 import java.util.List;
@@ -23,8 +24,10 @@ public class HelpRequestService {
         return helpRequestRepository.getById(id);
     }
 
-    public void completeHelpRequest(Long id) {
-        HelpRequest hr = helpRequestRepository.getById(id);
+    public void completeHelpRequest(HelpRequestRequester hrr) {
+        HelpRequest hr = helpRequestRepository.getById(hrr.getId());
+        hr.setReply(hrr.getReply());
+        hr.setCall(hrr.getCall());
         hr.setCompleted(true);
         helpRequestRepository.update(hr);
         notificationService.send("Richiesta di aiuto completata!",
