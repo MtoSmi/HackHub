@@ -45,6 +45,9 @@ public class User {
         this.rank = Rank.STANDARD;
     }
 
+    public User() {
+    }
+
     /**
      * Restituisce l'identificatore univoco dell'utente.
      *
