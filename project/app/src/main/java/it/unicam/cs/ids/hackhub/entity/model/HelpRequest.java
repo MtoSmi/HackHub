@@ -46,6 +46,9 @@ public class HelpRequest {
         this.completed = false;
     }
 
+    public HelpRequest() {
+    }
+
     /**
      * Restituisce l'identificatore univoco della richiesta di aiuto.
      *

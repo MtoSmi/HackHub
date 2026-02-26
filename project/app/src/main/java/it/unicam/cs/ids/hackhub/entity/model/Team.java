@@ -35,6 +35,9 @@ public class Team {
         this.dimension = 1;
     }
 
+    public Team() {
+    }
+
     /**
      * Restituisce l'identificatore univoco del team.
      *
