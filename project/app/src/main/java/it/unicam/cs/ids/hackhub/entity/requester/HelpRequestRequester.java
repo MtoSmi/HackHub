@@ -1,4 +1,6 @@
 package it.unicam.cs.ids.hackhub.entity.requester;
 
-public class HelpRequestRequester {
+import it.unicam.cs.ids.hackhub.entity.model.HelpRequest;
+
+public class HelpRequestRequester extends HelpRequest {
 }
