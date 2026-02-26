@@ -1,4 +1,6 @@
 package it.unicam.cs.ids.hackhub.entity.requester;
 
-public class HackathonRequester {
+import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
+
+public class HackathonRequester extends  Hackathon {
 }
