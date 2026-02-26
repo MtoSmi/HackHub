@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.validator.UserValidator;
 
@@ -13,11 +14,12 @@ public class UserService {
         this.userValidator = uValid;
     }
 
-    public void registrationUser(User u) {
-        if(!userValidator.validate(u)) return;
+    public User registrationUser(UserRequester u) {
+        if(!userValidator.validate(u)) return null;
         for(User other : userRepository.getAll()) {
-            if(u.getEmail().equals(other.getEmail())) return;
+            if(u.getEmail().equals(other.getEmail())) return null;
         }
         userRepository.create(u);
+        return userRepository.getById(u.getId());
     }
 }
