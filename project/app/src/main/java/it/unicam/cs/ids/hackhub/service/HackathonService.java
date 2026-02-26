@@ -3,6 +3,7 @@ package it.unicam.cs.ids.hackhub.service;
 import it.unicam.cs.ids.hackhub.builder.HackathonConcreteBuilder;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.validator.HackathonValidator;
 
@@ -27,10 +28,10 @@ public class HackathonService {
         return hackathonRepository.getById(id);
     }
 
-    public void creationHackathon(Hackathon h) {
-        if(!hackathonValidator.validate(h)) return;
+    public Hackathon creationHackathon(HackathonRequester h) {
+        if(!hackathonValidator.validate(h)) return null;
         for(Hackathon other : hackathonRepository.getAll()) {
-            if(h.equals(other)) return;
+            if(h.equals(other)) return null;
         }
         hackathonRepository.create(new HackathonConcreteBuilder()
                 .buildName(h.getName()).buildHost(h.getHost()).buildJudge(h.getJudge())
@@ -46,5 +47,6 @@ public class HackathonService {
                     "Sei appena diventato un mentore del nuovo hackathon " + h.getName(),
                     mentor.getId());
         }
+        return  hackathonRepository.getById(h.getId());
     }
 }
