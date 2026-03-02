@@ -1,4 +1,4 @@
 package it.unicam.cs.ids.hackhub;
 
-public class Registrazione {
+public class RegistrazioneTest {
 }
