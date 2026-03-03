@@ -19,40 +19,20 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Test per la consultazione degli hackathon.
- * <p>
- * Questa classe testa le operazioni di consultazione e recupero degli hackathon,
- * inclusa la visualizzazione della lista di tutti gli hackathon e il recupero
- * di un hackathon specifico tramite ID.
- */
 public class ConsultaHackathonTest {
     private HackathonInterfaceController controller;
-    private HackathonValidator validator;
 
     @BeforeEach
     public void setUp() {
-        validator = new HackathonValidator();
-        controller = new HackathonInterfaceController(
-            new HackathonService(
-                new HackathonRepository(),
-                validator,
-                new NotificationService(
-                    new NotificationRepository(),
-                    new UserRepository()
-                )
-            )
-        );
+        HackathonValidator validator = new HackathonValidator();
+        controller = new HackathonInterfaceController(new HackathonService(new HackathonRepository(), validator, new NotificationService(new NotificationRepository(), new UserRepository())));
     }
 
-    /**
-     * Test per recuperare la lista di tutti gli hackathon.
-     * Verifica che il controller possa restituire una lista (anche vuota).
-     */
+
     @Test
     public void testShowHackathonList() {
         List<Hackathon> hackathons = controller.showHackathonList();
-        Assertions.assertNotNull(hackathons);
+        Assertions.assertNotNull(hackathons, "La lista degli hackathon non dovrebbe essere null");
         // La lista può essere vuota se non ci sono hackathon creati
     }
 
@@ -69,9 +49,9 @@ public class ConsultaHackathonTest {
         // Poi lo recuperiamo se è stato creato con successo
         if (created != null && created.getId() != null) {
             Hackathon retrieved = controller.showSelectedHackathon(created.getId());
-            Assertions.assertNotNull(retrieved);
-            Assertions.assertEquals(created.getId(), retrieved.getId());
-            Assertions.assertEquals(created.getName(), retrieved.getName());
+            Assertions.assertNotNull(retrieved, "L'hackathon recuperato non dovrebbe essere null");
+            Assertions.assertEquals(created.getId(), retrieved.getId(), "L'ID dell'hackathon recuperato dovrebbe corrispondere a quello creato");
+            Assertions.assertEquals(created.getName(), retrieved.getName(), "Il nome dell'hackathon recuperato dovrebbe corrispondere a quello creato");
         }
     }
 
@@ -82,8 +62,7 @@ public class ConsultaHackathonTest {
     @Test
     public void testShowSelectedHackathonWithInvalidId() {
         Hackathon retrieved = controller.showSelectedHackathon(999999L);
-        // Il risultato dipende dall'implementazione del repository
-        // Potrebbe essere null o lanciare un'eccezione
+        Assertions.assertNull(retrieved, "Il recupero di un hackathon con ID non esistente dovrebbe restituire null");
     }
 
     /**
@@ -95,16 +74,16 @@ public class ConsultaHackathonTest {
         HackathonRequester request = requestProvider();
         Hackathon created = controller.creationHackathon(request);
 
-        Assertions.assertNotNull(created);
-        Assertions.assertEquals(request.getName(), created.getName());
-        Assertions.assertNotNull(created.getHost());
-        Assertions.assertNotNull(created.getJudge());
-        Assertions.assertNotNull(created.getMentors());
-        Assertions.assertTrue(created.getMentors().size() > 0);
-        Assertions.assertEquals(request.getLocation(), created.getLocation());
-        Assertions.assertEquals(request.getRegulation(), created.getRegulation());
-        Assertions.assertEquals(request.getMaxTeams(), created.getMaxTeams());
-        Assertions.assertEquals(request.getReward(), created.getReward(), 0.001);
+        Assertions.assertNotNull(created, "L'hackathon creato non dovrebbe essere null");
+        Assertions.assertEquals(request.getName(), created.getName(), "Il nome dell'hackathon creato dovrebbe corrispondere a quello richiesto");
+        Assertions.assertNotNull(created.getHost(), "L'host dell'hackathon creato non dovrebbe essere null");
+        Assertions.assertNotNull(created.getJudge(), "Il giudice dell'hackathon creato non dovrebbe essere null");
+        Assertions.assertNotNull(created.getMentors(), "I mentori dell'hackathon creato non dovrebbero essere null");
+        Assertions.assertFalse(created.getMentors().isEmpty(), "L'hackathon creato dovrebbe avere almeno un mentore");
+        Assertions.assertEquals(request.getLocation(), created.getLocation(), "La location dell'hackathon creato dovrebbe corrispondere a quella richiesta");
+        Assertions.assertEquals(request.getRegulation(), created.getRegulation(), "Il regolamento dell'hackathon creato dovrebbe corrispondere a quello richiesto");
+        Assertions.assertEquals(request.getMaxTeams(), created.getMaxTeams(), "Il numero massimo di team dell'hackathon creato dovrebbe corrispondere a quello richiesto");
+        Assertions.assertEquals(request.getReward(), created.getReward(), 0.001, "Il premio dell'hackathon creato dovrebbe corrispondere a quello richiesto");
     }
 
     /**
@@ -125,11 +104,11 @@ public class ConsultaHackathonTest {
 
         // Recuperiamo la lista
         List<Hackathon> hackathons = controller.showHackathonList();
-        Assertions.assertNotNull(hackathons);
+        Assertions.assertNotNull(hackathons, "La lista degli hackathon non dovrebbe essere null");
 
         // Verifichiamo che almeno gli hackathon creati siano presenti
         if (created1 != null && created2 != null) {
-            Assertions.assertTrue(hackathons.size() >= 2);
+            Assertions.assertTrue(hackathons.size() >= 2, "La lista degli hackathon dovrebbe contenere almeno 2 hackathon");
         }
     }
 
@@ -148,8 +127,8 @@ public class ConsultaHackathonTest {
             LocalDateTime endDate = created.getEndDate();
 
             // Verifichiamo l'ordine corretto delle date
-            Assertions.assertTrue(deadline.isBefore(startDate) || deadline.isEqual(startDate));
-            Assertions.assertTrue(startDate.isBefore(endDate) || startDate.isEqual(endDate));
+            Assertions.assertTrue(deadline.isBefore(startDate) || deadline.isEqual(startDate), "La deadline dovrebbe essere prima o uguale alla data di inizio");
+            Assertions.assertTrue(startDate.isBefore(endDate) || startDate.isEqual(endDate), "La data di inizio dovrebbe essere prima o uguale alla data di fine");
         }
     }
 
@@ -166,10 +145,10 @@ public class ConsultaHackathonTest {
             User host = created.getHost();
             User judge = created.getJudge();
 
-            Assertions.assertNotNull(host);
-            Assertions.assertNotNull(judge);
-            Assertions.assertEquals(Rank.ORGANIZZATORE, host.getRank());
-            Assertions.assertEquals(Rank.GIUDICE, judge.getRank());
+            Assertions.assertNotNull(host, "L'host dell'hackathon creato non dovrebbe essere null");
+            Assertions.assertNotNull(judge, "Il giudice dell'hackathon creato non dovrebbe essere null");
+            Assertions.assertEquals(Rank.ORGANIZZATORE, host.getRank(), "L'host dell'hackathon creato dovrebbe avere il ruolo di ORGANIZZATORE");
+            Assertions.assertEquals(Rank.GIUDICE, judge.getRank(), "Il giudice dell'hackathon creato dovrebbe avere il ruolo di GIUDICE");
         }
     }
 
@@ -184,11 +163,11 @@ public class ConsultaHackathonTest {
 
         if (created != null) {
             List<User> mentors = created.getMentors();
-            Assertions.assertNotNull(mentors);
+            Assertions.assertNotNull(mentors, "I mentori dell'hackathon creato non dovrebbero essere null");
 
             // Verifichiamo che tutti i mentori abbiano il ruolo di MENTORE
             for (User mentor : mentors) {
-                Assertions.assertEquals(Rank.MENTORE, mentor.getRank());
+                Assertions.assertEquals(Rank.MENTORE, mentor.getRank(), "Tutti i mentori dell'hackathon creato dovrebbero avere il ruolo di MENTORE");
             }
         }
     }
@@ -203,10 +182,10 @@ public class ConsultaHackathonTest {
         Hackathon created = controller.creationHackathon(request);
 
         if (created != null) {
-            Assertions.assertTrue(created.getReward() >= 0);
-            Assertions.assertTrue(created.getMaxTeams() >= 0);
-            Assertions.assertEquals(request.getReward(), created.getReward(), 0.001);
-            Assertions.assertEquals(request.getMaxTeams(), created.getMaxTeams());
+            Assertions.assertTrue(created.getReward() >= 0, "Il premio dell'hackathon creato dovrebbe essere maggiore o uguale a zero");
+            Assertions.assertTrue(created.getMaxTeams() >= 0, "Il numero massimo di team dell'hackathon creato dovrebbe essere maggiore o uguale a zero");
+            Assertions.assertEquals(request.getReward(), created.getReward(), 0.001, "Il premio dell'hackathon creato dovrebbe corrispondere a quello richiesto");
+            Assertions.assertEquals(request.getMaxTeams(), created.getMaxTeams(), "Il numero massimo di team dell'hackathon creato dovrebbe corrispondere a quello richiesto");
         }
     }
 
@@ -220,10 +199,10 @@ public class ConsultaHackathonTest {
         Hackathon created = controller.creationHackathon(request);
 
         if (created != null) {
-            Assertions.assertNotNull(created.getLocation());
-            Assertions.assertFalse(created.getLocation().isBlank());
-            Assertions.assertNotNull(created.getRegulation());
-            Assertions.assertFalse(created.getRegulation().isBlank());
+            Assertions.assertNotNull(created.getLocation(), "La location dell'hackathon creato non dovrebbe essere null");
+            Assertions.assertFalse(created.getLocation().isBlank(), "La location dell'hackathon creato non dovrebbe essere vuota o solo spazi");
+            Assertions.assertNotNull(created.getRegulation(), "Il regolamento dell'hackathon creato non dovrebbe essere null");
+            Assertions.assertFalse(created.getRegulation().isBlank(), "Il regolamento dell'hackathon creato non dovrebbe essere vuoto o solo spazi");
         }
     }
 
