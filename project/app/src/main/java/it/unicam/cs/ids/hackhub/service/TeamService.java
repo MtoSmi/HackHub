@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.entity.model.Team;
+import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
 import it.unicam.cs.ids.hackhub.validator.TeamValidator;
@@ -18,6 +19,9 @@ public class TeamService {
         if(!teamValidator.validate(t)) return null;
         for(Team other : teamRepository.getAll()) {
             if(t.getName().equals(other.getName())) return null;
+            for(User u : other.getMembers()) {
+                if(t.getMembers().contains(u)) return null;
+            }
         }
         teamRepository.create(t);
         return teamRepository.getById(t.getId());
