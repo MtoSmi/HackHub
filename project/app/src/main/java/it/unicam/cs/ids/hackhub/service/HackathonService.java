@@ -32,6 +32,10 @@ public class HackathonService {
     public Hackathon creationHackathon(HackathonRequester h) {
         if(!hackathonValidator.validate(h)) return null;
         if(!h.getHost().getRank().equals(Rank.ORGANIZZATORE)) return null;
+//        if(!h.getJudge().getRank().equals(Rank.STANDARD)) return null;
+        for(User m : h.getMentors()) {
+            if(!m.getRank().equals(Rank.STANDARD)) return null;
+        }
         for(Hackathon other : hackathonRepository.getAll()) {
             if(h.equals(other)) return null;
         }
