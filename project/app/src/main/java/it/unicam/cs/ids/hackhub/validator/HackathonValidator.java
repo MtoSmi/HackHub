@@ -14,6 +14,6 @@ public class HackathonValidator implements Validator<Hackathon> {
         if(h.getDeadline() == null || h.getStartDate() == null || h.getEndDate() == null) return false;
         if(h.getDeadline().isAfter(h.getStartDate()) || h.getStartDate().isAfter(h.getEndDate())) return false;
         if(h.getLocation() == null || h.getLocation().isBlank()) return false;
-        return !(h.getReward() < 0);
+        return !(h.getReward() <= 0.0);
     }
 }

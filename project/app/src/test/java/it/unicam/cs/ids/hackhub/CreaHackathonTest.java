@@ -257,7 +257,7 @@ public class CreaHackathonTest {
         // Test con reward zero
         requester.setReward(0.0);
         response = controller.creationHackathon(requester);
-        Assertions.assertNotNull(response, "La creazione con reward zero dovrebbe avere successo e restituire un hackathon non null");
+        Assertions.assertNull(response, "La creazione con reward zero dovrebbe fallire e restituire un hackathon null");
         // Test con reward positivo
         requester.setReward(123.45);
         response = controller.creationHackathon(requester);
