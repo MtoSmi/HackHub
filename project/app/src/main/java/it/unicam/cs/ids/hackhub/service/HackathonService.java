@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.builder.HackathonConcreteBuilder;
+import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
@@ -30,6 +31,7 @@ public class HackathonService {
 
     public Hackathon creationHackathon(HackathonRequester h) {
         if(!hackathonValidator.validate(h)) return null;
+        if(!h.getHost().getRank().equals(Rank.ORGANIZZATORE)) return null;
         for(Hackathon other : hackathonRepository.getAll()) {
             if(h.equals(other)) return null;
         }
