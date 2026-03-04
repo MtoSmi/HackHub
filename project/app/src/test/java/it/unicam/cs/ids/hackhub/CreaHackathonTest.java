@@ -149,28 +149,33 @@ public class CreaHackathonTest {
         requester.setMentors(null);
         Hackathon response = controller.creationHackathon(requester);
         Assertions.assertNull(response, "La creazione con mentori null dovrebbe fallire e restituire null");
-        // Test con mentori con rank non valido
+        // Test con mentori con rank ORGANIZZATORE
         requester.setMentors(List.of(host));
         response = controller.creationHackathon(requester);
-        Assertions.assertNull(response, "La creazione con mentori con rank non valido dovrebbe fallire e restituire null");
-        // Test con mentori con rank non valido
+        Assertions.assertNull(response, "La creazione con mentori con rank ORGANIZZATORE dovrebbe fallire e restituire null");
+        // Test con mentori con rank non GIUDICE
         requester.setMentors(List.of(judge));
         response = controller.creationHackathon(requester);
-        Assertions.assertNull(response, "La creazione con mentori con rank non valido dovrebbe fallire e restituire null");
-        // Test con mentori con rank non valido
-        mentor2.setRank(Rank.STANDARD);
-        requester.setMentors(List.of(mentor2));
+        Assertions.assertNull(response, "La creazione con mentori con rank GIUDICE dovrebbe fallire e restituire null");
+        // Test con mentori con rank MEMBNRO_TEAM
+        mentor1.setRank(Rank.MEMBRO_TEAM);
+        requester.setMentors(List.of(mentor1));
         response = controller.creationHackathon(requester);
-        Assertions.assertNull(response, "La creazione con mentori con rank non valido dovrebbe fallire e restituire null");
-        // Test con mentori con rank non valido
-        mentor2.setRank(Rank.MEMBRO_TEAM);
-        requester.setMentors(List.of(mentor2));
-        response = controller.creationHackathon(requester);
-        Assertions.assertNull(response, "La creazione con mentori con rank non valido dovrebbe fallire e restituire null");
-        // Test con mentori con rank valido
+        Assertions.assertNull(response, "La creazione con mentori con rank MEMBRO_TEAM dovrebbe fallire e restituire null");
+        // Test con mentori con rank multipli non validi
         requester.setMentors(Arrays.asList(mentor1, mentor2));
         response = controller.creationHackathon(requester);
+        Assertions.assertNull(response, "La creazione con mentori con almeno unrank non valido dovrebbe avere successo e restituire un hackathon non null");
+        // Test con mentori con rank valido
+        mentor1.setRank(Rank.STANDARD);
+        requester.setMentors(List.of(mentor1));
+        response = controller.creationHackathon(requester);
         Assertions.assertNotNull(response, "La creazione con mentori con rank valido dovrebbe avere successo e restituire un hackathon non null");
+        // Test con mentori con rank multipli validi
+        mentor2.setRank(Rank.STANDARD);
+        requester.setMentors(Arrays.asList(mentor1, mentor2));
+        response = controller.creationHackathon(requester);
+        Assertions.assertNotNull(response, "La creazione con mentori con rank multipli validi dovrebbe avere successo e restituire un hackathon non null");
     }
 
     @Test
