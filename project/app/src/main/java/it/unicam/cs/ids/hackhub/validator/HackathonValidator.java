@@ -2,6 +2,8 @@ package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 
+import java.time.LocalDateTime;
+
 public class HackathonValidator implements Validator<Hackathon> {
 
     @Override
@@ -12,6 +14,7 @@ public class HackathonValidator implements Validator<Hackathon> {
         if(h.getMaxTeams() < 0) return false;
         if(h.getRegulation() == null || h.getRegulation().isBlank()) return false;
         if(h.getDeadline() == null || h.getStartDate() == null || h.getEndDate() == null) return false;
+        if(LocalDateTime.now().isAfter(h.getDeadline())) return false;
         if(h.getDeadline().isAfter(h.getStartDate()) || h.getStartDate().isAfter(h.getEndDate())) return false;
         if(h.getLocation() == null || h.getLocation().isBlank()) return false;
         return !(h.getReward() <= 0.0);

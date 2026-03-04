@@ -348,9 +348,9 @@ public class CreaHackathonTest {
         request.setMentors(Arrays.asList(mentor1, mentor2));
         request.setMaxTeams(10);
         request.setRegulation("Regolamento dell'Unicam Hackathon");
-        request.setDeadline(LocalDateTime.of(2026, 3, 3, 16, 0)); // Scadenza per le iscrizioni 3 marzo 2026 alle 16:00
-        request.setStartDate(LocalDateTime.of(2026, 3, 4, 16, 0)); // Inizio dell'hackathon 4 marzo 2026 alle 16:00
-        request.setEndDate(LocalDateTime.of(2026, 3, 5, 16, 0)); // Fine dell'hackathon 5 marzo 2026 alle 16:00
+        request.setDeadline(LocalDateTime.now().plusDays(1)); // Scadenza per le iscrizioni 3 marzo 2026 alle 16:00
+        request.setStartDate(LocalDateTime.now().plusDays(2)); // Inizio dell'hackathon 4 marzo 2026 alle 16:00
+        request.setEndDate(LocalDateTime.now().plusDays(3)); // Fine dell'hackathon 5 marzo 2026 alle 16:00
         request.setLocation("Camerino");
         request.setReward(123.45);
 
