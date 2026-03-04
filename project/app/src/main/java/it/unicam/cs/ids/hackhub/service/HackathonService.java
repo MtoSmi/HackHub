@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.builder.HackathonConcreteBuilder;
+import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
@@ -30,15 +31,21 @@ public class HackathonService {
 
     public Hackathon creationHackathon(HackathonRequester h) {
         if(!hackathonValidator.validate(h)) return null;
+        if(!h.getHost().getRank().equals(Rank.ORGANIZZATORE)) return null;
+        if(!h.getJudge().getRank().equals(Rank.STANDARD)) return null;
+        for(User m : h.getMentors()) {
+            if(!m.getRank().equals(Rank.STANDARD)) return null;
+        }
         for(Hackathon other : hackathonRepository.getAll()) {
             if(h.equals(other)) return null;
         }
-        hackathonRepository.create(new HackathonConcreteBuilder()
+        Hackathon newH = new HackathonConcreteBuilder()
                 .buildName(h.getName()).buildHost(h.getHost()).buildJudge(h.getJudge())
                 .buildMentors(h.getMentors()).buildMaxTeam(h.getMaxTeams())
                 .buildRegulation(h.getRegulation()).buildDeadline(h.getDeadline())
                 .buildStartDate(h.getStartDate()).buildEndDate(h.getEndDate())
-                .buildLocation(h.getLocation()).buildReward(h.getReward()).getResult());
+                .buildLocation(h.getLocation()).buildReward(h.getReward()).getResult();
+        hackathonRepository.create(newH);
         notificationService.send("Sei un giudice!",
                 "Sei appena diventato un giudice del nuovo hackathon " + h.getName(),
                 h.getJudge().getId());
@@ -47,6 +54,6 @@ public class HackathonService {
                     "Sei appena diventato un mentore del nuovo hackathon " + h.getName(),
                     mentor.getId());
         }
-        return  hackathonRepository.getById(h.getId());
+        return hackathonRepository.getById(newH.getId());
     }
 }

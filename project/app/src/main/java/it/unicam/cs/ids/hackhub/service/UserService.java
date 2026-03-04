@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.hackhub.service;
 
+import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
@@ -19,6 +20,7 @@ public class UserService {
         for(User other : userRepository.getAll()) {
             if(u.getEmail().equals(other.getEmail())) return null;
         }
+        u.setRank(Rank.STANDARD);
         userRepository.create(u);
         return userRepository.getById(u.getId());
     }
