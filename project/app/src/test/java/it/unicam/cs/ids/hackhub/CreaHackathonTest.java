@@ -33,9 +33,9 @@ public class CreaHackathonTest {
         HackathonValidator validator = new HackathonValidator();
         controller = new HackathonInterfaceController(new HackathonService(new HackathonRepository(), validator, new NotificationService(new NotificationRepository(), new UserRepository())));
         host.setRank(Rank.ORGANIZZATORE);
-        judge.setRank(Rank.GIUDICE);
-        mentor1.setRank(Rank.MENTORE);
-        mentor2.setRank(Rank.MENTORE);
+        judge.setRank(Rank.STANDARD);
+        mentor1.setRank(Rank.STANDARD);
+        mentor2.setRank(Rank.STANDARD);
     }
 
     // Creazione Hackathon valido
@@ -121,23 +121,25 @@ public class CreaHackathonTest {
         // Test con giudice con rank non valido
         requester.setJudge(host);
         response = controller.creationHackathon(requester);
-        Assertions.assertNull(response, "La creazione con giudice con rank non valido dovrebbe fallire e restituire null");
+        Assertions.assertNull(response, "La creazione con giudice con rank ORGANIZZATORE dovrebbe fallire e restituire null");
         // Test con giudice con rank non valido
+        mentor1.setRank(Rank.MENTORE);
         requester.setJudge(mentor1);
         response = controller.creationHackathon(requester);
-        Assertions.assertNull(response, "La creazione con giudice con rank non valido dovrebbe fallire e restituire null");
+        Assertions.assertNull(response, "La creazione con giudice con rank MENTORE dovrebbe fallire e restituire null");
         // Test con giudice con rank non valido
-        mentor2.setRank(Rank.STANDARD);
-        requester.setJudge(mentor2);
+        judge.setRank(Rank.GIUDICE);
+        requester.setJudge(judge);
         response = controller.creationHackathon(requester);
-        Assertions.assertNull(response, "La creazione con giudice con rank non valido dovrebbe fallire e restituire null");
+        Assertions.assertNull(response, "La creazione con giudice con rank GIUDICE dovrebbe fallire e restituire null");
         // Test con giudice con rank non valido
         mentor2.setRank(Rank.MEMBRO_TEAM);
         requester.setJudge(mentor2);
         response = controller.creationHackathon(requester);
-        Assertions.assertNull(response, "La creazione con giudice con rank non valido dovrebbe fallire e restituire null");
+        Assertions.assertNull(response, "La creazione con giudice con rank MEMBRO_TEAM dovrebbe fallire e restituire null");
         // Test con giudice con rank valido
-        requester.setJudge(judge);
+        mentor2.setRank(Rank.STANDARD);
+        requester.setJudge(mentor2);
         response = controller.creationHackathon(requester);
         Assertions.assertNotNull(response, "La creazione con giudice con rank valido dovrebbe avere successo e restituire un hackathon non null");
     }
