@@ -13,6 +13,7 @@ public class HackathonValidator implements Validator<Hackathon> {
         if(h.getRegulation() == null || h.getRegulation().isBlank()) return false;
         if(h.getDeadline() == null || h.getStartDate() == null || h.getEndDate() == null) return false;
         if(h.getDeadline().isAfter(h.getStartDate()) || h.getStartDate().isAfter(h.getEndDate())) return false;
-        return h.getLocation() != null && !h.getLocation().isBlank();
+        if(h.getLocation() == null || h.getLocation().isBlank()) return false;
+        return !(h.getReward() < 0);
     }
 }
