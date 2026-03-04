@@ -220,13 +220,13 @@ public class ConsultaHackathonTest {
         request.setHost(host);
 
         User judge = new User();
-        judge.setRank(Rank.GIUDICE);
+        judge.setRank(Rank.STANDARD);
         request.setJudge(judge);
 
         User mentor1 = new User();
-        mentor1.setRank(Rank.MENTORE);
+        mentor1.setRank(Rank.STANDARD);
         User mentor2 = new User();
-        mentor2.setRank(Rank.MENTORE);
+        mentor2.setRank(Rank.STANDARD);
         request.setMentors(Arrays.asList(mentor1, mentor2));
 
         request.setMaxTeams(15);

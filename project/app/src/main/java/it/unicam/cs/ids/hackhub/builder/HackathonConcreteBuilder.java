@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.hackhub.builder;
 
+import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
@@ -64,6 +65,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
      */
     @Override
     public HackathonBuilder buildJudge(User judge) {
+        judge.setRank(Rank.GIUDICE);
         hackathon.setJudge(judge);
         return this;
     }
@@ -76,6 +78,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
      */
     @Override
     public HackathonBuilder buildMentors(List<User> mentors) {
+        for (User m : mentors) { m.setRank(Rank.MENTORE); }
         hackathon.setMentors(mentors);
         return this;
     }
