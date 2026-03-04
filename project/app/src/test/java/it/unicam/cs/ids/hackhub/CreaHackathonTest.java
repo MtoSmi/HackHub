@@ -107,6 +107,7 @@ public class CreaHackathonTest {
         Assertions.assertNull(response, "La creazione con organizzatore con rank non valido dovrebbe fallire e restituire null");
         // Test con organizzatore con rank valido
         requester.setHost(host);
+        mentor2.setRank(Rank.STANDARD);
         response = controller.creationHackathon(requester);
         Assertions.assertNotNull(response, "La creazione con organizzatore con rank valido dovrebbe avere successo e restituire un hackathon non null");
     }
@@ -138,8 +139,9 @@ public class CreaHackathonTest {
         response = controller.creationHackathon(requester);
         Assertions.assertNull(response, "La creazione con giudice con rank MEMBRO_TEAM dovrebbe fallire e restituire null");
         // Test con giudice con rank valido
+        mentor1.setRank(Rank.STANDARD);
         mentor2.setRank(Rank.STANDARD);
-        requester.setJudge(mentor2);
+        requester.setJudge(mentor1);
         response = controller.creationHackathon(requester);
         Assertions.assertNotNull(response, "La creazione con giudice con rank valido dovrebbe avere successo e restituire un hackathon non null");
     }
@@ -155,7 +157,8 @@ public class CreaHackathonTest {
         requester.setMentors(List.of(host));
         response = controller.creationHackathon(requester);
         Assertions.assertNull(response, "La creazione con mentori con rank ORGANIZZATORE dovrebbe fallire e restituire null");
-        // Test con mentori con rank non GIUDICE
+        // Test con mentori con rank GIUDICE
+        judge.setRank(Rank.GIUDICE);
         requester.setMentors(List.of(judge));
         response = controller.creationHackathon(requester);
         Assertions.assertNull(response, "La creazione con mentori con rank GIUDICE dovrebbe fallire e restituire null");
@@ -169,6 +172,7 @@ public class CreaHackathonTest {
         response = controller.creationHackathon(requester);
         Assertions.assertNull(response, "La creazione con mentori con almeno unrank non valido dovrebbe avere successo e restituire un hackathon non null");
         // Test con mentori con rank valido
+        judge.setRank(Rank.STANDARD);
         mentor1.setRank(Rank.STANDARD);
         requester.setMentors(List.of(mentor1));
         response = controller.creationHackathon(requester);
@@ -320,15 +324,15 @@ public class CreaHackathonTest {
         response = controller.creationHackathon(requester);
         Assertions.assertNull(response, "La creazione con nome, host, giudice, mentori, maxTeams e regolamento dovrebbe fallire e restituire null");
         // Test con nome, host, giudice, mentori, maxTeams, regolamento e scadenza iscrizioni
-        requester.setDeadline(LocalDateTime.of(2026, 3, 3, 16, 0));
+        requester.setDeadline(LocalDateTime.now().plusDays(1));
         response = controller.creationHackathon(requester);
         Assertions.assertNull(response, "La creazione con nome, host, giudice, mentori, maxTeams, regolamento e scadenza iscrizioni dovrebbe fallire e restituire null");
         // Test con nome, host, giudice, mentori, maxTeams, regolamento, scadenza iscrizioni e data inizio
-        requester.setStartDate(LocalDateTime.of(2026, 3, 4, 16, 0));
+        requester.setStartDate(LocalDateTime.now().plusDays(2));
         response = controller.creationHackathon(requester);
         Assertions.assertNull(response, "La creazione con nome, host, giudice, mentori, maxTeams, regolamento, scadenza iscrizioni e data inizio dovrebbe fallire e restituire null");
         // Test con nome, host, giudice, mentori, maxTeams, regolamento, scadenza iscrizioni, data inizio e data fine
-        requester.setEndDate(LocalDateTime.of(2026, 3, 5, 16, 0));
+        requester.setEndDate(LocalDateTime.now().plusDays(3));
         response = controller.creationHackathon(requester);
         Assertions.assertNull(response, "La creazione con nome, host, giudice, mentori, maxTeams, regolamento, scadenza iscrizioni, data inizio e data fine dovrebbe fallire e restituire null");
         // Test con nome, host, giudice, mentori, maxTeams, regolamento, scadenza iscrizioni, data inizio, data fine e location
