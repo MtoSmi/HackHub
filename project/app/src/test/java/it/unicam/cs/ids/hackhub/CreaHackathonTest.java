@@ -178,7 +178,9 @@ public class CreaHackathonTest {
         response = controller.creationHackathon(requester);
         Assertions.assertNotNull(response, "La creazione con mentori con rank valido dovrebbe avere successo e restituire un hackathon non null");
         // Test con mentori con rank multipli validi
+        mentor1.setRank(Rank.STANDARD);
         mentor2.setRank(Rank.STANDARD);
+        judge.setRank(Rank.STANDARD);
         requester.setMentors(Arrays.asList(mentor1, mentor2));
         response = controller.creationHackathon(requester);
         Assertions.assertNotNull(response, "La creazione con mentori con rank multipli validi dovrebbe avere successo e restituire un hackathon non null");
@@ -187,6 +189,7 @@ public class CreaHackathonTest {
     @Test
     public void testCreazioneMaxTeamsNonValido() {
         HackathonRequester requester = createValidHackathon();
+
         // Test con maxTeams negativo
         requester.setMaxTeams(-1);
         Hackathon response = controller.creationHackathon(requester);
@@ -194,7 +197,7 @@ public class CreaHackathonTest {
         // Test con maxTeams zero
         requester.setMaxTeams(0);
         response = controller.creationHackathon(requester);
-        Assertions.assertNotNull(response, "La creazione con maxTeams zero dovrebbe avere successo e restituire un hackathon non null");
+        Assertions.assertNull(response, "La creazione con maxTeams zero dovrebbe avere successo e restituire un hackathon non null");
         // Test con maxTeams positivo
         requester.setMaxTeams(10);
         response = controller.creationHackathon(requester);
@@ -279,11 +282,9 @@ public class CreaHackathonTest {
     public void testCreazioneHackathonDuplicato() {
         HackathonRequester requester = createValidHackathon();
         Hackathon response1 = controller.creationHackathon(requester);
-        Hackathon response2 = controller.creationHackathon(requester);
-
         Assertions.assertNotNull(response1, "La prima creazione dell'hackathon dovrebbe avere successo e restituire un hackathon non null");
-        Assertions.assertNotNull(response2, "La seconda creazione dell'hackathon dovrebbe avere successo e restituire un hackathon non null");
-        //Assertions.assertNotEquals(response1.getId(), response2.getId(), "I due hackathon creati dovrebbero avere ID diversi"); Attualmente gli id non sono valutati
+        Hackathon response2 = controller.creationHackathon(requester);
+        Assertions.assertNull(response2, "La seconda creazione dell'hackathon non dovrebbe avere successo e restituire un hackathon  null");
     }
 
     // Registrazione con oggetti invalidi
