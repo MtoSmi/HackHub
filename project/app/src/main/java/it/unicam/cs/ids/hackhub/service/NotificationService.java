@@ -4,6 +4,8 @@ import it.unicam.cs.ids.hackhub.entity.model.Notification;
 import it.unicam.cs.ids.hackhub.repository.NotificationRepository;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 
+import java.util.List;
+
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
@@ -17,5 +19,13 @@ public class NotificationService {
     public void send(String title, String description, Long uId) {
         Notification n = new Notification(title, description, userRepository.getById(uId));
         notificationRepository.create(n);
+    }
+
+    public List<Notification> showMyNotifications(Long userId) {
+        return notificationRepository.getByUser(userId);
+    }
+
+    public Notification showSelectedNotification(Long id) {
+        return notificationRepository.getById(id);
     }
 }
