@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.hackhub.repository;
 
+import it.unicam.cs.ids.hackhub.entity.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 
 import java.util.ArrayList;
@@ -16,6 +17,10 @@ public class HackathonRepository implements Repository<Hackathon> {
     @Override
     public List<Hackathon> getAll() {
         return hackathons;
+    }
+
+    public List<Hackathon> getHackathonsByStatus(Status s) {
+        return hackathons.stream().filter(h -> h.getStatus().equals(s)).toList();
     }
 
     @Override
