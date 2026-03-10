@@ -67,6 +67,11 @@ public class HelpRequestInterfaceController {
         service.completeHelpRequest(requested);
     }
 
+    /**
+     * Crea una nuova richiesta di aiuto a partire dalla richiesta fornita.
+     * @param requested la richiesta di creazione della richiesta di aiuto
+     * @return la richiesta di aiuto creata
+     */
     public HelpRequest creationHelpRequest(HelpRequestRequester requested) {
         return service.creationHelpRequest(requested);
     }
