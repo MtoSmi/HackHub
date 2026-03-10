@@ -66,4 +66,8 @@ public class HelpRequestInterfaceController {
         requested.setCall(null);
         service.completeHelpRequest(requested);
     }
+
+    public HelpRequest creationHelpRequest(HelpRequestRequester requested) {
+        return service.creationHelpRequest(requested);
+    }
 }
