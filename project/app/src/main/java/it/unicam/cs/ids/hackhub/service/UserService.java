@@ -24,4 +24,8 @@ public class UserService {
         userRepository.create(u);
         return userRepository.getById(u.getId());
     }
+
+    public User showInformation(Long id) {
+        return userRepository.getById(id);
+    }
 }
