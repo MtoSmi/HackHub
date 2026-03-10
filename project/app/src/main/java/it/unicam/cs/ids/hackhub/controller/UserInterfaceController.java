@@ -33,4 +33,8 @@ public class UserInterfaceController {
     public User registrationUser(UserRequester requested) {
         return service.registrationUser(requested);
     }
+
+    public User showInformation(long id) {
+        return service.showInformation(id);
+    }
 }
