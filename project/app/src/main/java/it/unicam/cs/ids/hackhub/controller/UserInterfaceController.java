@@ -34,6 +34,11 @@ public class UserInterfaceController {
         return service.registrationUser(requested);
     }
 
+    /**
+     * Restituisce le informazioni dell'account all'utente specificato tramite identificativo.
+     * @param id l'identificativo dell'utente di cui mostrare le informazioni
+     * @return le informazioni dell'account dell'utente corrispondente all'id
+     */
     public User showInformation(long id) {
         return service.showInformation(id);
     }
