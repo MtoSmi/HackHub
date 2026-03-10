@@ -18,6 +18,10 @@ public class NotificationRepository implements Repository<Notification> {
         return notifications;
     }
 
+    public List<Notification> getByUser(Long id) {
+        return notifications.stream().filter(n -> n.getTo().getId().equals(id)).toList();
+    }
+
     @Override
     public Notification getById(Long id) {
         for(Notification n : notifications) {
