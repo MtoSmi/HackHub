@@ -28,14 +28,12 @@ public class TeamService {
 
     /**
      * Crea un nuovo team a partire dai dati forniti nel {@link TeamRequester}.
-     * <p>
+     *
      * La creazione viene rifiutata (restituendo {@code null}) nei seguenti casi:
-     * <ul>
-     *   <li>I dati del team non superano la validazione.</li>
-     *   <li>Uno o più membri del team non hanno il rank {@link Rank#STANDARD}.</li>
-     *   <li>Esiste già un team con lo stesso nome.</li>
-     *   <li>Uno o più membri del team appartengono già a un altro team.</li>
-     * </ul>
+     * - I dati del team non superano la validazione.
+     * - Uno o più membri del team non hanno il rank {@link Rank#STANDARD}.
+     * - Esiste già un team con lo stesso nome.
+     * - Uno o più membri del team appartengono già a un altro team.
      *
      * @param t il {@link TeamRequester} contenente i dati del team da creare
      * @return il {@link Team} creato e salvato nel repository, oppure {@code null} se la creazione non è consentita

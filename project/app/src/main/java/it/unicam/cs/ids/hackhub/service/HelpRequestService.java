@@ -59,12 +59,11 @@ public class HelpRequestService {
 
     /**
      * Crea una nuova richiesta di aiuto verificando che:
-     * <ul>
-     *   <li>La richiesta superi la validazione</li>
-     *   <li>Il richiedente abbia il ruolo di {@code MEMBRO_TEAM}</li>
-     *   <li>Il destinatario abbia il ruolo di {@code MENTORE}</li>
-     *   <li>Il mentore destinatario e il team del richiedente siano coinvolti in almeno un hackathon in corso</li>
-     * </ul>
+     * - La richiesta superi la validazione
+     * - Il richiedente abbia il ruolo di {@code MEMBRO_TEAM}
+     * - Il destinatario abbia il ruolo di {@code MENTORE}
+     * - Il mentore destinatario e il team del richiedente siano coinvolti in almeno un hackathon in corso
+     *
      * In caso di successo, invia una notifica al mentore destinatario.
      *
      * @param hr il richiedente contenente le informazioni della richiesta di aiuto

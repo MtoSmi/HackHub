@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Service per la gestione degli hackathon.
  * Fornisce operazioni per la visualizzazione e la creazione degli hackathon,
- * delegando la persistenza al repository e la validazione al validatore dedicato.
+ * delegando la persistenza al repository e la validazione al validator dedicato.
  */
 public class HackathonService {
     private final HackathonRepository hackathonRepository;
@@ -54,15 +54,14 @@ public class HackathonService {
 
     /**
      * Crea un nuovo hackathon a partire dai dati forniti tramite {@link HackathonRequester}.
-     * <p>
+     *
      * La creazione viene rifiutata (restituendo {@code null}) nei seguenti casi:
-     * <ul>
-     *   <li>I dati non superano la validazione</li>
-     *   <li>L'host non ha il rank {@link Rank#ORGANIZZATORE}</li>
-     *   <li>Il giudice non ha il rank {@link Rank#STANDARD}</li>
-     *   <li>Almeno un mentore non ha il rank {@link Rank#STANDARD}</li>
-     *   <li>Esiste già un hackathon equivalente nel sistema</li>
-     * </ul>
+     * - I dati non superano la validazione
+     * - L'host non ha il rank {@link Rank#ORGANIZZATORE}
+     * - Il giudice non ha il rank {@link Rank#STANDARD}
+     * - Almeno un mentore non ha il rank {@link Rank#STANDARD}
+     * - Esiste già un hackathon equivalente nel sistema
+     *
      * In caso di successo, vengono inviate notifiche al giudice e a tutti i mentori.
      *
      * @param h il requester contenente i dati del nuovo hackathon

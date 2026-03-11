@@ -28,12 +28,11 @@ public class SubmissionService {
 
     /**
      * Crea una nuova submission e la associa all'hackathon specificato.
-     * <p>
+     *
      * La submission viene prima validata tramite il {@link SubmissionValidator}.
      * Se la validazione fallisce, viene restituito {@code null}.
      * In caso di successo, la submission viene aggiunta all'hackathon e
      * l'hackathon viene aggiornato nel repository.
-     * </p>
      *
      * @param hId l'identificativo univoco dell'hackathon a cui associare la submission
      * @param s   il richiedente della submission contenente i dati da registrare

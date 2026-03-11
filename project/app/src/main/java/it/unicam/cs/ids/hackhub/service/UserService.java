@@ -27,12 +27,11 @@ public class UserService {
 
     /**
      * Registra un nuovo utente nel sistema.
-     * <p>
+     *
      * La registrazione ha esito negativo se:
-     * <ul>
-     *   <li>I dati dell'utente non superano la validazione</li>
-     *   <li>Esiste già un utente con lo stesso indirizzo email</li>
-     * </ul>
+     * - I dati dell'utente non superano la validazione
+     * - Esiste già un utente con lo stesso indirizzo email
+     *
      * In caso di successo, all'utente viene assegnato il rango {@link Rank#STANDARD}.
      *
      * @param u il richiedente contenente i dati del nuovo utente

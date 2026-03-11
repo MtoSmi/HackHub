@@ -11,12 +11,10 @@ public class TeamValidator implements Validator<Team> {
 
     /**
      * Valida un oggetto {@link Team} verificando che:
-     * <ul>
-     *   <li>L'oggetto non sia {@code null}</li>
-     *   <li>Il nome non sia {@code null} o vuoto</li>
-     *   <li>La dimensione non sia negativa</li>
-     *   <li>La lista dei membri non sia {@code null}</li>
-     * </ul>
+     * - L'oggetto non sia {@code null}
+     * - Il nome non sia {@code null} o vuoto
+     * - La dimensione non sia negativa
+     * - La lista dei membri non sia {@code null}
      *
      * @param t il team da validare
      * @return {@code true} se il team è valido, {@code false} altrimenti

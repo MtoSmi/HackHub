@@ -6,28 +6,24 @@ import java.time.LocalDateTime;
 
 /**
  * Implementazione di {@link Validator} per la validazione di un oggetto {@link Hackathon}.
- * <p>
  * Verifica che tutti i campi obbligatori dell'hackathon siano presenti e coerenti,
  * inclusi nome, host, giudice, mentori, numero massimo di team, regolamento,
  * date, location e premio.
- * </p>
  */
 public class HackathonValidator implements Validator<Hackathon> {
 
     /**
      * Valida un oggetto {@link Hackathon} verificando i seguenti vincoli:
-     * <ul>
-     *   <li>L'oggetto non deve essere {@code null}.</li>
-     *   <li>Il nome non deve essere {@code null} o vuoto.</li>
-     *   <li>Host, giudice e mentori non devono essere {@code null}.</li>
-     *   <li>Il numero massimo di team deve essere maggiore di zero.</li>
-     *   <li>Il regolamento non deve essere {@code null} o vuoto.</li>
-     *   <li>La deadline, la data di inizio e la data di fine non devono essere {@code null}.</li>
-     *   <li>La deadline non deve essere già passata rispetto al momento attuale.</li>
-     *   <li>La deadline deve precedere la data di inizio, e la data di inizio deve precedere la data di fine.</li>
-     *   <li>La location non deve essere {@code null} o vuota.</li>
-     *   <li>Il premio deve essere maggiore di zero.</li>
-     * </ul>
+     * - L'oggetto non deve essere {@code null}.
+     * - Il nome non deve essere {@code null} o vuoto.
+     * - Host, giudice e mentori non devono essere {@code null}.
+     * - Il numero massimo di team deve essere maggiore di zero.
+     * - Il regolamento non deve essere {@code null} o vuoto.
+     * - La deadline, la data di inizio e la data di fine non devono essere {@code null}.
+     * - La deadline non deve essere già passata rispetto al momento attuale.
+     * - La deadline deve precedere la data di inizio, e la data di inizio deve precedere la data di fine.
+     * - La location non deve essere {@code null} o vuota.
+     * - Il premio deve essere maggiore di zero.
      *
      * @param h l'hackathon da validare
      * @return {@code true} se l'hackathon è valido, {@code false} altrimenti

@@ -6,10 +6,8 @@ import it.unicam.cs.ids.hackhub.validator.MentorValidator;
 
 /**
  * Service per la gestione dei mentor all'interno degli hackathon.
- * <p>
  * Fornisce operazioni per aggiungere mentor a un hackathon specifico,
  * previa validazione tramite {@link MentorValidator}.
- * </p>
  */
 public class MentorService {
     private final MentorValidator mentorValidator;
@@ -29,11 +27,10 @@ public class MentorService {
 
     /**
      * Aggiunge un mentor a un hackathon specificato tramite il suo identificativo.
-     * <p>
+     *
      * Prima di procedere con l'aggiunta, l'utente viene validato tramite
      * {@link MentorValidator#validate(User)}. Se la validazione fallisce,
      * il metodo termina senza apportare modifiche.
-     * </p>
      *
      * @param mentor l'utente da aggiungere come mentor all'hackathon
      * @param hId    l'identificativo univoco dell'hackathon a cui aggiungere il mentor

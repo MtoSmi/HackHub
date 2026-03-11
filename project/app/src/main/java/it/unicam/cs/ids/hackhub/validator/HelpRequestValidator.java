@@ -12,16 +12,14 @@ public class HelpRequestValidator implements Validator<HelpRequest> {
     /**
      * Valida una richiesta di aiuto verificando che tutti i campi obbligatori
      * siano presenti e corretti.
-     * <p>
+     *
      * La validazione fallisce nei seguenti casi:
-     * <ul>
-     *   <li>La richiesta è {@code null}</li>
-     *   <li>Il titolo è {@code null} o vuoto</li>
-     *   <li>La descrizione è {@code null} o vuota</li>
-     *   <li>La risposta è già presente (non {@code null} e non vuota)</li>
-     *   <li>Il mittente ({@code from}) o il destinatario ({@code to}) sono {@code null}</li>
-     *   <li>Il campo {@code call} è {@code null} o vuoto</li>
-     * </ul>
+     * - La richiesta è {@code null}
+     * - Il titolo è {@code null} o vuoto
+     * - La descrizione è {@code null} o vuota
+     * - La risposta è già presente (non {@code null} e non vuota)
+     * - Il mittente ({@code from}) o il destinatario ({@code to}) sono {@code null}
+     * - Il campo {@code call} è {@code null} o vuoto
      *
      * @param hr la richiesta di aiuto da validare
      * @return {@code true} se la richiesta è valida, {@code false} altrimenti

@@ -2,7 +2,6 @@ package it.unicam.cs.ids.hackhub.validator;
 
 /**
  * Interfaccia generica per la validazione di entità.
- * <p>
  * Definisce un contratto per la validazione di oggetti di tipo {@code T}.
  * Le implementazioni di questa interfaccia devono fornire la logica
  * necessaria per determinare se un'entità è valida o meno.
