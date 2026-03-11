@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import it.unicam.cs.ids.hackhub.service.MentorService;
 
 /**
  * Controller per interfaccia per la gestione delle operazioni sui mentori.
