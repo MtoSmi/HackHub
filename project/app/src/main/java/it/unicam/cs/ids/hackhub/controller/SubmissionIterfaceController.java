@@ -29,7 +29,7 @@ public class SubmissionIterfaceController {
      * @param requested la richiesta di creazione della sottomissione
      * @return la sottomissione creata
      */
-    public Submission creationSubmission(SubmissionRequester requested) {
-        return service.creationSubmission(1L, requested);
+    public Submission creationSubmission(SubmissionRequester requested, Long id) {
+        return service.creationSubmission(id, requested);
     }
 }
