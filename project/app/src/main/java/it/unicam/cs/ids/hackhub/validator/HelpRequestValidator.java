@@ -11,6 +11,6 @@ public class HelpRequestValidator implements Validator<HelpRequest> {
         if(hr.getDescription() == null || hr.getDescription().isBlank()) return false;
         if(hr.getReply() != null && !hr.getReply().isBlank()) return false;
         if(hr.getFrom() == null || hr.getTo() == null) return false;
-        return hr.getCall() != null && !hr.getCall().isBlank();
+        return hr.getCall() == null || hr.getCall().isBlank();
     }
 }
