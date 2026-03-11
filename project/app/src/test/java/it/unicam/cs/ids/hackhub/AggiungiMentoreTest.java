@@ -1,19 +1,19 @@
 package it.unicam.cs.ids.hackhub;
 
 import it.unicam.cs.ids.hackhub.controller.HackathonInterfaceController;
-import it.unicam.cs.ids.hackhub.controller.HelpRequestInterfaceController;
 import it.unicam.cs.ids.hackhub.controller.MentorInterfaceController;
-import it.unicam.cs.ids.hackhub.controller.TeamInterfaceController;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
-import it.unicam.cs.ids.hackhub.repository.*;
-import it.unicam.cs.ids.hackhub.service.*;
+import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
+import it.unicam.cs.ids.hackhub.repository.NotificationRepository;
+import it.unicam.cs.ids.hackhub.repository.UserRepository;
+import it.unicam.cs.ids.hackhub.service.HackathonService;
+import it.unicam.cs.ids.hackhub.service.MentorService;
+import it.unicam.cs.ids.hackhub.service.NotificationService;
 import it.unicam.cs.ids.hackhub.validator.HackathonValidator;
-import it.unicam.cs.ids.hackhub.validator.HelpRequestValidator;
 import it.unicam.cs.ids.hackhub.validator.MentorValidator;
-import it.unicam.cs.ids.hackhub.validator.TeamValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,8 +34,9 @@ public class AggiungiMentoreTest {
     @BeforeEach
     public void setUp() {
         HackathonValidator validator = new HackathonValidator();
-        HackathonController = new HackathonInterfaceController(new HackathonService(new HackathonRepository(), validator, new NotificationService(new NotificationRepository(), new UserRepository())));
-        MentorController = new MentorInterfaceController(new MentorService(new MentorValidator(), new HackathonRepository()));
+        HackathonRepository HackathonRepository = new HackathonRepository();
+        HackathonController = new HackathonInterfaceController(new HackathonService(HackathonRepository, validator, new NotificationService(new NotificationRepository(), new UserRepository())));
+        MentorController = new MentorInterfaceController(new MentorService(new MentorValidator(), HackathonRepository));
 
         user.setId(1L);
         user.setRank(Rank.STANDARD);
@@ -62,7 +63,23 @@ public class AggiungiMentoreTest {
         Assertions.assertNotNull(updatedhackathon, "L'hackathon aggiornato non dovrebbe essere null");
         Assertions.assertTrue(updatedhackathon.getMentors().contains(user), "Il mentore aggiunto dovrebbe essere presente nella lista dei mentori dell'hackathon");
         Assertions.assertSame(Rank.MENTORE, user.getRank(), "Il rank dell'utente dovrebbe essere aggiornato a MENTORE");
+        Assertions.assertEquals(3, updatedhackathon.getMentors().size(), "La lista dei mentori dovrebbe contenere 3 mentori dopo l'aggiunta");
 
+    }
+
+    @Test
+    public void testAggiungiMentoreNonValido() {
+        HackathonRequester requester = createValidHackathon();
+        Hackathon response = HackathonController.creationHackathon(requester);
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(1L, response.getId(), "L'ID dell'hackathon creato dovrebbe essere 1");
+        Assertions.assertEquals(List.of(mentor1, mentor2), response.getMentors(), "I mentori iniziali dovrebbero essere quelli specificati nella richiesta");
+
+        user.setRank(Rank.MEMBRO_TEAM);
+        MentorController.addMentor(user, 1L);
+        Hackathon updatedhackathon = HackathonController.showSelectedHackathon(1L);
+        Assertions.assertNotNull(updatedhackathon, "L'hackathon aggiornato non dovrebbe essere null");
+        Assertions.assertFalse(updatedhackathon.getMentors().contains(user), "Il mentore non valido non dovrebbe essere presente nella lista dei mentori dell'hackathon");
     }
 
     private HackathonRequester createValidHackathon() {
