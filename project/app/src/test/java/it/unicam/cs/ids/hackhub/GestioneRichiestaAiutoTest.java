@@ -5,11 +5,13 @@ import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.HelpRequest;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HelpRequestRequester;
+import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.repository.HelpRequestRepository;
 import it.unicam.cs.ids.hackhub.repository.NotificationRepository;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.service.HelpRequestService;
 import it.unicam.cs.ids.hackhub.service.NotificationService;
+import it.unicam.cs.ids.hackhub.validator.HelpRequestValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +22,7 @@ public class GestioneRichiestaAiutoTest {
 
     @BeforeEach
     public void setUp() {
-        HelpRequestInterfaceController controller = new HelpRequestInterfaceController(new HelpRequestService(new HelpRequestRepository(), new NotificationService(new NotificationRepository(), new UserRepository())));
+        HelpRequestInterfaceController controller = new HelpRequestInterfaceController(new HelpRequestService(new HelpRequestRepository(),new HelpRequestValidator(), new HackathonRepository(), new NotificationService(new NotificationRepository(), new UserRepository())));
         mentor.setRank(Rank.MENTORE);
         teamUser.setRank(Rank.MEMBRO_TEAM);
     }
