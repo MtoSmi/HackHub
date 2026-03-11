@@ -2,6 +2,7 @@ package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
+import it.unicam.cs.ids.hackhub.service.SubmissionService;
 
 /**
  * Controller per interfaccia per la gestione delle operazioni sulle Submission.
@@ -29,6 +30,6 @@ public class SubmissionIterfaceController {
      * @return la sottomissione creata
      */
     public Submission creationSubmission(SubmissionRequester requested) {
-        return service.creationSubmission(requested);
+        return service.creationSubmission(1L, requested);
     }
 }
