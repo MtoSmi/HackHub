@@ -11,7 +11,6 @@ import java.util.List;
  * Fornisce operazioni per inviare e visualizzare notifiche.
  */
 public class NotificationService {
-
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
 
