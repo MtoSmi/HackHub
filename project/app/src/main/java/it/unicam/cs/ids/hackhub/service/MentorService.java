@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.hackhub.service;
 
+import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
@@ -18,11 +19,14 @@ public class MentorService {
 
     public void addMentor(User mentor, Long hId) {
         if(!mentorValidator.validate(mentor)) return;
-        //Hackathon h = hackathonRepository.getById(hId);
-        //h.setMentors(List.of(mentor));
-        //hackathonRepository.update(h);
-        hackathonRepository.getById(hId).getMentors().add(mentor);
-        hackathonRepository.update(hackathonRepository.getById(hId));
+        mentor.setRank(Rank.MENTORE);
+        Hackathon h = hackathonRepository.getById(hId);
+        List<User> mentors = new java.util.ArrayList<>(h.getMentors());
+        mentors.add(mentor);
+        h.setMentors(mentors);
+        hackathonRepository.update(h);
+//        hackathonRepository.getById(hId).getMentors().add(mentor);
+//        hackathonRepository.update(hackathonRepository.getById(hId));
 
     }
 }
