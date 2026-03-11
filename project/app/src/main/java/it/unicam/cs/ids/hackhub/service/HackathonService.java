@@ -11,7 +11,7 @@ import it.unicam.cs.ids.hackhub.validator.HackathonValidator;
 import java.util.List;
 
 /**
- * Servizio per la gestione degli hackathon.
+ * Service per la gestione degli hackathon.
  * Fornisce operazioni per la visualizzazione e la creazione degli hackathon,
  * delegando la persistenza al repository e la validazione al validatore dedicato.
  */
@@ -24,8 +24,8 @@ public class HackathonService {
      * Costruisce un'istanza di {@code HackathonService} con le dipendenze fornite.
      *
      * @param hRepo    il repository per la persistenza degli hackathon
-     * @param hValid   il validatore per i dati degli hackathon
-     * @param nService il servizio per l'invio delle notifiche
+     * @param hValid   il validator per i dati degli hackathon
+     * @param nService il service per l'invio delle notifiche
      */
     public HackathonService(HackathonRepository hRepo, HackathonValidator hValid, NotificationService nService) {
         this.hackathonRepository = hRepo;

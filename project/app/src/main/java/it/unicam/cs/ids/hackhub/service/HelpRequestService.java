@@ -11,12 +11,25 @@ import it.unicam.cs.ids.hackhub.validator.HelpRequestValidator;
 
 import java.util.List;
 
+/**
+ * Service per la gestione delle richieste di aiuto all'interno della piattaforma HackHub.
+ * Fornisce operazioni per la creazione, visualizzazione e completamento delle richieste di aiuto
+ * tra i membri del team e i mentori.
+ */
 public class HelpRequestService {
     private final HelpRequestRepository helpRequestRepository;
     private final HelpRequestValidator helpRequestValidator;
     private final HackathonRepository hackathonRepository;
     private final NotificationService notificationService;
 
+    /**
+     * Costruisce un nuovo {@code HelpRequestService} con le dipendenze necessarie.
+     *
+     * @param hrRepo      il repository per la gestione delle richieste di aiuto
+     * @param hrValidator il validator per le richieste di aiuto
+     * @param hRepo       il repository per la gestione degli hackathon
+     * @param nService    il service per l'invio delle notifiche
+     */
     public HelpRequestService(HelpRequestRepository hrRepo, HelpRequestValidator hrValidator, HackathonRepository hRepo, NotificationService nService) {
         this.helpRequestRepository = hrRepo;
         this.helpRequestValidator = hrValidator;
@@ -24,21 +37,46 @@ public class HelpRequestService {
         this.notificationService = nService;
     }
 
+    /**
+     * Restituisce la lista delle richieste di aiuto ricevute da un determinato mentore.
+     *
+     * @param mentorId l'identificativo del mentore
+     * @return la lista delle {@link HelpRequest} associate al mentore specificato
+     */
     public List<HelpRequest> showMyHelpRequests(Long mentorId) {
         return helpRequestRepository.getByMentor(mentorId);
     }
 
+    /**
+     * Restituisce una specifica richiesta di aiuto in base al suo identificativo.
+     *
+     * @param id l'identificativo della richiesta di aiuto
+     * @return la {@link HelpRequest} corrispondente all'id fornito
+     */
     public HelpRequest showSelectedHelpRequest(Long id) {
         return helpRequestRepository.getById(id);
     }
 
+    /**
+     * Crea una nuova richiesta di aiuto verificando che:
+     * <ul>
+     *   <li>La richiesta superi la validazione</li>
+     *   <li>Il richiedente abbia il ruolo di {@code MEMBRO_TEAM}</li>
+     *   <li>Il destinatario abbia il ruolo di {@code MENTORE}</li>
+     *   <li>Il mentore destinatario e il team del richiedente siano coinvolti in almeno un hackathon in corso</li>
+     * </ul>
+     * In caso di successo, invia una notifica al mentore destinatario.
+     *
+     * @param hr il richiedente contenente le informazioni della richiesta di aiuto
+     * @return la {@link HelpRequest} creata, oppure {@code null} se la validazione fallisce
+     */
     public HelpRequest creationHelpRequest(HelpRequestRequester hr) {
-        if(!helpRequestValidator.validate(hr)) return null;
-        if(!hr.getFrom().getRank().equals(Rank.MEMBRO_TEAM)) return null;
-        if(!hr.getTo().getRank().equals(Rank.MENTORE)) return null;
-        for(Hackathon h : hackathonRepository.getHackathonsByStatus(Status.IN_CORSO)) {
-            if(!h.getMentors().contains(hr.getTo())) return null;
-            if(!h.getParticipants().contains(hr.getFrom().getTeam())) return null;
+        if (!helpRequestValidator.validate(hr)) return null;
+        if (!hr.getFrom().getRank().equals(Rank.MEMBRO_TEAM)) return null;
+        if (!hr.getTo().getRank().equals(Rank.MENTORE)) return null;
+        for (Hackathon h : hackathonRepository.getHackathonsByStatus(Status.IN_CORSO)) {
+            if (!h.getMentors().contains(hr.getTo())) return null;
+            if (!h.getParticipants().contains(hr.getFrom().getTeam())) return null;
         }
         helpRequestRepository.create(hr);
         notificationService.send("Richiesta di aiuto!",
@@ -47,6 +85,13 @@ public class HelpRequestService {
         return helpRequestRepository.getById(hr.getId());
     }
 
+    /**
+     * Completa una richiesta di aiuto esistente aggiornando la risposta, la chiamata
+     * e impostandola come completata. Invia una notifica al membro del team che aveva
+     * effettuato la richiesta.
+     *
+     * @param hrr il richiedente contenente le informazioni di completamento della richiesta di aiuto
+     */
     public void completeHelpRequest(HelpRequestRequester hrr) {
         HelpRequest hr = helpRequestRepository.getById(hrr.getId());
         hr.setReply(hrr.getReply());
