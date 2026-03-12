@@ -8,6 +8,7 @@ import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.validator.HackathonValidator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HackathonService {
@@ -41,7 +42,7 @@ public class HackathonService {
         }
         Hackathon newH = new HackathonConcreteBuilder()
                 .buildName(h.getName()).buildHost(h.getHost()).buildJudge(h.getJudge())
-                .buildMentors(h.getMentors()).buildMaxTeam(h.getMaxTeams())
+                .buildMentors(h.getMentors()).buildMaxTeam(h.getMaxTeams()).buildSubmissions()
                 .buildRegulation(h.getRegulation()).buildDeadline(h.getDeadline())
                 .buildStartDate(h.getStartDate()).buildEndDate(h.getEndDate())
                 .buildLocation(h.getLocation()).buildReward(h.getReward()).getResult();
