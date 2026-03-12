@@ -50,6 +50,9 @@ public class TeamService {
             }
         }
         t.setDimension(t.getMembers().size());
+        for(User u : t.getMembers()) {
+            u.setRank(Rank.MEMBRO_TEAM);
+        }
         teamRepository.create(t);
         return teamRepository.getById(t.getId());
     }

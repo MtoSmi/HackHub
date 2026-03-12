@@ -28,3 +28,4 @@ replay_pid*
 
 # Backup file
 *.vpp.*
+/project/gradle/gradle-daemon-jvm.properties

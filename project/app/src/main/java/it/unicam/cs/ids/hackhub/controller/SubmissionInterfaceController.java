@@ -2,6 +2,7 @@ package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
+import it.unicam.cs.ids.hackhub.service.SubmissionService;
 
 /**
  * Controller per interfaccia per la gestione delle operazioni sulle Submission.
@@ -9,7 +10,7 @@ import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
  * Questa classe espone metodi di alto livello che delegano la logica al servizio
  * {@link it.unicam.cs.ids.hackhub.service.SubmissionService}, fungendo da punto di accesso per il livello di presentazione.
  */
-public class SubmissionIterfaceController {
+public class SubmissionInterfaceController {
     /** Servizio per le operazioni sulle sottomissioni. */
     private final SubmissionService service;
 
@@ -18,7 +19,7 @@ public class SubmissionIterfaceController {
      *
      * @param service il servizio da usare per le operazioni sulle sottomissioni
      */
-    public SubmissionIterfaceController(SubmissionService service) {
+    public SubmissionInterfaceController(SubmissionService service) {
         this.service = service;
     }
 
@@ -28,7 +29,7 @@ public class SubmissionIterfaceController {
      * @param requested la richiesta di creazione della sottomissione
      * @return la sottomissione creata
      */
-    public Submission creationSubmission(SubmissionRequester requested) {
-        return service.creationSubmission(requested);
+    public Submission creationSubmission(SubmissionRequester requested, Long id) {
+        return service.creationSubmission(id, requested);
     }
 }
