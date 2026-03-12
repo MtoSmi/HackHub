@@ -6,6 +6,7 @@ import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.validator.MentorValidator;
 
+import java.util.ArrayList;
 /**
  * Service per la gestione dei mentor all'interno degli hackathon.
  * Fornisce operazioni per aggiungere mentor a un hackathon specifico,
@@ -40,8 +41,12 @@ public class MentorService {
      * @param hId    l'identificativo univoco dell'hackathon a cui aggiungere il mentor
      */
     public void addMentor(User mentor, Long hId) {
-        if (!mentorValidator.validate(mentor)) return;
-        hackathonRepository.getById(hId).getMentors().add(mentor);
-        hackathonRepository.update(hackathonRepository.getById(hId));
+        if(!mentorValidator.validate(mentor)) return;
+        mentor.setRank(Rank.MENTORE);
+        Hackathon h = hackathonRepository.getById(hId);
+        h.getMentors().add(mentor);
+
+        hackathonRepository.update(h);
+
     }
 }

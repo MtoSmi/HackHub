@@ -87,7 +87,7 @@ public class AggiungiMentoreTest {
         request.setName("Unicam Hackathon");
         request.setHost(host);
         request.setJudge(judge);
-        request.setMentors(Arrays.asList(mentor1, mentor2));
+        request.setMentors(List.of(mentor1, mentor2));
         request.setMaxTeams(10);
         request.setRegulation("Regolamento dell'Unicam Hackathon");
         request.setDeadline(LocalDateTime.now().plusDays(1));

@@ -8,6 +8,7 @@ import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,7 +80,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     @Override
     public HackathonBuilder buildMentors(List<User> mentors) {
         for (User m : mentors) { m.setRank(Rank.MENTORE); }
-        hackathon.setMentors(mentors);
+        hackathon.setMentors(new ArrayList<>(mentors));
         return this;
     }
 
@@ -110,12 +111,11 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     /**
      * Imposta la lista delle sottomissioni dell'hackathon.
      *
-     * @param submissions una Lista di oggetti Submission
      * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
      */
     @Override
-    public HackathonBuilder buildSubmissions(List<Submission> submissions) {
-        hackathon.setSubmissions(submissions);
+    public HackathonBuilder buildSubmissions() {
+        hackathon.setSubmissions(new ArrayList<>());
         return this;
     }
 

@@ -1,5 +1,7 @@
 package it.unicam.cs.ids.hackhub.service;
 
+import it.unicam.cs.ids.hackhub.builder.HackathonBuilder;
+import it.unicam.cs.ids.hackhub.builder.HackathonConcreteBuilder;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
@@ -41,7 +43,7 @@ public class SubmissionService {
     public Submission creationSubmission(Long hId, SubmissionRequester s) {
         if (!submissionValidator.validate(s)) return null;
         Hackathon h = hackathonRepository.getById(hId);
-        h.getSubmissions().add(s); // TODO: impossibile fare getSubmission perchè la lista non esiste
+        h.getSubmissions().add(s);
         hackathonRepository.update(h);
         return s;
     }
