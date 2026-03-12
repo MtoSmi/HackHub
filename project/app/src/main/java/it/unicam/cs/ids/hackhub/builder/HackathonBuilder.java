@@ -68,10 +68,9 @@ public interface HackathonBuilder {
     /**
      * Imposta la lista delle sottomissioni dell'hackathon.
      *
-     * @param submissions una Lista di oggetti Submission
      * @return questa istanza HackathonBuilder per il concatenamento dei metodi
      */
-    HackathonBuilder buildSubmissions(List<Submission> submissions);
+    HackathonBuilder buildSubmissions();
 
     /**
      * Imposta il regolamento dell'hackathon.

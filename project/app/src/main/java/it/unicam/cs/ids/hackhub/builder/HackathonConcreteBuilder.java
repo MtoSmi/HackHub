@@ -8,6 +8,7 @@ import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -114,8 +115,8 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
      * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
      */
     @Override
-    public HackathonBuilder buildSubmissions(List<Submission> submissions) {
-        hackathon.setSubmissions(submissions);
+    public HackathonBuilder buildSubmissions() {
+        hackathon.setSubmissions(new ArrayList<>());
         return this;
     }
 
