@@ -22,9 +22,8 @@ public class MentorService {
         if(!mentorValidator.validate(mentor)) return;
         mentor.setRank(Rank.MENTORE);
         Hackathon h = hackathonRepository.getById(hId);
-        List<User> mentors = new ArrayList<>(h.getMentors());
-        mentors.add(mentor);
-        h.setMentors(mentors);
+        h.getMentors().add(mentor);
+
         hackathonRepository.update(h);
 
     }

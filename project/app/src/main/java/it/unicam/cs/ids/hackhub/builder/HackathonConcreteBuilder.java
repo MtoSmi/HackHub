@@ -80,7 +80,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     @Override
     public HackathonBuilder buildMentors(List<User> mentors) {
         for (User m : mentors) { m.setRank(Rank.MENTORE); }
-        hackathon.setMentors(mentors);
+        hackathon.setMentors(new ArrayList<>(mentors));
         return this;
     }
 
@@ -111,7 +111,6 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     /**
      * Imposta la lista delle sottomissioni dell'hackathon.
      *
-     * @param submissions una Lista di oggetti Submission
      * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
      */
     @Override

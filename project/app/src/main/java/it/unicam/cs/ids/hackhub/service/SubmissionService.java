@@ -20,7 +20,7 @@ public class SubmissionService {
     public Submission creationSubmission(Long hId, SubmissionRequester s) {
         if(!submissionValidator.validate(s)) return null;
         Hackathon h = hackathonRepository.getById(hId);
-        h.getSubmissions().add(s); // TODO: impossibile fare getSubmission perchè la lista non esiste
+        h.getSubmissions().add(s);
         hackathonRepository.update(h);
         return s;
     }
