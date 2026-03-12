@@ -10,7 +10,7 @@ import it.unicam.cs.ids.hackhub.service.SubmissionService;
  * Questa classe espone metodi di alto livello che delegano la logica al servizio
  * {@link it.unicam.cs.ids.hackhub.service.SubmissionService}, fungendo da punto di accesso per il livello di presentazione.
  */
-public class SubmissionIterfaceController {
+public class SubmissionInterfaceController {
     /** Servizio per le operazioni sulle sottomissioni. */
     private final SubmissionService service;
 
@@ -19,7 +19,7 @@ public class SubmissionIterfaceController {
      *
      * @param service il servizio da usare per le operazioni sulle sottomissioni
      */
-    public SubmissionIterfaceController(SubmissionService service) {
+    public SubmissionInterfaceController(SubmissionService service) {
         this.service = service;
     }
 
