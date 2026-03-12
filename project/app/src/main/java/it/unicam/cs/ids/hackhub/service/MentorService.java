@@ -6,6 +6,7 @@ import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.validator.MentorValidator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MentorService {
@@ -21,12 +22,10 @@ public class MentorService {
         if(!mentorValidator.validate(mentor)) return;
         mentor.setRank(Rank.MENTORE);
         Hackathon h = hackathonRepository.getById(hId);
-        List<User> mentors = new java.util.ArrayList<>(h.getMentors());
+        List<User> mentors = new ArrayList<>(h.getMentors());
         mentors.add(mentor);
         h.setMentors(mentors);
         hackathonRepository.update(h);
-//        hackathonRepository.getById(hId).getMentors().add(mentor);
-//        hackathonRepository.update(hackathonRepository.getById(hId));
 
     }
 }
