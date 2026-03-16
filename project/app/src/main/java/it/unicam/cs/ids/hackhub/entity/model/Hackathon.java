@@ -30,7 +30,7 @@ public class Hackathon {
     /** Lista dei team partecipanti all'hackathon */
     private List<Team> participants;
 
-    /** Numero massimo di team che possono partecipare */
+    /** Numero massimo di partecipanti per team che possono partecipare */
     private int maxTeams;
 
     /** Lista delle sottomissioni legate all'hackathon */
