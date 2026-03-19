@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.model.Team;
+import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
 import it.unicam.cs.ids.hackhub.service.TeamService;
 
@@ -36,5 +37,9 @@ public class TeamInterfaceController {
 
     public Team showInformation(long id) {
         return service.showInformation(id);
+    }
+
+    public void inviteMember(User user, Team team) {
+        service.inviteMember(user, team);
     }
 }
