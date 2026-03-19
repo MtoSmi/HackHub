@@ -2,10 +2,12 @@ package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.builder.HackathonConcreteBuilder;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
+import it.unicam.cs.ids.hackhub.entity.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
+import it.unicam.cs.ids.hackhub.repository.TeamRepository;
 import it.unicam.cs.ids.hackhub.validator.HackathonValidator;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.List;
  */
 public class HackathonService {
     private final HackathonRepository hackathonRepository;
+    private final TeamRepository teamRepository;
     private final HackathonValidator hackathonValidator;
     private final NotificationService notificationService;
 
@@ -28,8 +31,9 @@ public class HackathonService {
      * @param hValid   il validator per i dati degli hackathon
      * @param nService il service per l'invio delle notifiche
      */
-    public HackathonService(HackathonRepository hRepo, HackathonValidator hValid, NotificationService nService) {
+    public HackathonService(HackathonRepository hRepo, TeamRepository tRepo, HackathonValidator hValid, NotificationService nService) {
         this.hackathonRepository = hRepo;
+        this.teamRepository = tRepo;
         this.hackathonValidator = hValid;
         this.notificationService = nService;
     }
@@ -94,5 +98,17 @@ public class HackathonService {
                     mentor.getId());
         }
         return hackathonRepository.getById(newH.getId());
+    }
+
+    public void subscribeHackathon(User u, Hackathon h) {
+        if(u.getTeam() == null) return;
+        for(Hackathon h2 : u.getTeam().getHackathons()) {
+            if(!h2.getStatus().equals(Status.CONCLUSO)) return;
+        }
+        if(u.getTeam().getDimension() > h.getMaxTeams()) return;
+        h.getParticipants().add(u.getTeam());
+        hackathonRepository.update(h);
+        u.getTeam().getHackathons().add(h);
+        teamRepository.update(u.getTeam());
     }
 }
