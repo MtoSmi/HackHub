@@ -30,8 +30,8 @@ public class UserInterfaceController {
      * @param requested la richiesta di registrazione dell'utente
      * @return l'utente registrato
      */
-    public User registrationUser(UserRequester requested) {
-        return service.registrationUser(requested);
+    public User registration(UserRequester requested) {
+        return service.registration(requested);
     }
 
     /**
@@ -42,4 +42,13 @@ public class UserInterfaceController {
     public User showInformation(long id) {
         return service.showInformation(id);
     }
+
+    public User access(String email, String password) {
+        return service.access(email, password);
+    }
+
+    public void rankUpgrade(long id) {
+        service.rankUpgrade(id);
+    }
+
 }
