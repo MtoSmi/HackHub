@@ -56,4 +56,8 @@ public class TeamService {
         teamRepository.create(t);
         return teamRepository.getById(t.getId());
     }
+
+    public Team showInformation(long id) {
+        return teamRepository.getById(id);
+    }
 }
