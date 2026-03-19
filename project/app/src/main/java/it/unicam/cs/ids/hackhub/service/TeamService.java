@@ -5,6 +5,7 @@ import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
+import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.validator.TeamValidator;
 
 /**
@@ -13,6 +14,7 @@ import it.unicam.cs.ids.hackhub.validator.TeamValidator;
  */
 public class TeamService {
     private final TeamRepository teamRepository;
+    private final UserRepository userRepository;
     private final NotificationService notificationService;
     private final TeamValidator teamValidator;
 
@@ -22,8 +24,9 @@ public class TeamService {
      * @param tRepo  il repository dei team da utilizzare per la persistenza
      * @param tValid il validator da utilizzare per la verifica dei dati del team
      */
-    public TeamService(TeamRepository tRepo, NotificationService nService, TeamValidator tValid) {
+    public TeamService(TeamRepository tRepo, UserRepository uRepo, NotificationService nService, TeamValidator tValid) {
         this.teamRepository = tRepo;
+        this.userRepository = uRepo;
         this.notificationService = nService;
         this.teamValidator = tValid;
     }
@@ -67,5 +70,15 @@ public class TeamService {
         if (u.getRank() != Rank.STANDARD) return;
         notificationService.send("Invito ricevuto!",
                 "Sei stato invitato a unirti al team " + t.getName(), u.getId());
+    }
+
+    public void acceptInvite(User u, Team t) {
+        if (u.getRank() != Rank.STANDARD) return;
+        t.getMembers().add(u);
+        t.setDimension(t.getMembers().size());
+        teamRepository.update(t);
+        u.setRank(Rank.MEMBRO_TEAM);
+        u.setTeam(t);
+        userRepository.update(u);
     }
 }
