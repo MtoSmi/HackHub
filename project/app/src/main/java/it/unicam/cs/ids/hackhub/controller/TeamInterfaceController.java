@@ -42,4 +42,8 @@ public class TeamInterfaceController {
     public void inviteMember(User user, Team team) {
         service.inviteMember(user, team);
     }
+
+    public void acceptInvite(User user, Team team) {
+        service.acceptInvite(user, team);
+    }
 }
