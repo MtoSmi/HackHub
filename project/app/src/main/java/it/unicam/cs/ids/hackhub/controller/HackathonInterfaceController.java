@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
+import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.service.HackathonService;
 
@@ -52,5 +53,9 @@ public class HackathonInterfaceController {
      */
     public Hackathon showSelectedHackathon(long id) {
         return service.showSelectedHackathon(id);
+    }
+
+    public void subscribeTeam(User user, Hackathon hackathon) {
+        service.subscribeHackathon(user, hackathon);
     }
 }
