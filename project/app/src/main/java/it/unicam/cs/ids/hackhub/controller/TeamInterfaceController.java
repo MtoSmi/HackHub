@@ -33,4 +33,8 @@ public class TeamInterfaceController {
     public Team creationTeam(TeamRequester requested) {
         return service.creationTeam(requested);
     }
+
+    public Team showInformation(long id) {
+        return service.showInformation(id);
+    }
 }
