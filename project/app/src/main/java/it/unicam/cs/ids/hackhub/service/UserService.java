@@ -56,6 +56,14 @@ public class UserService {
         return userRepository.getByEmail(email);
     }
 
+    public void rankUpgrade(Long id) {
+        User u = userRepository.getById(id);
+        if(u.getRank() == Rank.STANDARD) {
+            u.setRank(Rank.ORGANIZZATORE);
+            userRepository.update(u);
+        }
+    }
+
     /**
      * Restituisce le informazioni di un utente dato il suo identificativo.
      *
