@@ -46,4 +46,9 @@ public class UserInterfaceController {
     public User access(String email, String password) {
         return service.access(email, password);
     }
+
+    public void rankUpgrade(long id) {
+        service.rankUpgrade(id);
+    }
+
 }
