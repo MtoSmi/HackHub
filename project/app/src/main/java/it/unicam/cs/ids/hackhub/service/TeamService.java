@@ -13,6 +13,7 @@ import it.unicam.cs.ids.hackhub.validator.TeamValidator;
  */
 public class TeamService {
     private final TeamRepository teamRepository;
+    private final NotificationService notificationService;
     private final TeamValidator teamValidator;
 
     /**
@@ -21,8 +22,9 @@ public class TeamService {
      * @param tRepo  il repository dei team da utilizzare per la persistenza
      * @param tValid il validator da utilizzare per la verifica dei dati del team
      */
-    public TeamService(TeamRepository tRepo, TeamValidator tValid) {
+    public TeamService(TeamRepository tRepo, NotificationService nService, TeamValidator tValid) {
         this.teamRepository = tRepo;
+        this.notificationService = nService;
         this.teamValidator = tValid;
     }
 
@@ -59,5 +61,11 @@ public class TeamService {
 
     public Team showInformation(long id) {
         return teamRepository.getById(id);
+    }
+
+    public void inviteMember(User u, Team t) {
+        if (u.getRank() != Rank.STANDARD) return;
+        notificationService.send("Invito ricevuto!",
+                "Sei stato invitato a unirti al team " + t.getName(), u.getId());
     }
 }
