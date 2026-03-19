@@ -44,6 +44,13 @@ public class UserRepository implements Repository<User> {
         return null;
     }
 
+    public User getByEmail(String email) {
+        for (User u : users) {
+            if (u.getEmail().equals(email)) return u;
+        }
+        return null;
+    }
+
     /**
      * Aggiunge un nuovo utente al repository.
      * Assegna all'utente un identificativo prima di inserirlo nella lista.

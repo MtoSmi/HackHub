@@ -37,7 +37,7 @@ public class UserService {
      * @param u il richiedente contenente i dati del nuovo utente
      * @return l'utente registrato, oppure {@code null} se la registrazione non è andata a buon fine
      */
-    public User registrationUser(UserRequester u) {
+    public User registration(UserRequester u) {
         if (!userValidator.validate(u)) return null;
         for (User other : userRepository.getAll()) {
             if (u.getEmail().equals(other.getEmail())) return null;
@@ -45,6 +45,15 @@ public class UserService {
         u.setRank(Rank.STANDARD);
         userRepository.create(u);
         return userRepository.getById(u.getId());
+    }
+
+    public User access(String email, String password) {
+        if(email == null || password == null) return null;
+        for(User u : userRepository.getAll()) {
+            if(!u.getEmail().equals(email)) return null;
+        }
+        if(!userRepository.getByEmail(email).getPassword().equals(password)) return null;
+        return userRepository.getByEmail(email);
     }
 
     /**
