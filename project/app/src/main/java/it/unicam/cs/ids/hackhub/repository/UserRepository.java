@@ -77,6 +77,7 @@ public class UserRepository implements Repository<User> {
             if (oldU.getId().equals(newU.getId())) {
                 users.remove(oldU);
                 users.add(newU);
+                return;
             }
         }
     }

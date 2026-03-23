@@ -24,7 +24,7 @@ public class RegistrazioneTest {
     @Test
     public void testRegistrazioneUtenteValido() {
         UserRequester requester = createValidUserRequest();
-        User result = controller.registrationUser(requester);
+        User result = controller.registration(requester);
 
         Assertions.assertNotNull(result, "Il risultato della registrazione non dovrebbe essere null");
         Assertions.assertNotNull(result.getId(), "Il nuovo utente dovrebbe avere un ID assegnato");
@@ -42,15 +42,15 @@ public class RegistrazioneTest {
         UserRequester requester = createValidUserRequest();
         // Test con nome vuoto
         requester.setName("");
-        User result = controller.registrationUser(requester);
+        User result = controller.registration(requester);
         Assertions.assertNull(result, "La registrazione con nome vuoto dovrebbe fallire e restituire null");
         // Test con nome null
         requester.setName(null);
-        result = controller.registrationUser(requester);
+        result = controller.registration(requester);
         Assertions.assertNull(result, "La registrazione con nome null dovrebbe fallire e restituire null");
         // Test con nome corretto
         requester.setName("Mario");
-        result = controller.registrationUser(requester);
+        result = controller.registration(requester);
         Assertions.assertNotNull(result, "La registrazione con nome valido dovrebbe avere successo e restituire un utente non null");
     }
 
@@ -59,15 +59,15 @@ public class RegistrazioneTest {
         UserRequester requester = createValidUserRequest();
         // Test con cognome vuoto
         requester.setSurname("");
-        User result = controller.registrationUser(requester);
+        User result = controller.registration(requester);
         Assertions.assertNull(result, "La registrazione con cognome vuoto dovrebbe fallire e restituire null");
         // Test con cognome null
         requester.setSurname(null);
-        result = controller.registrationUser(requester);
+        result = controller.registration(requester);
         Assertions.assertNull(result, "La registrazione con cognome null dovrebbe fallire e restituire null");
         // Test con cognome corretto
         requester.setSurname("Rossi");
-        result = controller.registrationUser(requester);
+        result = controller.registration(requester);
         Assertions.assertNotNull(result, "La registrazione con cognome valido dovrebbe avere successo e restituire un utente non null");
     }
 
@@ -76,19 +76,19 @@ public class RegistrazioneTest {
         UserRequester requester = createValidUserRequest();
         // Test con email vuota
         requester.setEmail("");
-        User result = controller.registrationUser(requester);
+        User result = controller.registration(requester);
         Assertions.assertNull(result, "La registrazione con email vuota dovrebbe fallire e restituire null");
         // Test con email null
         requester.setEmail(null);
-        result = controller.registrationUser(requester);
+        result = controller.registration(requester);
         Assertions.assertNull(result, "La registrazione con email null dovrebbe fallire e restituire null");
         // Test con email non valida
         requester.setEmail("mario.rossi");
-        result = controller.registrationUser(requester);
+        result = controller.registration(requester);
         Assertions.assertNull(result, "La registrazione con email non valida dovrebbe fallire e restituire null");
         // Test con email corretta
         requester.setEmail("mario.rossi@aol.me");
-        result = controller.registrationUser(requester);
+        result = controller.registration(requester);
         Assertions.assertNotNull(result, "La registrazione con email valida dovrebbe avere successo e restituire un utente non null");
     }
 
@@ -97,15 +97,15 @@ public class RegistrazioneTest {
         UserRequester requester = createValidUserRequest();
         // Test con password vuota
         requester.setPassword("");
-        User result = controller.registrationUser(requester);
+        User result = controller.registration(requester);
         Assertions.assertNull(result, "La registrazione con password vuota dovrebbe fallire e restituire null");
         // Test con password null
         requester.setPassword(null);
-        result = controller.registrationUser(requester);
+        result = controller.registration(requester);
         Assertions.assertNull(result, "La registrazione con password null dovrebbe fallire e restituire null");
         // Test con password corretta
         requester.setPassword("Password123");
-        result = controller.registrationUser(requester);
+        result = controller.registration(requester);
         Assertions.assertNotNull(result, "La registrazione con password valida dovrebbe avere successo e restituire un utente non null");
     }
 
@@ -113,17 +113,17 @@ public class RegistrazioneTest {
     public void testRegistrazioneEmailDuplicata() {
         UserRequester requester = createValidUserRequest();
         // Prima registrazione
-        User result1 = controller.registrationUser(requester);
+        User result1 = controller.registration(requester);
         Assertions.assertNotNull(result1, "La prima registrazione con email valida dovrebbe avere successo e restituire un utente non null");
         // Seconda registrazione con stessa email
-        User result2 = controller.registrationUser(requester);
+        User result2 = controller.registration(requester);
         Assertions.assertNull(result2, "La seconda registrazione con email duplicata dovrebbe fallire e restituire null");
     }
 
     // Registrazione con oggetti invalidi
     @Test
     public void testRegistrazioneNull() {
-        User result = controller.registrationUser(null);
+        User result = controller.registration(null);
         Assertions.assertNull(result, "La registrazione con oggetto null dovrebbe fallire e restituire null");
     }
 
@@ -131,23 +131,23 @@ public class RegistrazioneTest {
     public void testRegistrazioneConDatiMancanti() {
         UserRequester requester = new UserRequester();
         // Test con tutti i campi mancanti
-        User result = controller.registrationUser(requester);
+        User result = controller.registration(requester);
         Assertions.assertNull(result, "La registrazione con tutti i campi mancanti dovrebbe fallire e restituire null");
 
         // Test con solo nome e cognome
         requester.setName("Mario");
         requester.setSurname("Rossi");
-        result = controller.registrationUser(requester);
+        result = controller.registration(requester);
         Assertions.assertNull(result, "La registrazione con solo nome e cognome dovrebbe fallire e restituire null");
 
         // Test con nome, cognome e email
         requester.setEmail("mario.rossi@aol.me");
-        result = controller.registrationUser(requester);
+        result = controller.registration(requester);
         Assertions.assertNull(result, "La registrazione con nome, cognome e email ma senza password dovrebbe fallire e restituire null");
 
         // Test con nome, cognome, email e password
         requester.setPassword("Password123");
-        result = controller.registrationUser(requester);
+        result = controller.registration(requester);
         Assertions.assertNotNull(result, "La registrazione con tutti i campi validi dovrebbe avere successo e restituire un utente non null");
     }
 

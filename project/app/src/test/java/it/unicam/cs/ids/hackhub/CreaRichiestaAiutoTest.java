@@ -39,10 +39,12 @@ public class CreaRichiestaAiutoTest {
 
     @BeforeEach
     void setup() {
+        UserRepository userRepository = new UserRepository();
+        NotificationService notificationService = new NotificationService(new NotificationRepository(), userRepository);
         controller = new HelpRequestInterfaceController(new HelpRequestService(new HelpRequestRepository(), new HelpRequestValidator(), new HackathonRepository(), new NotificationService(new NotificationRepository(), new UserRepository())));
         HackathonValidator validator = new HackathonValidator();
-        HackathonController = new HackathonInterfaceController(new HackathonService(new HackathonRepository(), validator, new NotificationService(new NotificationRepository(), new UserRepository())));
-        TeamController = new TeamInterfaceController(new TeamService(new TeamRepository(), new TeamValidator()));
+        HackathonController = new HackathonInterfaceController(new HackathonService(new HackathonRepository(), new TeamRepository(), validator,notificationService));
+        TeamController = new TeamInterfaceController(new TeamService(new TeamRepository(),userRepository,notificationService, new TeamValidator()));
 
 
         user1.setRank(Rank.STANDARD);

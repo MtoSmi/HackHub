@@ -5,7 +5,10 @@ import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
+import it.unicam.cs.ids.hackhub.repository.NotificationRepository;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
+import it.unicam.cs.ids.hackhub.repository.UserRepository;
+import it.unicam.cs.ids.hackhub.service.NotificationService;
 import it.unicam.cs.ids.hackhub.service.TeamService;
 import it.unicam.cs.ids.hackhub.validator.TeamValidator;
 import org.junit.jupiter.api.Assertions;
@@ -22,7 +25,8 @@ public class CreaTeamTest {
     @BeforeEach
     public void setUp() {
         TeamValidator validator = new TeamValidator();
-        controller = new TeamInterfaceController(new TeamService(new TeamRepository(), validator));
+        UserRepository userRepository =  new UserRepository();
+        controller = new TeamInterfaceController(new TeamService(new TeamRepository(), userRepository, new NotificationService(new NotificationRepository(), userRepository), validator));
     }
 
     // Creazione Team valido
@@ -38,7 +42,7 @@ public class CreaTeamTest {
         Assertions.assertNotNull(result.getMembers(), "Il nuovo team dovrebbe avere una lista di membri non null");
         Assertions.assertFalse(result.getMembers().isEmpty(), "Il nuovo team dovrebbe avere almeno un membro");
         Assertions.assertTrue(result.getMembers().contains(user1), "Il nuovo team dovrebbe contenere l'utente specificato come membro");
-        Assertions.assertNull(result.getHackathons(), "Il nuovo team non dovrebbe essere assegnato a nessun hackathon");
+        Assertions.assertEquals(0, result.getHackathons().size(), "Il nuovo team non dovrebbe essere assegnato a nessun hackathon");
     }
 
     // Creazione con dati non validi

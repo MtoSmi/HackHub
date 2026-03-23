@@ -50,10 +50,11 @@ public class UserService {
     public User access(String email, String password) {
         if(email == null || password == null) return null;
         for(User u : userRepository.getAll()) {
-            if(!u.getEmail().equals(email)) return null;
+            if(u.getEmail().equals(email)){
+                if(u.getPassword().equals(password)) return userRepository.getByEmail(email);
+            }
         }
-        if(!userRepository.getByEmail(email).getPassword().equals(password)) return null;
-        return userRepository.getByEmail(email);
+        return null;
     }
 
     public void rankUpgrade(Long id) {

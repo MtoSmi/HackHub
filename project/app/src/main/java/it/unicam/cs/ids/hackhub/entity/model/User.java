@@ -187,7 +187,7 @@ public class User {
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", team=" + team +
+                ", teamId=" + (team == null ? null : team.getId()) +
                 ", rank=" + rank +
                 '}';
     }

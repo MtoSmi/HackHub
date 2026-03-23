@@ -1,12 +1,17 @@
 package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
+import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.validator.TeamValidator;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Service per la gestione dei team.
@@ -55,10 +60,13 @@ public class TeamService {
             }
         }
         t.setDimension(t.getMembers().size());
+        t.setHackathons(new LinkedList<Hackathon>());
+        teamRepository.create(t);
         for(User u : t.getMembers()) {
             u.setRank(Rank.MEMBRO_TEAM);
+            u.setTeam(teamRepository.getById(t.getId()));
+            userRepository.update(u);
         }
-        teamRepository.create(t);
         return teamRepository.getById(t.getId());
     }
 
@@ -74,7 +82,10 @@ public class TeamService {
 
     public void acceptInvite(User u, Team t) {
         if (u.getRank() != Rank.STANDARD) return;
-        t.getMembers().add(u);
+
+        List<User> users = new ArrayList<>(t.getMembers());
+        users.add(u);
+        t.setMembers(users);
         t.setDimension(t.getMembers().size());
         teamRepository.update(t);
         u.setRank(Rank.MEMBRO_TEAM);
