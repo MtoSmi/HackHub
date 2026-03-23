@@ -86,6 +86,7 @@ public class AccessoTest {
         // Creazione dell'utente 1
         UserRequester requester = createValidUserRequest();
         User registrationResult = controller.registration(requester);
+        registrationResult.setId(999L);
         // Creazione dell'utente 2
         UserRequester requester2 = createValidUserRequest();
         requester2.setName("Luigi");
@@ -93,6 +94,7 @@ public class AccessoTest {
         requester2.setEmail("luigi.verdi@tim.it");
         requester2.setPassword("Password456");
         User registrationResult2 = controller.registration(requester2);
+        registrationResult2.setId(2L);
         // Controllo avvenuta registrazione
         Assertions.assertNotNull(registrationResult, "La registrazione del primo utente dovrebbe avere successo e restituire un utente non null");
         Assertions.assertNotNull(registrationResult2, "La registrazione del secondo utente dovrebbe avere successo e restituire un utente non null");

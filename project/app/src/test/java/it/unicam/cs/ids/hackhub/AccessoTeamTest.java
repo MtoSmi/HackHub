@@ -36,10 +36,12 @@ public class AccessoTeamTest {
         teamLeader.setEmail("luigi.verdi@tim.it");
         teamLeader.setPassword("Password5678");
         TeamValidator teamValidator = new TeamValidator();
-        teamController = new TeamInterfaceController(new TeamService(new TeamRepository(), new UserRepository(), new NotificationService(new NotificationRepository(), new UserRepository()), teamValidator ));
+        UserRepository userRepository = new UserRepository();
+        NotificationRepository notificationRepository = new NotificationRepository();
+        teamController = new TeamInterfaceController(new TeamService(new TeamRepository(), userRepository, new NotificationService(notificationRepository, userRepository), teamValidator ));
         UserValidator userValidator = new UserValidator();
-        userController = new UserInterfaceController(new UserService(new UserRepository(), userValidator));
-        notificationController = new NotificationInterfaceController(new NotificationService(new NotificationRepository(), new UserRepository()));
+        userController = new UserInterfaceController(new UserService(userRepository, userValidator));
+        notificationController = new NotificationInterfaceController(new NotificationService(notificationRepository, userRepository));
     }
 
     // Accettazione valida
@@ -48,6 +50,7 @@ public class AccessoTeamTest {
         // Registrazione Utente 1 (team Leader)
         User registrationLeaderResult = userController.registration(teamLeader);
         Assertions.assertNotNull(registrationLeaderResult, "La registrazione dell'utente dovrebbe avere successo e restituire un utente non null");
+        registrationLeaderResult.setId(999L);
         // Creazione del team
         TeamRequester teamRequest = createValidTeamRequest();
         Team registrationTeamResult = teamController.creationTeam(teamRequest);
@@ -55,7 +58,9 @@ public class AccessoTeamTest {
         // Registrazione Utente 2 (invitato)
         UserRequester userRequester = createValidUserRequest();
         User registrationUserResult = userController.registration(userRequester);
+        registrationUserResult.setId(2L);
         Assertions.assertNotNull(registrationUserResult, "La registrazione dell'utente dovrebbe avere successo e restituire un utente non null");
+        Assertions.assertEquals(2L, registrationUserResult.getId(), "L'ID dell'utente registrato dovrebbe essere 2");
         // Invito Utente 2 al team
         teamController.inviteMember(registrationUserResult, registrationTeamResult);
         // Controllo Notifiche
@@ -76,6 +81,7 @@ public class AccessoTeamTest {
         // Registrazione Utente 1 (team Leader)
         User registrationLeaderResult = userController.registration(teamLeader);
         Assertions.assertNotNull(registrationLeaderResult, "La registrazione dell'utente dovrebbe avere successo e restituire un utente non null");
+        registrationLeaderResult.setId(999L);
         // Creazione del team
         TeamRequester teamRequest = createValidTeamRequest();
         Team registrationTeamResult = teamController.creationTeam(teamRequest);
@@ -83,13 +89,14 @@ public class AccessoTeamTest {
         // Registrazione Utente 2 (invitato)
         UserRequester userRequester = createValidUserRequest();
         User registrationUserResult = userController.registration(userRequester);
+        registrationUserResult.setId(2L);
         Assertions.assertNotNull(registrationUserResult, "La registrazione dell'utente dovrebbe avere successo e restituire un utente non null");
         // Registrazione Utente 3 (invitato)
         UserRequester userRequester2 = createValidUserRequest();
         userRequester2.setName("Giovanni");
         userRequester2.setSurname("Bianchi");
         userRequester2.setEmail("giovanni.bianchi@tin.it");
-        User registrationUser3 = userController.registration(userRequester);
+        User registrationUser3 = userController.registration(userRequester2);
         Assertions.assertNotNull(registrationUser3, "La registrazione del terzo utente dovrebbe avere successo e restituire un utente non null");
         // Invito Utente 2 al team
         teamController.inviteMember(registrationUserResult, registrationTeamResult);

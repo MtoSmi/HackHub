@@ -42,7 +42,7 @@ public class CreaTeamTest {
         Assertions.assertNotNull(result.getMembers(), "Il nuovo team dovrebbe avere una lista di membri non null");
         Assertions.assertFalse(result.getMembers().isEmpty(), "Il nuovo team dovrebbe avere almeno un membro");
         Assertions.assertTrue(result.getMembers().contains(user1), "Il nuovo team dovrebbe contenere l'utente specificato come membro");
-        Assertions.assertNull(result.getHackathons(), "Il nuovo team non dovrebbe essere assegnato a nessun hackathon");
+        Assertions.assertEquals(0, result.getHackathons().size(), "Il nuovo team non dovrebbe essere assegnato a nessun hackathon");
     }
 
     // Creazione con dati non validi

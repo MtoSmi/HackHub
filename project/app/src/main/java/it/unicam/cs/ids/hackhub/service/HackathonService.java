@@ -4,6 +4,7 @@ import it.unicam.cs.ids.hackhub.builder.HackathonConcreteBuilder;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
+import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
@@ -87,7 +88,7 @@ public class HackathonService {
                 .buildMentors(h.getMentors()).buildMaxTeam(h.getMaxTeams()).buildSubmissions()
                 .buildRegulation(h.getRegulation()).buildDeadline(h.getDeadline())
                 .buildStartDate(h.getStartDate()).buildEndDate(h.getEndDate())
-                .buildLocation(h.getLocation()).buildReward(h.getReward()).getResult();
+                .buildLocation(h.getLocation()).buildReward(h.getReward()).buildParticipants(new ArrayList<Team>()).getResult();
         hackathonRepository.create(newH);
         notificationService.send("Sei un giudice!",
                 "Sei appena diventato un giudice del nuovo hackathon " + h.getName(),

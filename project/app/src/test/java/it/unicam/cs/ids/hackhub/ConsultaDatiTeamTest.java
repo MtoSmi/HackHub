@@ -56,7 +56,7 @@ public class ConsultaDatiTeamTest {
         Assertions.assertNotNull(teamInfo.getMembers(), "La lista dei membri del team consultato non dovrebbe essere null");
         Assertions.assertFalse(teamInfo.getMembers().isEmpty(), "La lista dei membri del team consultato non dovrebbe essere vuota");
         Assertions.assertTrue(teamInfo.getMembers().contains(registrationLeaderResult), "La lista dei membri del team consultato dovrebbe contenere l'utente specificato come membro");
-        Assertions.assertNull(teamInfo.getHackathons(), "Il team consultato non dovrebbe essere assegnato a nessun hackathon");
+        Assertions.assertEquals(0, teamInfo.getHackathons().size(), "Il team consultato non dovrebbe essere assegnato a nessun hackathon");
     }
 
     @Test

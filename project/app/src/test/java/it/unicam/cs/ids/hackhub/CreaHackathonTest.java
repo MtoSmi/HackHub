@@ -51,7 +51,7 @@ public class CreaHackathonTest {
         Assertions.assertEquals(requester.getHost(), response.getHost(), "L'host dell'hackathon creato dovrebbe corrispondere a quello richiesto");
         Assertions.assertEquals(requester.getJudge(), response.getJudge(), "Il giudice dell'hackathon creato dovrebbe corrispondere a quello richiesto");
         Assertions.assertEquals(requester.getMentors(), response.getMentors(), "I mentori dell'hackathon creato dovrebbero corrispondere a quelli richiesti");
-        Assertions.assertNull(response.getParticipants(), "Il nuovo hackathon non dovrebbe avere partecipanti assegnati al momento della creazione");
+        Assertions.assertEquals(0,response.getParticipants().size(), "Il nuovo hackathon non dovrebbe avere partecipanti assegnati al momento della creazione");
         Assertions.assertEquals(requester.getMaxTeams(), response.getMaxTeams(), "Il numero massimo di team dell'hackathon creato dovrebbe corrispondere a quello richiesto");
         Assertions.assertNotNull(response.getSubmissions(), "La lista delle sottomissioni dell'hackathon creato non dovrebbe essere null");
         Assertions.assertEquals(0, response.getSubmissions().size(), "La lista delle sottomissioni dell'hackathon creato dovrebbe essere vuota al momento della creazione");

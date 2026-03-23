@@ -3,6 +3,7 @@ package it.unicam.cs.ids.hackhub;
 import it.unicam.cs.ids.hackhub.controller.HackathonInterfaceController;
 import it.unicam.cs.ids.hackhub.controller.TeamInterfaceController;
 import it.unicam.cs.ids.hackhub.controller.UserInterfaceController;
+import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
@@ -40,6 +41,7 @@ public class IscrizioneHackathonTest {
 
     @BeforeEach
     public void setup() {
+        host.setRank(Rank.ORGANIZZATORE);
         teamLeader.setName("Luigi");
         teamLeader.setSurname("Verdi");
         teamLeader.setEmail("luigi.verdi@tim.it");
@@ -65,6 +67,7 @@ public class IscrizioneHackathonTest {
     public void testIscrizioneHackathonValida() {
         // Registrazione Utente 1 (team Leader)
         User registrationLeaderResult = userController.registration(teamLeader);
+        registrationLeaderResult.setId(999L);
         Assertions.assertNotNull(registrationLeaderResult, "La registrazione dell'utente dovrebbe avere successo e restituire un utente non null");
         // Creazione del team
         TeamRequester teamRequest = createValidTeamRequest();

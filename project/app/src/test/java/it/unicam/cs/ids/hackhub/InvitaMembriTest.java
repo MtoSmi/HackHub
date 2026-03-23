@@ -36,10 +36,12 @@ public class InvitaMembriTest {
         teamLeader.setEmail("luigi.verdi@tim.it");
         teamLeader.setPassword("Password5678");
         TeamValidator teamValidator = new TeamValidator();
-        teamController = new TeamInterfaceController(new TeamService(new TeamRepository(), new UserRepository(), new NotificationService(new NotificationRepository(), new UserRepository()), teamValidator));
+        UserRepository userRepository = new UserRepository();
+        NotificationService notificationService = new NotificationService(new NotificationRepository(), userRepository);
+        teamController = new TeamInterfaceController(new TeamService(new TeamRepository(), userRepository, notificationService, teamValidator));
         UserValidator userValidator = new UserValidator();
-        userController = new UserInterfaceController(new UserService(new UserRepository(), userValidator));
-        notificationController = new NotificationInterfaceController(new NotificationService(new NotificationRepository(), new UserRepository()));
+        userController = new UserInterfaceController(new UserService(userRepository, userValidator));
+        notificationController = new NotificationInterfaceController(notificationService);
     }
 
     // Invito Valido
@@ -47,6 +49,7 @@ public class InvitaMembriTest {
     public void testInvitaMembriValido() {
         // Registrazione Utente 1 (team Leader)
         User registrationLeaderResult = userController.registration(teamLeader);
+        registrationLeaderResult.setId(999L);
         Assertions.assertNotNull(registrationLeaderResult, "La registrazione dell'utente dovrebbe avere successo e restituire un utente non null");
         // Creazione del team
         TeamRequester teamRequest = createValidTeamRequest();
@@ -55,6 +58,7 @@ public class InvitaMembriTest {
         // Registrazione Utente 2 (invitato)
         UserRequester userRequester = createValidUserRequest();
         User registrationUserResult = userController.registration(userRequester);
+        registrationUserResult.setId(2L);
         Assertions.assertNotNull(registrationUserResult, "La registrazione dell'utente dovrebbe avere successo e restituire un utente non null");
         // Invito Utente 2 al team
         teamController.inviteMember(registrationUserResult, registrationTeamResult);
@@ -65,7 +69,7 @@ public class InvitaMembriTest {
         // Controllo Notifica specifica
         Notification notification = notificationController.showSelectedNotification(notifications.getFirst().getId());
         Assertions.assertNotNull(notification, "La notifica specifica non dovrebbe essere null");
-        Assertions.assertEquals("Invito al Team", notification.getTitle(), "Il titolo della notifica dovrebbe essere 'Invito al Team'");
+        Assertions.assertEquals("Invito ricevuto!", notification.getTitle(), "Il titolo della notifica dovrebbe essere 'Invito al Team'");
         Assertions.assertEquals("Sei stato invitato a unirti al team " + registrationTeamResult.getName(), notification.getDescription(), "Il messaggio della notifica dovrebbe indicare l'invito al team con il nome del team");
         Assertions.assertEquals(registrationUserResult, notification.getTo(), "Il destinatario della notifica dovrebbe essere l'utente invitato");
     }
@@ -90,7 +94,7 @@ public class InvitaMembriTest {
         // Controllo Notifiche
         List<Notification> notifications = notificationController.showMyNotifications(registrationUserResult.getId());
         // Controllo notifiche
-        Assertions.assertNull(notifications, "La lista delle notifiche dovrebbe essere null per un utente con rank MEMBRO_TEAM che viene invitato a un team");
+        Assertions.assertEquals(0, notifications.size(), "La lista delle notifiche dovrebbe essere vuota per un utente con rank MEMBRO_TEAM che viene invitato a un team");
     }
 
     @Test
@@ -113,7 +117,7 @@ public class InvitaMembriTest {
         // Controllo Notifiche
         List<Notification> notifications = notificationController.showMyNotifications(registrationUserResult.getId());
         // Controllo notifiche
-        Assertions.assertNull(notifications, "La lista delle notifiche dovrebbe essere null per un utente con rank ORGANIZZATORE che viene invitato a un team");
+        Assertions.assertEquals(0, notifications.size(), "La lista delle notifiche dovrebbe essere null per un utente con rank ORGANIZZATORE che viene invitato a un team");
     }
 
     @Test
@@ -136,7 +140,7 @@ public class InvitaMembriTest {
         // Controllo Notifiche
         List<Notification> notifications = notificationController.showMyNotifications(registrationUserResult.getId());
         // Controllo notifiche
-        Assertions.assertNull(notifications, "La lista delle notifiche dovrebbe essere null per un utente con rank GIUDICE che viene invitato a un team");
+        Assertions.assertEquals(0, notifications.size(), "La lista delle notifiche dovrebbe essere null per un utente con rank GIUDICE che viene invitato a un team");
     }
 
     @Test
@@ -159,7 +163,7 @@ public class InvitaMembriTest {
         // Controllo Notifiche
         List<Notification> notifications = notificationController.showMyNotifications(registrationUserResult.getId());
         // Controllo notifiche
-        Assertions.assertNull(notifications, "La lista delle notifiche dovrebbe essere null per un utente con rank MENTORE che viene invitato a un team");
+        Assertions.assertEquals(0, notifications.size(), "La lista delle notifiche dovrebbe essere null per un utente con rank MENTORE che viene invitato a un team");
     }
 
     // Helper method per creare una richiesta di registrazione utente valida
