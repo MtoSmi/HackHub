@@ -38,10 +38,15 @@ public class GestioneRichiestaAiutoTest {
 
     @BeforeEach
     public void setUp() {
-        controller = new HelpRequestInterfaceController(new HelpRequestService(new HelpRequestRepository(), new HelpRequestValidator(), new HackathonRepository(), new NotificationService(new NotificationRepository(), new UserRepository())));
+        UserRepository userRepository = new UserRepository();
+        NotificationService notificationService = new NotificationService(new  NotificationRepository(), userRepository);
+        HackathonRepository hackathonRepository = new HackathonRepository();
+        TeamRepository  teamRepository = new TeamRepository();
+        controller = new HelpRequestInterfaceController(new HelpRequestService(new HelpRequestRepository(), new HelpRequestValidator(), hackathonRepository, new NotificationService(new NotificationRepository(), userRepository)));
         HackathonValidator validator = new HackathonValidator();
-        HackathonController = new HackathonInterfaceController(new HackathonService(new HackathonRepository(), validator, new NotificationService(new NotificationRepository(), new UserRepository())));
-        TeamController = new TeamInterfaceController(new TeamService(new TeamRepository(), new TeamValidator()));
+
+        HackathonController = new HackathonInterfaceController(new HackathonService(hackathonRepository, teamRepository, validator, notificationService));
+        TeamController = new TeamInterfaceController(new TeamService(teamRepository, userRepository, notificationService, new TeamValidator()));
 
         user1.setRank(Rank.STANDARD);
         host.setRank(Rank.ORGANIZZATORE);

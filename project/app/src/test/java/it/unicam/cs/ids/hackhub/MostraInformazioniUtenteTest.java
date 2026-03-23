@@ -6,8 +6,10 @@ import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
+import it.unicam.cs.ids.hackhub.repository.NotificationRepository;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
+import it.unicam.cs.ids.hackhub.service.NotificationService;
 import it.unicam.cs.ids.hackhub.service.TeamService;
 import it.unicam.cs.ids.hackhub.service.UserService;
 import it.unicam.cs.ids.hackhub.validator.TeamValidator;
@@ -25,14 +27,15 @@ public class MostraInformazioniUtenteTest {
     @BeforeEach
     public void setUp() {
         UserValidator userValidator = new UserValidator();
-        controller = new UserInterfaceController(new UserService(new UserRepository(), userValidator));
-        TeamController = new TeamInterfaceController(new TeamService(new TeamRepository(), new TeamValidator()));
+        UserRepository userRepository = new UserRepository();
+        controller = new UserInterfaceController(new UserService(userRepository, userValidator));
+        TeamController = new TeamInterfaceController(new TeamService(new TeamRepository(),userRepository,new NotificationService(new NotificationRepository(), userRepository), new TeamValidator()));
     }
 
     @Test
     public void testMostraInformazioniUtente() {
         UserRequester requester = createValidUserRequest();
-        User testUser = controller.registrationUser(requester);
+        User testUser = controller.registration(requester);
         User response = controller.showInformation(testUser.getId());
 
         Assertions.assertNotNull(response, "La risposta non dovrebbe essere null");
@@ -48,7 +51,7 @@ public class MostraInformazioniUtenteTest {
     @Test
     public void testMostraInformazioniUtenteConTeam() {
         UserRequester requester = createValidUserRequest();
-        User testUser = controller.registrationUser(requester);
+        User testUser = controller.registration(requester);
 
         TeamRequester request = new TeamRequester();
         request.setName("Team 1");

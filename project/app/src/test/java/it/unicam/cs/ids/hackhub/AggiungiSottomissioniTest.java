@@ -10,6 +10,7 @@ import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.repository.NotificationRepository;
+import it.unicam.cs.ids.hackhub.repository.TeamRepository;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.service.HackathonService;
 import it.unicam.cs.ids.hackhub.service.NotificationService;
@@ -36,7 +37,7 @@ public class AggiungiSottomissioniTest {
     void setUp() {
         HackathonValidator validator = new HackathonValidator();
         HackathonRepository HackathonRepository = new HackathonRepository();
-        HackathonController = new HackathonInterfaceController(new HackathonService(HackathonRepository, validator, new NotificationService(new NotificationRepository(), new UserRepository())));
+        HackathonController = new HackathonInterfaceController(new HackathonService(HackathonRepository,new TeamRepository(), validator, new NotificationService(new NotificationRepository(), new UserRepository())));
         SubmissionController = new SubmissionInterfaceController(new SubmissionService(new SubmissionValidator(), HackathonRepository));
         user.setId(1L);
         user.setRank(Rank.STANDARD);

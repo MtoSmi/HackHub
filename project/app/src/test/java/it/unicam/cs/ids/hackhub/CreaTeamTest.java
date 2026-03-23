@@ -5,7 +5,10 @@ import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
+import it.unicam.cs.ids.hackhub.repository.NotificationRepository;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
+import it.unicam.cs.ids.hackhub.repository.UserRepository;
+import it.unicam.cs.ids.hackhub.service.NotificationService;
 import it.unicam.cs.ids.hackhub.service.TeamService;
 import it.unicam.cs.ids.hackhub.validator.TeamValidator;
 import org.junit.jupiter.api.Assertions;
@@ -22,7 +25,8 @@ public class CreaTeamTest {
     @BeforeEach
     public void setUp() {
         TeamValidator validator = new TeamValidator();
-        controller = new TeamInterfaceController(new TeamService(new TeamRepository(), validator));
+        UserRepository userRepository =  new UserRepository();
+        controller = new TeamInterfaceController(new TeamService(new TeamRepository(), userRepository, new NotificationService(new NotificationRepository(), userRepository), validator));
     }
 
     // Creazione Team valido

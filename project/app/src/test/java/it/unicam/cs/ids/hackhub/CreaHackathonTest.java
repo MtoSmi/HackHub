@@ -8,6 +8,7 @@ import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.repository.NotificationRepository;
+import it.unicam.cs.ids.hackhub.repository.TeamRepository;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.service.HackathonService;
 import it.unicam.cs.ids.hackhub.service.NotificationService;
@@ -31,7 +32,7 @@ public class CreaHackathonTest {
     @BeforeEach
     public void setUp() {
         HackathonValidator validator = new HackathonValidator();
-        controller = new HackathonInterfaceController(new HackathonService(new HackathonRepository(), validator, new NotificationService(new NotificationRepository(), new UserRepository())));
+        controller = new HackathonInterfaceController(new HackathonService(new HackathonRepository(),new TeamRepository(), validator, new NotificationService(new NotificationRepository(), new UserRepository())));
         host.setRank(Rank.ORGANIZZATORE);
         judge.setRank(Rank.STANDARD);
         mentor1.setRank(Rank.STANDARD);
