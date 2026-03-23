@@ -71,6 +71,46 @@ public class AccessoTeamTest {
         Assertions.assertEquals(2, teamInfo.getDimension(), "La dimensione del team dovrebbe essere 2 dopo l'accettazione dell'invito");
     }
 
+    @Test
+    public void testAccessoTeamMultiUtente() {
+        // Registrazione Utente 1 (team Leader)
+        User registrationLeaderResult = userController.registration(teamLeader);
+        Assertions.assertNotNull(registrationLeaderResult, "La registrazione dell'utente dovrebbe avere successo e restituire un utente non null");
+        // Creazione del team
+        TeamRequester teamRequest = createValidTeamRequest();
+        Team registrationTeamResult = teamController.creationTeam(teamRequest);
+        Assertions.assertNotNull(registrationTeamResult, "La creazione del team dovrebbe avere successo e restituire un team non null");
+        // Registrazione Utente 2 (invitato)
+        UserRequester userRequester = createValidUserRequest();
+        User registrationUserResult = userController.registration(userRequester);
+        Assertions.assertNotNull(registrationUserResult, "La registrazione dell'utente dovrebbe avere successo e restituire un utente non null");
+        // Registrazione Utente 3 (invitato)
+        UserRequester userRequester2 = createValidUserRequest();
+        userRequester2.setName("Giovanni");
+        userRequester2.setSurname("Bianchi");
+        userRequester2.setEmail("giovanni.bianchi@tin.it");
+        User registrationUser3 = userController.registration(userRequester);
+        Assertions.assertNotNull(registrationUser3, "La registrazione del terzo utente dovrebbe avere successo e restituire un utente non null");
+        // Invito Utente 2 al team
+        teamController.inviteMember(registrationUserResult, registrationTeamResult);
+        // Accesso al team Utente 2
+        teamController.acceptInvite(registrationUserResult, registrationTeamResult);
+        // Controllo che l'utente sia stato aggiunto al team
+        Team teamInfo = teamController.showInformation(registrationTeamResult.getId());
+        Assertions.assertNotNull(teamInfo, "Le informazioni del team non dovrebbero essere null");
+        Assertions.assertTrue(teamInfo.getMembers().contains(registrationUserResult), "Il team dovrebbe contenere l'utente che ha accettato l'invito");
+        Assertions.assertEquals(2, teamInfo.getDimension(), "La dimensione del team dovrebbe essere 2 dopo l'accettazione dell'invito");
+        // Invito Utente 3 al team
+        teamController.inviteMember(registrationUser3, registrationTeamResult);
+        // Accesso al team Utente 3
+        teamController.acceptInvite(registrationUser3, registrationTeamResult);
+        // Controllo che l'utente sia stato aggiunto al team
+        Team teamInfo2 = teamController.showInformation(registrationTeamResult.getId());
+        Assertions.assertNotNull(teamInfo2, "Le informazioni del team non dovrebbero essere null");
+        Assertions.assertTrue(teamInfo2.getMembers().contains(registrationUserResult), "Il team dovrebbe contenere l'utente che ha accettato l'invito");
+        Assertions.assertEquals(3, teamInfo2.getDimension(), "La dimensione del team dovrebbe essere 2 dopo l'accettazione dell'invito");
+    }
+
     // Helper method per creare una richiesta di registrazione utente valida
     private UserRequester createValidUserRequest() {
         UserRequester request = new UserRequester();
