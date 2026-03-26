@@ -3,6 +3,7 @@ package it.unicam.cs.ids.hackhub.service;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Response;
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
+import it.unicam.cs.ids.hackhub.entity.model.Valutation;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.validator.SubmissionValidator;

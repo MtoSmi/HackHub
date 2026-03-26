@@ -1,6 +1,10 @@
 package it.unicam.cs.ids.hackhub.repository;
 
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,16 +13,11 @@ import java.util.List;
  * Implementazione del repository per la gestione degli utenti.
  * Fornisce operazioni CRUD (Create, Read, Update) per le entità {@link User}.
  */
-public class UserRepository implements Repository<User> {
+@Repository
+public class UserRepository implements it.unicam.cs.ids.hackhub.repository.Repository<User> {
 
-    private List<User> users;
-
-    /**
-     * Costruisce un nuovo {@code UserRepository} con una lista vuota di utenti.
-     */
-    public UserRepository() {
-        users = new ArrayList<>();
-    }
+    @PersistenceContext
+    private EntityManager em;
 
     /**
      * Restituisce la lista di tutti gli utenti presenti nel repository.
@@ -27,7 +26,7 @@ public class UserRepository implements Repository<User> {
      */
     @Override
     public List<User> getAll() {
-        return users;
+        return em.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
 
     /**
@@ -38,17 +37,17 @@ public class UserRepository implements Repository<User> {
      */
     @Override
     public User getById(Long id) {
-        for (User u : users) {
-            if (u.getId().equals(id)) return u;
-        }
-        return null;
+        return em.find(User.class, id);
     }
 
     public User getByEmail(String email) {
-        for (User u : users) {
-            if (u.getEmail().equals(email)) return u;
-        }
-        return null;
+        List<User> result = em.createQuery(
+                "SELECT u FROM User u WHERE u.email = :email", User.class)
+            .setParameter("email", email)
+            .setMaxResults(1)
+            .getResultList();
+
+        return result.isEmpty() ? null : result.get(0);
     }
 
     /**
@@ -58,9 +57,10 @@ public class UserRepository implements Repository<User> {
      * @param u l'utente da aggiungere al repository
      */
     @Override
+    @Transactional
     public void create(User u) {
-        u.setId(1L);
-        users.add(u);
+        em.persist(u);
+        em.flush(); // assicura ID valorizzato subito (utile al tuo service)
     }
 
     /**
@@ -72,13 +72,8 @@ public class UserRepository implements Repository<User> {
      *             deve avere lo stesso identificativo dell'utente da sostituire
      */
     @Override
+    @Transactional
     public void update(User newU) {
-        for (User oldU : users) {
-            if (oldU.getId().equals(newU.getId())) {
-                users.remove(oldU);
-                users.add(newU);
-                return;
-            }
+        em.merge(newU);
         }
     }
-}

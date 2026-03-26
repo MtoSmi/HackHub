@@ -5,6 +5,7 @@ import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.validator.UserValidator;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * Service per la gestione degli utenti.
  * Fornisce operazioni per la registrazione e la visualizzazione delle informazioni degli utenti.
  */
+@Service
 public class UserService {
     private final UserRepository userRepository;
     private final UserValidator userValidator;
@@ -36,18 +38,25 @@ public class UserService {
      *
      * In caso di successo, all'utente viene assegnato il rango {@link Rank#STANDARD}.
      *
-     * @param u il richiedente contenente i dati del nuovo utente
+     * @param req il richiedente contenente i dati del nuovo utente
      * @return l'utente registrato, oppure {@code null} se la registrazione non è andata a buon fine
      */
-    public User registration(UserRequester u) {
-        if (!userValidator.validate(u)) return null;
-        for (User other : userRepository.getAll()) {
-            if (u.getEmail().equals(other.getEmail())) return null;
-        }
-        u.setRank(Rank.STANDARD);
-        userRepository.create(u);
-        return userRepository.getById(u.getId());
+    public User registration(UserRequester req) {
+        if (!userValidator.validate(req)) return null;
+        if (userRepository.getByEmail(req.getEmail()) != null) return null;
+
+        User user = new User();
+        user.setName(req.getName());
+        user.setSurname(req.getSurname());
+        user.setEmail(req.getEmail());
+        user.setPassword(req.getPassword());
+        user.setRank(Rank.STANDARD);
+        user.setTeam(null);
+
+        userRepository.create(user);
+        return userRepository.getById(user.getId());
     }
+
 
     public User access(String email, String password) {
         if(email == null || password == null) return null;

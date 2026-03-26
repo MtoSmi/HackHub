@@ -1,11 +1,13 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import org.springframework.stereotype.Component;
 
 /**
  * Implementazione di {@link Validator} per la validazione degli oggetti {@link User}.
  * Verifica che i campi principali dell'utente siano presenti e validi.
  */
+@Component
 public class UserValidator implements Validator<User> {
 
     /**

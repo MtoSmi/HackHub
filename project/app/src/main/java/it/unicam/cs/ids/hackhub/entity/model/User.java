@@ -1,12 +1,17 @@
 package it.unicam.cs.ids.hackhub.entity.model;
 
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
+import jakarta.persistence.*;
 
 /**
  * Rappresenta un utente del sistema HackHub.
  */
+@Entity
+@Table(name = "users")
 public class User {
     /** Identificatore univoco dell'utente */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /** Nome dell'utente */
@@ -22,9 +27,12 @@ public class User {
     private String password;
 
     /** Team a cui appartiene l'utente, null se non appartiene a nessun team */
+    @ManyToOne
+    @JoinColumn(name = "team_id")
     private Team team;
 
     /** Ruolo dell'utente nel sistema */
+    @Enumerated(EnumType.STRING)
     private Rank rank;
 
     /**
