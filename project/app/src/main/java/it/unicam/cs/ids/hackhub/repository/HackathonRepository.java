@@ -42,6 +42,10 @@ public class HackathonRepository implements Repository<Hackathon> {
         return hackathons.stream().filter(h -> h.getStatus().equals(s)).toList();
     }
 
+    public List<Hackathon> getHackathonsByTeam(Long id) {
+        return hackathons.stream().filter(h -> h.getParticipants().stream().anyMatch(t -> t.getId().equals(id))).toList();
+    }
+
     /**
      * Restituisce l'hackathon con l'identificativo specificato.
      *
