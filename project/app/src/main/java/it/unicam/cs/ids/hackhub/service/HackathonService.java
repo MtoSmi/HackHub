@@ -48,6 +48,10 @@ public class HackathonService {
         return hackathonRepository.getAll();
     }
 
+    public List<Hackathon> showMyHackathonList(Long id) {
+        return hackathonRepository.getHackathonsByTeam(id);
+    }
+
     /**
      * Restituisce l'hackathon corrispondente all'identificativo fornito.
      *
