@@ -1,12 +1,14 @@
 package it.unicam.cs.ids.hackhub.service;
 
-import it.unicam.cs.ids.hackhub.builder.HackathonBuilder;
-import it.unicam.cs.ids.hackhub.builder.HackathonConcreteBuilder;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
+import it.unicam.cs.ids.hackhub.entity.model.Response;
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.validator.SubmissionValidator;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Service per la gestione delle submission agli hackathon.
@@ -46,5 +48,24 @@ public class SubmissionService {
         h.getSubmissions().add(s);
         hackathonRepository.update(h);
         return s;
+    }
+
+    public Submission sendSubmission(Long hid, Response r, Submission s) {
+        if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
+        s.getResponses().add(r);
+        Hackathon h = hackathonRepository.getById(hid);
+        hackathonRepository.update(h);
+        return s;
+    }
+
+    public Response evaluateSubmission(Long hid, Submission s, int rId, Valutation v) {
+        s.getResponses().get(rId).setValutation(v);
+        Hackathon h = hackathonRepository.getById(hid);
+        hackathonRepository.update(h);
+        return s.getResponses().get(rId);
+    }
+
+    public List<Submission> showSubmissionList(Hackathon h) {
+        return h.getSubmissions();
     }
 }
