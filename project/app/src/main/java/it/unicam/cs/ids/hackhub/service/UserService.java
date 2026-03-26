@@ -6,6 +6,8 @@ import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.validator.UserValidator;
 
+import java.util.List;
+
 /**
  * Service per la gestione degli utenti.
  * Fornisce operazioni per la registrazione e la visualizzazione delle informazioni degli utenti.
@@ -55,6 +57,23 @@ public class UserService {
             }
         }
         return null;
+    }
+
+    public User updateUserInformation(User oldU, User u) {
+        if(!userValidator.validate(u)) return null;
+        for (User other : removeUser(oldU.getId())) {
+            if (u.getEmail().equals(other.getEmail())) return null;
+        }
+        oldU.setName(u.getName());
+        oldU.setSurname(u.getSurname());
+        oldU.setEmail(u.getEmail());
+        oldU.setPassword(u.getPassword());
+        userRepository.update(oldU);
+        return userRepository.getById(oldU.getId());
+    }
+
+    private List<User> removeUser(Long id) {
+        return userRepository.getAll().stream().filter(user -> !user.getId().equals(id)).toList();
     }
 
     public void rankUpgrade(Long id) {
