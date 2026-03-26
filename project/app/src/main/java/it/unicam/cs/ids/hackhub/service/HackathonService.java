@@ -105,6 +105,20 @@ public class HackathonService {
         return hackathonRepository.getById(newH.getId());
     }
 
+    public Hackathon updateHackathonInformation(Hackathon oldH, Hackathon h) {
+        if (!hackathonValidator.validate(h)) return null;
+        oldH.setName(h.getName());
+        oldH.setMaxTeams(h.getMaxTeams());
+        oldH.setRegulation(h.getRegulation());
+        oldH.setDeadline(h.getDeadline());
+        oldH.setStartDate(h.getStartDate());
+        oldH.setEndDate(h.getEndDate());
+        oldH.setLocation(h.getLocation());
+        oldH.setReward(h.getReward());
+        hackathonRepository.update(oldH);
+        return hackathonRepository.getById(oldH.getId());
+    }
+
     public void subscribeHackathon(User u, Hackathon h) {
         if(u.getTeam() == null) return;
         for(Hackathon h2 : u.getTeam().getHackathons()) {
