@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Interfaccia generica per la gestione delle operazioni CRUD su un repository.
@@ -23,13 +22,5 @@ public interface Repository<T> extends JpaRepository<T, Long> {
     @NonNull
     List<T> findAll();
 
-    /**
-     * Restituisce un'entità in base al suo identificatore univoco.
-     *
-     * @param Id l'identificatore univoco dell'entità da cercare
-     * @return l'entità corrispondente all'identificatore fornito, oppure {@code null} se non trovata
-     */
-    @NonNull
-    Optional<T> findById(@NonNull Long Id);
 
 }
