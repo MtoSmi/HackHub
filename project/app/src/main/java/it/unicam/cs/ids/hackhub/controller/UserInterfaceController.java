@@ -12,8 +12,7 @@ import java.util.Optional;
 
 /**
  * Controller di interfaccia per la gestione delle operazioni sugli utenti.
- *
- * Espone metodi di alto livello che delegano la logica al servizio
+  * Espone metodi di alto livello che delegano la logica al servizio
  * {@link UserService}, fungendo da punto di accesso per il livello
  * di presentazione.
  */
@@ -68,8 +67,10 @@ public class UserInterfaceController {
         return ResponseEntity.ok(user);
     }
 
-    public void rankUpgrade(long id) {
+    @PostMapping("/rankUpgrade")
+    public ResponseEntity<Void> rankUpgrade(@RequestParam long id) {
         service.rankUpgrade(id);
+        return ResponseEntity.ok().build();
     }
 
 }
