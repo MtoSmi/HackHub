@@ -3,10 +3,12 @@ package it.unicam.cs.ids.hackhub.controller;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
 import it.unicam.cs.ids.hackhub.service.UserService;
-import org.apache.coyote.Response;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 /**
  * Controller di interfaccia per la gestione delle operazioni sugli utenti.
@@ -47,15 +49,23 @@ public class UserInterfaceController {
 
     /**
      * Restituisce le informazioni dell'account all'utente specificato tramite identificativo.
+     *
      * @param id l'identificativo dell'utente di cui mostrare le informazioni
      * @return le informazioni dell'account dell'utente corrispondente all'id
      */
-    public User showInformation(long id) {
-        return service.showInformation(id);
+    @GetMapping("/showInformation/{id}")
+    public ResponseEntity<@NonNull Optional<User>> showInformation(@PathVariable long id) {
+        Optional<User> user = service.showInformation(id);
+        return ResponseEntity.ok(user);
     }
 
-    public User access(String email, String password) {
-        return service.access(email, password);
+    @PostMapping("/access")
+    public ResponseEntity<User> access(@RequestParam String email, @RequestParam String password) {
+        User user = service.access(email, password);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
     }
 
     public void rankUpgrade(long id) {
