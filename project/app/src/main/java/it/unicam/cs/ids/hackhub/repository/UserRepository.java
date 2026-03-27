@@ -5,7 +5,6 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Implementazione del repository per la gestione degli utenti.
@@ -24,23 +23,7 @@ public interface UserRepository extends it.unicam.cs.ids.hackhub.repository.Repo
     @NonNull
     List<User> findAll();
 
-    /**
-     * Restituisce l'utente con l'identificativo specificato.
-     *
-     * @param id l'identificativo univoco dell'utente da cercare
-     * @return l'utente corrispondente all'id fornito, oppure {@code null} se non trovato
-     */
-    @Override
-    @NonNull
-    Optional<User> findById(@NonNull Long id);
-
     User findByEmail(String email);
 
-    /**
-     * Aggiunge un nuovo utente al repository.
-     * Assegna all'utente un identificativo prima di inserirlo nella lista.
-     *
-     * @param u l'utente da aggiungere al repository
-     */
 
 }

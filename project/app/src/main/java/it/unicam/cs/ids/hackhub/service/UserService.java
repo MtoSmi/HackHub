@@ -31,11 +31,9 @@ public class UserService {
 
     /**
      * Registra un nuovo utente nel sistema.
-     *
      * La registrazione ha esito negativo se:
      * - I dati dell'utente non superano la validazione
      * - Esiste già un utente con lo stesso indirizzo email
-     *
      * In caso di successo, all'utente viene assegnato il rango {@link Rank#STANDARD}.
      *
      * @param req il richiedente contenente i dati del nuovo utente
@@ -43,8 +41,7 @@ public class UserService {
      */
     public User registration(UserRequester req) {
         if (!userValidator.validate(req)) return null;
-        if (userRepository.getByEmail(req.getEmail()) != null) return null;
-
+        if (userRepository.findByEmail(req.getEmail()) != null) return null;
         User user = new User();
         user.setName(req.getName());
         user.setSurname(req.getSurname());
@@ -53,16 +50,15 @@ public class UserService {
         user.setRank(Rank.STANDARD);
         user.setTeam(null);
 
-        userRepository.create(user);
-        return userRepository.getById(user.getId());
+        return userRepository.save(user);
     }
 
 
     public User access(String email, String password) {
         if(email == null || password == null) return null;
-        for(User u : userRepository.getAll()) {
+        for (User u : userRepository.findAll()) {
             if(u.getEmail().equals(email)){
-                if(u.getPassword().equals(password)) return userRepository.getByEmail(email);
+                if (u.getPassword().equals(password)) return userRepository.findByEmail(email);
             }
         }
         return null;
@@ -77,29 +73,31 @@ public class UserService {
         oldU.setSurname(u.getSurname());
         oldU.setEmail(u.getEmail());
         oldU.setPassword(u.getPassword());
-        userRepository.update(oldU);
-        return userRepository.getById(oldU.getId());
+
+        return userRepository.save(oldU);
     }
 
     private List<User> removeUser(Long id) {
-        return userRepository.getAll().stream().filter(user -> !user.getId().equals(id)).toList();
+        return userRepository.findAll().stream().filter(user -> !user.getId().equals(id)).toList();
     }
 
-    public void rankUpgrade(Long id) {
-        User u = userRepository.getById(id);
-        if(u.getRank() == Rank.STANDARD) {
-            u.setRank(Rank.ORGANIZZATORE);
-            userRepository.update(u);
+    public boolean rankUpgrade(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user.getRank() != Rank.STANDARD) {
+            return false;
         }
+        user.setRank(Rank.ORGANIZZATORE);
+        userRepository.save(user);
+        return true;
     }
 
     /**
      * Restituisce le informazioni di un utente dato il suo identificativo.
      *
-     * @param id l'identificativo univoco dell'utente
+     * @param email l'identificativo univoco dell'utente
      * @return l'utente corrispondente all'identificativo fornito, oppure {@code null} se non trovato
      */
-    public User showInformation(Long id) {
-        return userRepository.getById(id);
+    public User showInformation(String email) {
+        return userRepository.findByEmail(email);
     }
 }

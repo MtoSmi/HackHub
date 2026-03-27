@@ -3,12 +3,9 @@ package it.unicam.cs.ids.hackhub.controller;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
 import it.unicam.cs.ids.hackhub.service.UserService;
-import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 /**
  * Controller di interfaccia per la gestione delle operazioni sugli utenti.
@@ -49,12 +46,12 @@ public class UserInterfaceController {
     /**
      * Restituisce le informazioni dell'account all'utente specificato tramite identificativo.
      *
-     * @param id l'identificativo dell'utente di cui mostrare le informazioni
+     * @param email l'identificativo dell'utente di cui mostrare le informazioni
      * @return le informazioni dell'account dell'utente corrispondente all'id
      */
-    @GetMapping("/showInformation/{id}")
-    public ResponseEntity<@NonNull Optional<User>> showInformation(@PathVariable long id) {
-        Optional<User> user = service.showInformation(id);
+    @GetMapping("/showInformation/{email}")
+    public ResponseEntity<User> showInformation(@PathVariable String email) {
+        User user = service.showInformation(email);
         return ResponseEntity.ok(user);
     }
 
@@ -68,9 +65,13 @@ public class UserInterfaceController {
     }
 
     @PostMapping("/rankUpgrade")
-    public ResponseEntity<Void> rankUpgrade(@RequestParam long id) {
-        service.rankUpgrade(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> rankUpgrade(@RequestParam String email) {
+        boolean success = service.rankUpgrade(email);
+        if (success) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.unprocessableEntity().build();
+        }
     }
 
 }
