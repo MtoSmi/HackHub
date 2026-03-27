@@ -21,12 +21,14 @@ public class User {
     private String surname;
 
     /** Indirizzo email dell'utente */
+    @Column(unique = true)
     private String email;
 
     /** Password dell'utente */
     private String password;
 
     /** Team a cui appartiene l'utente, null se non appartiene a nessun team */
+    @SuppressWarnings("JpaDataSourceORMInspection")
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
