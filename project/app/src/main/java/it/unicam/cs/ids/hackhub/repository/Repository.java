@@ -1,20 +1,27 @@
 package it.unicam.cs.ids.hackhub.repository;
 
+import org.jspecify.annotations.NonNull;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
+
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interfaccia generica per la gestione delle operazioni CRUD su un repository.
  *
  * @param <T> il tipo di entità gestita dal repository
  */
-public interface Repository<T> {
+@NoRepositoryBean
+public interface Repository<T> extends JpaRepository<T, Long> {
 
     /**
      * Restituisce tutte le entità presenti nel repository.
      *
      * @return una lista contenente tutte le entità di tipo {@code T}
      */
-    List<T> getAll();
+    @NonNull
+    List<T> findAll();
 
     /**
      * Restituisce un'entità in base al suo identificatore univoco.
@@ -22,19 +29,7 @@ public interface Repository<T> {
      * @param Id l'identificatore univoco dell'entità da cercare
      * @return l'entità corrispondente all'identificatore fornito, oppure {@code null} se non trovata
      */
-    T getById(Long Id);
+    @NonNull
+    Optional<T> findById(@NonNull Long Id);
 
-    /**
-     * Crea e salva una nuova entità nel repository.
-     *
-     * @param entity l'entità di tipo {@code T} da creare e salvare
-     */
-    void create(T entity);
-
-    /**
-     * Aggiorna un'entità esistente nel repository.
-     *
-     * @param entity l'entità di tipo {@code T} con i dati aggiornati da salvare
-     */
-    void update(T entity);
 }

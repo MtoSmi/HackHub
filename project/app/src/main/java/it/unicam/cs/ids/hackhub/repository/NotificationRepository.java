@@ -1,25 +1,21 @@
 package it.unicam.cs.ids.hackhub.repository;
 
 import it.unicam.cs.ids.hackhub.entity.model.Notification;
+import it.unicam.cs.ids.hackhub.entity.model.User;
+import jakarta.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository per la gestione delle notifiche.
  * Implementa l'interfaccia {@link Repository} per il tipo {@link Notification}.
  * Fornisce operazioni CRUD e metodi aggiuntivi per il filtraggio delle notifiche.
  */
-public class NotificationRepository implements Repository<Notification> {
+@org.springframework.stereotype.Repository
+public interface NotificationRepository extends Repository<Notification> {
 
-    private List<Notification> notifications;
-
-    /**
-     * Costruisce un nuovo {@code NotificationRepository} con una lista vuota di notifiche.
-     */
-    public NotificationRepository() {
-        notifications = new ArrayList<>();
-    }
 
     /**
      * Restituisce tutte le notifiche presenti nel repository.
@@ -27,19 +23,16 @@ public class NotificationRepository implements Repository<Notification> {
      * @return una lista contenente tutte le {@link Notification}
      */
     @Override
-    public List<Notification> getAll() {
-        return notifications;
-    }
+    @Nonnull
+    List<Notification> findAll();
 
     /**
      * Restituisce tutte le notifiche destinate a un utente specifico.
      *
-     * @param id l'identificativo dell'utente destinatario
+     * @param to l'identificativo dell'utente destinatario
      * @return una lista di {@link Notification} indirizzate all'utente con l'id specificato
      */
-    public List<Notification> getByUser(Long id) {
-        return notifications.stream().filter(n -> n.getTo().getId().equals(id)).toList();
-    }
+    List<Notification> findByTo(Optional<User> to);
 
     /**
      * Restituisce la notifica con l'identificativo specificato.
@@ -48,38 +41,7 @@ public class NotificationRepository implements Repository<Notification> {
      * @return la {@link Notification} corrispondente, oppure {@code null} se non trovata
      */
     @Override
-    public Notification getById(Long id) {
-        for (Notification n : notifications) {
-            if (n.getId().equals(id)) return n;
-        }
-        return null;
-    }
+    @NonNull
+    Optional<Notification> findById(@NonNull Long id);
 
-    /**
-     * Aggiunge una nuova notifica al repository.
-     * Assegna un identificativo fisso alla notifica prima di inserirla.
-     *
-     * @param n la {@link Notification} da aggiungere
-     */
-    @Override
-    public void create(Notification n) {
-        n.setId(1L);
-        notifications.add(n);
-    }
-
-    /**
-     * Aggiorna una notifica esistente nel repository.
-     * Sostituisce la notifica con lo stesso identificativo con quella nuova fornita.
-     *
-     * @param newN la {@link Notification} aggiornata da sostituire a quella esistente
-     */
-    @Override
-    public void update(Notification newN) {
-        for (Notification oldN : notifications) {
-            if (oldN.getId().equals(newN.getId())) {
-                notifications.remove(oldN);
-                notifications.add(newN);
-            }
-        }
-    }
 }
