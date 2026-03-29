@@ -1,12 +1,14 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.Team;
+import org.springframework.stereotype.Component;
 
 /**
  * Validator per le entità di tipo {@link Team}.
  * Implementa l'interfaccia {@link Validator} per verificare la correttezza
  * dei dati di un team prima del suo utilizzo o persistenza.
  */
+@Component
 public class TeamValidator implements Validator<Team> {
 
     /**
@@ -22,8 +24,6 @@ public class TeamValidator implements Validator<Team> {
     @Override
     public boolean validate(Team t) {
         if (t == null) return false;
-        if (t.getName() == null || t.getName().isBlank()) return false;
-        if (t.getDimension() < 0) return false;
-        return t.getMembers() != null;
+        return t.getName() != null && !t.getName().isBlank();
     }
 }

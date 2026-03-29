@@ -4,6 +4,9 @@ import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
 import it.unicam.cs.ids.hackhub.service.TeamService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller di interfaccia per la gestione delle operazioni sui team.
@@ -12,8 +15,12 @@ import it.unicam.cs.ids.hackhub.service.TeamService;
  * {@link TeamService}, fungendo da punto di accesso per il livello
  * di presentazione.
  */
+@RestController
+@RequestMapping("/api/v1/team")
 public class TeamInterfaceController {
-    /** Servizio per le operazioni sui team. */
+    /**
+     * Servizio per le operazioni sui team.
+     */
     private final TeamService service;
 
     /**
@@ -31,19 +38,39 @@ public class TeamInterfaceController {
      * @param requested la richiesta di creazione del team
      * @return il team creato
      */
-    public Team creationTeam(TeamRequester requested) {
-        return service.creationTeam(requested);
+    @PostMapping("/creation")
+    public ResponseEntity<Team> creationTeam(@RequestBody TeamRequester requested, @RequestParam String creatorEmail) {
+
+        Team created = service.creationTeam(requested, creatorEmail);
+        if (created == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    public Team showInformation(long id) {
-        return service.showInformation(id);
+    @GetMapping("/showInformation/{name}")
+    public ResponseEntity<Team> showInformation(@PathVariable String name) {
+        Team team = service.showInformation(name);
+        return ResponseEntity.ok(team);
     }
 
-    public void inviteMember(User user, Team team) {
-        service.inviteMember(user, team);
+    @PostMapping("/inviteMember/")
+    public ResponseEntity<Void> inviteMember(@RequestParam String email, @RequestParam String team) {
+        boolean result = service.inviteMember(email, team);
+        if (result) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
     }
 
-    public void acceptInvite(User user, Team team) {
-        service.acceptInvite(user, team);
+    @PostMapping("/acceptInvite")
+    public ResponseEntity<Void> acceptInvite(@RequestParam String email, @RequestParam String team) {
+        boolean result = service.acceptInvite(email, team);
+        if (result) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
     }
 }

@@ -6,7 +6,6 @@ import java.util.List;
 
 /**
  * Rappresenta un team nel sistema HackHub.
- *
  * Questa classe modella un team che può partecipare a uno o più hackathon,
  * con uno o più membri registrati nel sistema.
  */
@@ -19,6 +18,7 @@ public class Team {
     private Long id;
 
     /** Nome del team */
+    @Column(unique = true)
     private String name;
 
     /** Numero di membri presenti nel team */
