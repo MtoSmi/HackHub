@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
  * Implementa l'interfaccia {@link Validator} per verificare che una submission
  * rispetti tutti i vincoli necessari prima di essere accettata nel sistema.
  */
+@Component
 public class SubmissionValidator implements Validator<Submission> {
 
     /**

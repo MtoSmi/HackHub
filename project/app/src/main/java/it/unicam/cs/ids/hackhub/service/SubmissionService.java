@@ -9,6 +9,7 @@ import it.unicam.cs.ids.hackhub.entity.model.Valuation;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.validator.SubmissionValidator;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.List;
  * Fornisce le operazioni necessarie per creare e associare
  * una submission a un hackathon specifico.
  */
+@Service
 public class SubmissionService {
     private final SubmissionValidator submissionValidator;
     private final HackathonRepository hackathonRepository;
