@@ -3,7 +3,6 @@ package it.unicam.cs.ids.hackhub.repository;
 import it.unicam.cs.ids.hackhub.entity.model.Notification;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import jakarta.annotation.Nonnull;
-import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,16 +31,6 @@ public interface NotificationRepository extends Repository<Notification> {
      * @param to l'identificativo dell'utente destinatario
      * @return una lista di {@link Notification} indirizzate all'utente con l'id specificato
      */
-    List<Notification> findByTo(Optional<User> to);
-
-    /**
-     * Restituisce la notifica con l'identificativo specificato.
-     *
-     * @param id l'identificativo della notifica da cercare
-     * @return la {@link Notification} corrispondente, oppure {@code null} se non trovata
-     */
-    @Override
-    @NonNull
-    Optional<Notification> findById(@NonNull Long id);
+    List<Notification> findByTo(User to);
 
 }

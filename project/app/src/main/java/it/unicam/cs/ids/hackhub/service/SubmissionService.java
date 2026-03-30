@@ -47,7 +47,7 @@ public class SubmissionService {
         if (!submissionValidator.validate(s)) return null;
         Hackathon h = hackathonRepository.getById(hId);
         h.getSubmissions().add(s);
-        hackathonRepository.update(h);
+        hackathonRepository.save(h);
         return s;
     }
 
@@ -55,14 +55,14 @@ public class SubmissionService {
         if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
         s.getResponses().add(r);
         Hackathon h = hackathonRepository.getById(hid);
-        hackathonRepository.update(h);
+        hackathonRepository.save(h);
         return s;
     }
 
     public Response evaluateSubmission(Long hid, Submission s, int rId, Valutation v) {
         s.getResponses().get(rId).setValutation(v);
         Hackathon h = hackathonRepository.getById(hid);
-        hackathonRepository.update(h);
+        hackathonRepository.save(h);
         return s.getResponses().get(rId);
     }
 

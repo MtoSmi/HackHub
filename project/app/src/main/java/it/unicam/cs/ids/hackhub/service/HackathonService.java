@@ -13,6 +13,7 @@ import it.unicam.cs.ids.hackhub.validator.HackathonValidator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service per la gestione degli hackathon.
@@ -45,11 +46,12 @@ public class HackathonService {
      * @return una lista di {@link Hackathon}
      */
     public List<Hackathon> showHackathonList() {
-        return hackathonRepository.getAll();
+        return hackathonRepository.findAll();
     }
 
     public List<Hackathon> showMyHackathonList(Long id) {
-        return hackathonRepository.getHackathonsByTeam(id);
+        Optional<Team> team = teamRepository.findById(id);
+        return hackathonRepository.findHackathonByParticipantsIsContaining(team);
     }
 
     /**
@@ -84,7 +86,7 @@ public class HackathonService {
         for (User m : h.getMentors()) {
             if (!m.getRank().equals(Rank.STANDARD)) return null;
         }
-        for (Hackathon other : hackathonRepository.getAll()) {
+        for (Hackathon other : hackathonRepository.findAll()) {
             if (h.equals(other)) return null;
         }
         Hackathon newH = new HackathonConcreteBuilder()
@@ -93,7 +95,7 @@ public class HackathonService {
                 .buildRegulation(h.getRegulation()).buildDeadline(h.getDeadline())
                 .buildStartDate(h.getStartDate()).buildEndDate(h.getEndDate())
                 .buildLocation(h.getLocation()).buildReward(h.getReward()).buildParticipants(new ArrayList<Team>()).getResult();
-        hackathonRepository.create(newH);
+        hackathonRepository.save(newH);
         notificationService.send("Sei un giudice!",
                 "Sei appena diventato un giudice del nuovo hackathon " + h.getName(),
                 h.getJudge().getId());
@@ -115,7 +117,7 @@ public class HackathonService {
         oldH.setEndDate(h.getEndDate());
         oldH.setLocation(h.getLocation());
         oldH.setReward(h.getReward());
-        hackathonRepository.update(oldH);
+        hackathonRepository.save(oldH);
         return hackathonRepository.getById(oldH.getId());
     }
 
@@ -126,8 +128,8 @@ public class HackathonService {
         }
         if(u.getTeam().getDimension() > h.getMaxTeams()) return;
         h.getParticipants().add(u.getTeam());
-        hackathonRepository.update(h);
+        hackathonRepository.save(h);
         u.getTeam().getHackathons().add(h);
-        teamRepository.update(u.getTeam());
+        teamRepository.save(u.getTeam());
     }
 }

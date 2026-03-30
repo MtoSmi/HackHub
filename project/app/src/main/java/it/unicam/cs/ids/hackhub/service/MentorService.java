@@ -46,7 +46,7 @@ public class MentorService {
         Hackathon h = hackathonRepository.getById(hId);
         h.getMentors().add(mentor);
 
-        hackathonRepository.update(h);
+        hackathonRepository.save(h);
 
     }
 }

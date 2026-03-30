@@ -1,36 +1,53 @@
 package it.unicam.cs.ids.hackhub.entity.model;
 
+import jakarta.persistence.*;
+
 /**
  * Rappresenta una notifica nel sistema HackHub.
- *
  * Questa classe modella una notifica che viene inviata a un utente per comunicare
  * informazioni importanti come aggiornamenti su hackathon, risultati di valutazioni,
  * o altri avvisi relativi al sistema.
  */
+@Entity
 public class Notification {
-    /** Identificatore univoco della notifica */
+    /**
+     * Identificatore univoco della notifica
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Titolo della notifica */
+    /**
+     * Titolo della notifica
+     */
     private String title;
 
-    /** Descrizione dettagliata del contenuto della notifica */
+    /**
+     * Descrizione dettagliata del contenuto della notifica
+     */
     private String description;
 
-    /** Utente destinatario della notifica */
+    /**
+     * Utente destinatario della notifica
+     */
+    @OneToOne
     private User to;
 
     /**
      * Costruisce una nuova notifica con i parametri essenziali.
      *
-     * @param title il titolo della notifica
+     * @param title       il titolo della notifica
      * @param description la descrizione dettagliata della notifica
-     * @param to l'utente destinatario della notifica
+     * @param to          l'utente destinatario della notifica
      */
     public Notification(String title, String description, User to) {
         this.title = title;
         this.description = description;
         this.to = to;
+    }
+
+    public Notification() {
+
     }
 
     /**
