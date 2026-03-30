@@ -1,7 +1,6 @@
 package it.unicam.cs.ids.hackhub.controller;
 
-import it.unicam.cs.ids.hackhub.entity.model.Team;
-import it.unicam.cs.ids.hackhub.entity.model.User;
+import it.unicam.cs.ids.hackhub.entity.dto.TeamResponse;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
 import it.unicam.cs.ids.hackhub.service.TeamService;
 import org.springframework.http.HttpStatus;
@@ -39,18 +38,17 @@ public class TeamInterfaceController {
      * @return il team creato
      */
     @PostMapping("/creation")
-    public ResponseEntity<Team> creationTeam(@RequestBody TeamRequester requested, @RequestParam String creatorEmail) {
-
-        Team created = service.creationTeam(requested, creatorEmail);
+    public ResponseEntity<TeamResponse> creationTeam(@RequestBody TeamRequester requested, @RequestParam String creatorEmail) {
+        TeamResponse created = service.creationTeam(requested, creatorEmail);
         if (created == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/showInformation/{name}")
-    public ResponseEntity<Team> showInformation(@PathVariable String name) {
-        Team team = service.showInformation(name);
+    public ResponseEntity<TeamResponse> showInformation(@PathVariable String name) {
+        TeamResponse team = service.showInformation(name);
         return ResponseEntity.ok(team);
     }
 
