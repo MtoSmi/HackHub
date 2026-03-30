@@ -1,25 +1,19 @@
 package it.unicam.cs.ids.hackhub.repository;
 
 import it.unicam.cs.ids.hackhub.entity.model.Team;
-import jakarta.annotation.Nonnull;
-
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
- * Implementazione dell'interfaccia {@link Repository} per la gestione delle entità {@link Team}.
- * Fornisce operazioni CRUD di base utilizzando una lista in memoria.
+ * Repository per la gestione delle operazioni CRUD relative al {@link Team}.
  */
-@org.springframework.stereotype.Repository
-public interface TeamRepository extends Repository<Team> {
-
+@Repository
+public interface TeamRepository extends JpaRepository<Team, Long> {
     /**
-     * Restituisce tutti i team presenti nel repository.
+     * Recupera un team filtrato per nome specifico.
      *
-     * @return una {@link List} contenente tutti i {@link Team}
+     * @param name utilizzato per filtrare il team
+     * @return un team che corrisponde al nome fornito
      */
-    @Override
-    @Nonnull
-    List<Team> findAll();
-
     Team findByName(String name);
 }
