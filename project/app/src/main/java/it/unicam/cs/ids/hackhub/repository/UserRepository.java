@@ -1,29 +1,19 @@
 package it.unicam.cs.ids.hackhub.repository;
 
 import it.unicam.cs.ids.hackhub.entity.model.User;
-import org.jspecify.annotations.NonNull;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 /**
- * Implementazione del repository per la gestione degli utenti.
- * Fornisce operazioni CRUD (Create, Read, Update) per le entità {@link User}.
+ * Repository per la gestione delle operazioni CRUD relative allo {@link User}.
  */
 @Repository
-public interface UserRepository extends it.unicam.cs.ids.hackhub.repository.Repository<User> {
-
-
+public interface UserRepository extends JpaRepository<User, Long> {
     /**
-     * Restituisce la lista di tutti gli utenti presenti nel repository.
+     * Recupera un utente filtrato per email specifica.
      *
-     * @return una {@link List} contenente tutti gli utenti
+     * @param email utilizzata per filtrare l'utente
+     * @return un utente che corrisponde all'email fornita
      */
-    @Override
-    @NonNull
-    List<User> findAll();
-
     User findByEmail(String email);
-
-
 }

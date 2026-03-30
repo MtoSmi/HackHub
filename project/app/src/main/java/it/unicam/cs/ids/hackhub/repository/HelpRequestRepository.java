@@ -2,45 +2,21 @@ package it.unicam.cs.ids.hackhub.repository;
 
 import it.unicam.cs.ids.hackhub.entity.model.HelpRequest;
 import it.unicam.cs.ids.hackhub.entity.model.User;
-import org.jspecify.annotations.NonNull;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
- * Repository per la gestione delle richieste di aiuto ({@link HelpRequest}).
- * Implementa l'interfaccia {@link Repository} fornendo operazioni CRUD
- * su una lista in memoria.
+ * Repository per la gestione delle operazioni CRUD relative all' {@link HelpRequest}.
  */
-@org.springframework.stereotype.Repository
-public interface HelpRequestRepository extends Repository<HelpRequest> {
-
-
+@Repository
+public interface HelpRequestRepository extends JpaRepository<HelpRequest, Long> {
     /**
-     * Restituisce tutte le richieste di aiuto presenti nel repository.
+     * Recupera una lista di richieste di aiuto filtrate per destinatario specifico.
      *
-     * @return lista di tutte le {@link HelpRequest}
+     * @param to utilizzato per filtrare le richieste di aiuto
+     * @return una lista di richieste di aiuto che corrispondono al destinatario fornito
      */
-    @Override
-    @NonNull
-    List<HelpRequest> findAll();
-
-    /**
-     * Restituisce tutte le richieste di aiuto indirizzate a un determinato mentor.
-     *
-     * @param to l'identificativo del mentor
-     * @return lista di {@link HelpRequest} destinate al mentor con l'id specificato
-     */
-    List<HelpRequest> findByTo(Optional<User> to);
-
-    /**
-     * Restituisce la richiesta di aiuto con l'identificativo specificato.
-     *
-     * @param id l'identificativo della richiesta di aiuto da cercare
-     * @return la {@link HelpRequest} corrispondente all'id, oppure {@code null} se non trovata
-     */
-    @Override
-    @NonNull
-    Optional<HelpRequest> findById(@NonNull Long id);
-
+    List<HelpRequest> findByTo(User to);
 }
