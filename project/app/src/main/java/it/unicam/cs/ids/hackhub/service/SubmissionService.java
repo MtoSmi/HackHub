@@ -5,7 +5,7 @@ import it.unicam.cs.ids.hackhub.entity.dto.SubmissionResponse;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Response;
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
-import it.unicam.cs.ids.hackhub.entity.model.Valutation;
+import it.unicam.cs.ids.hackhub.entity.model.Valuation;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.validator.SubmissionValidator;
@@ -62,7 +62,7 @@ public class SubmissionService {
         return toResponse(s);
     }
 
-    public ResponseResponse evaluateSubmission(Long hid, Submission s, int rId, Valutation v) {
+    public ResponseResponse evaluateSubmission(Long hid, Submission s, int rId, Valuation v) {
         s.getResponses().get(rId).setValutation(v);
         Hackathon h = hackathonRepository.getReferenceById(hid);
         hackathonRepository.save(h);

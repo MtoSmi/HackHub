@@ -1,7 +1,7 @@
 package it.unicam.cs.ids.hackhub.entity.model;
 
 public class Response {
-    public void setValutation(Valutation v) {
+    public void setValutation(Valuation v) {
     }
 
     public Long getId() {

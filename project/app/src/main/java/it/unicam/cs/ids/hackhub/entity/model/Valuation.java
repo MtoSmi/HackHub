@@ -1,4 +1,4 @@
 package it.unicam.cs.ids.hackhub.entity.model;
 
-public class Valutation {
+public class Valuation {
 }
