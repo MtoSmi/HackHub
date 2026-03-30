@@ -1,9 +1,11 @@
 package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.builder.HackathonConcreteBuilder;
+import it.unicam.cs.ids.hackhub.entity.dto.HackathonResponse;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
+import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
@@ -45,14 +47,21 @@ public class HackathonService {
      *
      * @return una lista di {@link Hackathon}
      */
-    public List<Hackathon> showHackathonList() {
-        return hackathonRepository.findAll();
+    public List<HackathonResponse> showHackathonList() {
+        List<HackathonResponse> responses = new ArrayList<>();
+        for (Hackathon hackathon : hackathonRepository.findAll()) {
+            responses.add(toResponse(hackathon));
+        }
+        return responses;
     }
 
-    public List<Hackathon> showMyHackathonList(Long id) {
+    public List<HackathonResponse> showMyHackathonList(Long id) {
         Optional<Team> team = teamRepository.findById(id);
-        return hackathonRepository.findHackathonByParticipantsIsContaining(team);
-    }
+        return team.map(value -> hackathonRepository.findHackathonByParticipantsIsContaining(Optional.of(value))
+                .stream()
+                .map(this::toResponse)
+                .toList()).orElseGet(ArrayList::new);
+    } //TODO: prendere lista interna team
 
     /**
      * Restituisce l'hackathon corrispondente all'identificativo fornito.
@@ -60,26 +69,26 @@ public class HackathonService {
      * @param id l'identificativo univoco dell'hackathon
      * @return l'hackathon corrispondente, oppure {@code null} se non trovato
      */
-    public Hackathon showSelectedHackathon(Long id) {
-        return hackathonRepository.getById(id);
+    public HackathonResponse showSelectedHackathon(Long id) {
+        return toResponse(hackathonRepository.getReferenceById(id));
     }
 
     /**
      * Crea un nuovo hackathon a partire dai dati forniti tramite {@link HackathonRequester}.
-     *
+     * <p>
      * La creazione viene rifiutata (restituendo {@code null}) nei seguenti casi:
      * - I dati non superano la validazione
      * - L'host non ha il rank {@link Rank#ORGANIZZATORE}
      * - Il giudice non ha il rank {@link Rank#STANDARD}
      * - Almeno un mentore non ha il rank {@link Rank#STANDARD}
      * - Esiste già un hackathon equivalente nel sistema
-     *
+     * <p>
      * In caso di successo, vengono inviate notifiche al giudice e a tutti i mentori.
      *
      * @param h il requester contenente i dati del nuovo hackathon
      * @return il nuovo {@link Hackathon} creato e salvato, oppure {@code null} in caso di errore
      */
-    public Hackathon creationHackathon(HackathonRequester h) {
+    public HackathonResponse creationHackathon(HackathonRequester h) {
         if (!hackathonValidator.validate(h)) return null;
         if (!h.getHost().getRank().equals(Rank.ORGANIZZATORE)) return null;
         if (!h.getJudge().getRank().equals(Rank.STANDARD)) return null;
@@ -104,10 +113,10 @@ public class HackathonService {
                     "Sei appena diventato un mentore del nuovo hackathon " + h.getName(),
                     mentor.getId());
         }
-        return hackathonRepository.getById(newH.getId());
+        return toResponse(hackathonRepository.getReferenceById(newH.getId()));
     }
 
-    public Hackathon updateHackathonInformation(Hackathon oldH, Hackathon h) {
+    public HackathonResponse updateHackathonInformation(Hackathon oldH, Hackathon h) {
         if (!hackathonValidator.validate(h)) return null;
         oldH.setName(h.getName());
         oldH.setMaxTeams(h.getMaxTeams());
@@ -118,18 +127,39 @@ public class HackathonService {
         oldH.setLocation(h.getLocation());
         oldH.setReward(h.getReward());
         hackathonRepository.save(oldH);
-        return hackathonRepository.getById(oldH.getId());
+        return toResponse(hackathonRepository.getReferenceById(oldH.getId()));
     }
 
     public void subscribeHackathon(User u, Hackathon h) {
-        if(u.getTeam() == null) return;
-        for(Hackathon h2 : u.getTeam().getHackathons()) {
-            if(!h2.getStatus().equals(Status.CONCLUSO)) return;
+        if (u.getTeam() == null) return;
+        for (Hackathon h2 : u.getTeam().getHackathons()) {
+            if (!h2.getStatus().equals(Status.CONCLUSO)) return;
         }
-        if(u.getTeam().getDimension() > h.getMaxTeams()) return;
+        if (u.getTeam().getDimension() > h.getMaxTeams()) return;
         h.getParticipants().add(u.getTeam());
         hackathonRepository.save(h);
         u.getTeam().getHackathons().add(h);
         teamRepository.save(u.getTeam());
+    }
+
+    private HackathonResponse toResponse(Hackathon h) {
+        if (h == null) return null;
+        return new HackathonResponse(
+                h.getId(),
+                h.getName(),
+                h.getHost().getId(),
+                h.getJudge().getId(),
+                h.getMentors().stream().map(User::getId).toList(),
+                h.getParticipants().stream().map(Team::getId).toList(),
+                h.getMaxTeams(),
+                h.getSubmissions().stream().map(Submission::getId).toList(),
+                h.getRegulation(),
+                h.getDeadline(),
+                h.getStartDate(),
+                h.getEndDate(),
+                h.getLocation(),
+                h.getReward(),
+                h.getStatus().toString()
+        );
     }
 }

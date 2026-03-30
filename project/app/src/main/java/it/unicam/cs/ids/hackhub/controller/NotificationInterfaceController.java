@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.hackhub.controller;
 
+import it.unicam.cs.ids.hackhub.entity.dto.NotificationResponse;
 import it.unicam.cs.ids.hackhub.entity.model.Notification;
 import it.unicam.cs.ids.hackhub.service.NotificationService;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +37,8 @@ public class NotificationInterfaceController {
      * @return la lista delle notifiche dell'utente
      */
     @GetMapping("/showMyNotification")
-    public ResponseEntity<List<Notification>> showMyNotifications(@RequestParam String email) {
-        List<Notification> notificationList = service.showMyNotifications(email);
+    public ResponseEntity<List<NotificationResponse>> showMyNotifications(@RequestParam String email) {
+        List<NotificationResponse> notificationList = service.showMyNotifications(email);
         return ResponseEntity.ok(notificationList);
     }
 
@@ -47,8 +48,8 @@ public class NotificationInterfaceController {
      * @return la notifica corrispondente all'id
      */
     @GetMapping("/showMyNotification/{id}")
-    public ResponseEntity<Notification> showSelectedNotification(@PathVariable long id) {
-        Notification notification = service.showSelectedNotification(id);
+    public ResponseEntity<NotificationResponse> showSelectedNotification(@PathVariable long id) {
+        NotificationResponse notification = service.showSelectedNotification(id);
         if (notification != null) {
             return ResponseEntity.ok(notification);
         } else {

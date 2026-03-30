@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.hackhub.service;
 
+import it.unicam.cs.ids.hackhub.entity.dto.TeamResponse;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
@@ -50,13 +51,13 @@ public class TeamService {
      * @param t il {@link TeamRequester} contenente i dati del team da creare
      * @return il {@link Team} creato e salvato nel repository, oppure {@code null} se la creazione non è consentita
      */
-    public Team creationTeam(TeamRequester t, String creatorEmail) {
+    public TeamResponse creationTeam(TeamRequester t, String creatorEmail) {
         if (!teamValidator.validate(t)) return null;
 
         Team team = new Team();
         team.setName(t.getName());
         User creator = userRepository.findByEmail(creatorEmail);
-        if (creator == null || creator.getRank() != Rank.ORGANIZZATORE) return null;
+        if (creator == null || creator.getRank() != Rank.STANDARD) return null;
         List<User> members = new ArrayList<>();
         members.add(creator);
         team.setMembers(members);
@@ -69,16 +70,16 @@ public class TeamService {
         }
         team.setDimension(team.getMembers().size());
 
-        team.setHackathons(new LinkedList<Hackathon>());
+        team.setHackathons(new LinkedList<>());
         teamRepository.save(team);
         creator.setTeam(teamRepository.findByName(team.getName()));
         creator.setRank(Rank.MEMBRO_TEAM);
         userRepository.save(creator);
-        return teamRepository.findByName(team.getName());
+        return toResponse(teamRepository.findByName(team.getName()));
     }
 
-    public Team showInformation(String name) {
-        return teamRepository.findByName(name);
+    public TeamResponse showInformation(String name) {
+        return toResponse(teamRepository.findByName(name));
     }
 
     public boolean inviteMember(String u, String t) {
@@ -103,5 +104,16 @@ public class TeamService {
         user.setTeam(team);
         userRepository.save(user);
         return true;
+    }
+
+    private TeamResponse toResponse(Team team) {
+        if (team == null) return null;
+        return new TeamResponse(
+                team.getId(),
+                team.getName(),
+                team.getDimension(),
+                team.getMembers().stream().map(User::getId).toList(),
+                team.getHackathons().stream().map(Hackathon::getId).toList()
+        );
     }
 }

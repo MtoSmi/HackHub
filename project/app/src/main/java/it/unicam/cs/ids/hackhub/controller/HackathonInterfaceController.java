@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.hackhub.controller;
 
+import it.unicam.cs.ids.hackhub.entity.dto.HackathonResponse;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
@@ -32,7 +33,7 @@ public class HackathonInterfaceController {
      * @param requested la richiesta di creazione dell'hackathon
      * @return l'hackathon creato
      */
-    public Hackathon creationHackathon(HackathonRequester requested) {
+    public HackathonResponse creationHackathon(HackathonRequester requested) {
         return service.creationHackathon(requested);
     }
 
@@ -41,7 +42,7 @@ public class HackathonInterfaceController {
      *
      * @return la lista degli hackathon
      */
-    public List<Hackathon> showHackathonList() {
+    public List<HackathonResponse> showHackathonList() {
         return service.showHackathonList();
     }
 
@@ -51,7 +52,7 @@ public class HackathonInterfaceController {
      * @param id l'identificativo dell'hackathon
      * @return l'hackathon corrispondente all'id
      */
-    public Hackathon showSelectedHackathon(long id) {
+    public HackathonResponse showSelectedHackathon(long id) {
         return service.showSelectedHackathon(id);
     }
 

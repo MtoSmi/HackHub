@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.hackhub.service;
 
+import it.unicam.cs.ids.hackhub.entity.dto.UserResponse;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
@@ -39,7 +40,7 @@ public class UserService {
      * @param req il richiedente contenente i dati del nuovo utente
      * @return l'utente registrato, oppure {@code null} se la registrazione non è andata a buon fine
      */
-    public User registration(UserRequester req) {
+    public UserResponse registration(UserRequester req) {
         if (!userValidator.validate(req)) return null;
         if (userRepository.findByEmail(req.getEmail()) != null) return null;
         User user = new User();
@@ -50,22 +51,22 @@ public class UserService {
         user.setRank(Rank.STANDARD);
         user.setTeam(null);
 
-        return userRepository.save(user);
+        return toResponse(userRepository.save(user));
     }
 
 
-    public User access(String email, String password) {
-        if(email == null || password == null) return null;
+    public UserResponse access(String email, String password) {
+        if (email == null || password == null) return null;
         for (User u : userRepository.findAll()) {
-            if(u.getEmail().equals(email)){
-                if (u.getPassword().equals(password)) return userRepository.findByEmail(email);
+            if (u.getEmail().equals(email)) {
+                if (u.getPassword().equals(password)) return toResponse(userRepository.findByEmail(email));
             }
         }
         return null;
     }
 
-    public User updateUserInformation(User oldU, User u) {
-        if(!userValidator.validate(u)) return null;
+    public UserResponse updateUserInformation(User oldU, User u) {
+        if (!userValidator.validate(u)) return null;
         for (User other : removeUser(oldU.getId())) {
             if (u.getEmail().equals(other.getEmail())) return null;
         }
@@ -74,7 +75,7 @@ public class UserService {
         oldU.setEmail(u.getEmail());
         oldU.setPassword(u.getPassword());
 
-        return userRepository.save(oldU);
+        return toResponse(userRepository.save(oldU));
     }
 
     private List<User> removeUser(Long id) {
@@ -97,7 +98,18 @@ public class UserService {
      * @param email l'identificativo univoco dell'utente
      * @return l'utente corrispondente all'identificativo fornito, oppure {@code null} se non trovato
      */
-    public User showInformation(String email) {
-        return userRepository.findByEmail(email);
+    public UserResponse showInformation(String email) {
+        return toResponse(userRepository.findByEmail(email));
+    }
+
+    private UserResponse toResponse(User user) {
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getSurname(),
+                user.getEmail(),
+                user.getTeam() != null ? user.getTeam().getId() : null,
+                user.getRank().name()
+        );
     }
 }

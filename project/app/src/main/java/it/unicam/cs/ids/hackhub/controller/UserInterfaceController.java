@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.hackhub.controller;
 
+import it.unicam.cs.ids.hackhub.entity.dto.UserResponse;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
 import it.unicam.cs.ids.hackhub.service.UserService;
@@ -35,10 +36,10 @@ public class UserInterfaceController {
      * @return l'utente registrato
      */
     @PostMapping("/registration")
-    public ResponseEntity<User> registration(@RequestBody UserRequester requested) {
-        User created = service.registration(requested);
+    public ResponseEntity<UserResponse> registration(@RequestBody UserRequester requested) {
+        UserResponse created = service.registration(requested);
         if (created == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -50,14 +51,14 @@ public class UserInterfaceController {
      * @return le informazioni dell'account dell'utente corrispondente all'id
      */
     @GetMapping("/showInformation/{email}")
-    public ResponseEntity<User> showInformation(@PathVariable String email) {
-        User user = service.showInformation(email);
+    public ResponseEntity<UserResponse> showInformation(@PathVariable String email) {
+        UserResponse user = service.showInformation(email);
         return ResponseEntity.ok(user);
     }
 
     @PostMapping("/access")
-    public ResponseEntity<User> access(@RequestParam String email, @RequestParam String password) {
-        User user = service.access(email, password);
+    public ResponseEntity<UserResponse> access(@RequestParam String email, @RequestParam String password) {
+        UserResponse user = service.access(email, password);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }

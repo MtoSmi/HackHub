@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.hackhub.controller;
 
-import it.unicam.cs.ids.hackhub.entity.model.HelpRequest;
+import it.unicam.cs.ids.hackhub.entity.dto.HelpRequestResponse;
 import it.unicam.cs.ids.hackhub.entity.requester.HelpRequestRequester;
 import it.unicam.cs.ids.hackhub.service.HelpRequestService;
 
@@ -8,13 +8,15 @@ import java.util.List;
 
 /**
  * Controller di interfaccia per la gestione delle richieste di aiuto.
- *
+ * <p>
  * Espone metodi di alto livello che delegano la logica al servizio
  * {@link HelpRequestService}, fungendo da punto di accesso per il livello
  * di presentazione.
  */
 public class HelpRequestInterfaceController {
-    /** Servizio per le operazioni sulle richieste di aiuto. */
+    /**
+     * Servizio per le operazioni sulle richieste di aiuto.
+     */
     private final HelpRequestService service;
 
     /**
@@ -32,7 +34,7 @@ public class HelpRequestInterfaceController {
      * @param mentorId l'identificativo del mentore
      * @return la lista delle richieste di aiuto del mentore
      */
-    public List<HelpRequest> showMyHelpRequests(long mentorId) {
+    public List<HelpRequestResponse> showMyHelpRequests(long mentorId) {
         return service.showMyHelpRequests(mentorId);
     }
 
@@ -42,7 +44,7 @@ public class HelpRequestInterfaceController {
      * @param id l'identificativo della richiesta di aiuto
      * @return la richiesta di aiuto corrispondente all'id
      */
-    public HelpRequest showSelectedHelpRequest(long id) {
+    public HelpRequestResponse showSelectedHelpRequest(long id) {
         return service.showSelectedHelpRequest(id);
     }
 
@@ -69,10 +71,11 @@ public class HelpRequestInterfaceController {
 
     /**
      * Crea una nuova richiesta di aiuto a partire dalla richiesta fornita.
+     *
      * @param requested la richiesta di creazione della richiesta di aiuto
      * @return la richiesta di aiuto creata
      */
-    public HelpRequest creationHelpRequest(HelpRequestRequester requested) {
+    public HelpRequestResponse creationHelpRequest(HelpRequestRequester requested) {
         return service.creationHelpRequest(requested);
     }
 }

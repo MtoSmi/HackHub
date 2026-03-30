@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.hackhub.service;
 
+import it.unicam.cs.ids.hackhub.entity.dto.NotificationResponse;
 import it.unicam.cs.ids.hackhub.entity.model.Notification;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.repository.NotificationRepository;
@@ -37,7 +38,7 @@ public class NotificationService {
      * @param uId         l'identificativo dell'utente destinatario
      */
     public void send(String title, String description, Long uId) {
-        Notification n = new Notification(title, description, userRepository.getById(uId));
+        Notification n = new Notification(title, description, userRepository.getReferenceById(uId));
         notificationRepository.save(n);
     }
 
@@ -47,9 +48,12 @@ public class NotificationService {
      * @param email l'identificativo dell'utente di cui si vogliono visualizzare le notifiche
      * @return una lista di {@link Notification} appartenenti all'utente
      */
-    public List<Notification> showMyNotifications(String email) {
+    public List<NotificationResponse> showMyNotifications(String email) {
         User user = userRepository.findByEmail(email);
-        return notificationRepository.findByTo(user);
+        return notificationRepository.findByTo(user)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     /**
@@ -58,12 +62,16 @@ public class NotificationService {
      * @param id l'identificativo della notifica da visualizzare
      * @return la {@link Notification} corrispondente all'identificativo fornito
      */
-    public Notification showSelectedNotification(Long id) {
+    public NotificationResponse showSelectedNotification(Long id) {
         Optional<Notification> optionalNotification =  notificationRepository.findById(id);
         if (optionalNotification.isPresent()) {
-            return optionalNotification.get();
+            return toResponse(optionalNotification.get());
         } else {
             throw new IllegalArgumentException("Notifica con id " + id + " non trovata.");
         }
+    }
+
+    private NotificationResponse toResponse(Notification n) {
+        return new NotificationResponse(n.getId(), n.getTitle(), n.getDescription(), n.getTo().getId());
     }
 }
