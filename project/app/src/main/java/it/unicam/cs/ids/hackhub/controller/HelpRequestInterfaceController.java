@@ -3,6 +3,7 @@ package it.unicam.cs.ids.hackhub.controller;
 import it.unicam.cs.ids.hackhub.entity.dto.HelpRequestResponse;
 import it.unicam.cs.ids.hackhub.entity.requester.HelpRequestRequester;
 import it.unicam.cs.ids.hackhub.service.HelpRequestService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ import java.util.List;
  * {@link HelpRequestService}, fungendo da punto di accesso per il livello
  * di presentazione.
  */
+@RestController
+@RequestMapping ("/api/v1/helpRequest")
 public class HelpRequestInterfaceController {
     /**
      * Servizio per le operazioni sulle richieste di aiuto.
@@ -34,7 +37,8 @@ public class HelpRequestInterfaceController {
      * @param mentorId l'identificativo del mentore
      * @return la lista delle richieste di aiuto del mentore
      */
-    public List<HelpRequestResponse> showMyHelpRequests(long mentorId) {
+    @GetMapping("/showHelpRequest}")
+    public List<HelpRequestResponse> showMyHelpRequests(@RequestParam long mentorId) {
         return service.showMyHelpRequests(mentorId);
     }
 
@@ -44,7 +48,8 @@ public class HelpRequestInterfaceController {
      * @param id l'identificativo della richiesta di aiuto
      * @return la richiesta di aiuto corrispondente all'id
      */
-    public HelpRequestResponse showSelectedHelpRequest(long id) {
+    @GetMapping("/showHelpRequest/{id}")
+    public HelpRequestResponse showSelectedHelpRequest(@PathVariable long id) {
         return service.showSelectedHelpRequest(id);
     }
 
@@ -53,7 +58,8 @@ public class HelpRequestInterfaceController {
      *
      * @param requested la richiesta di aiuto da accettare
      */
-    public void acceptHelpRequest(HelpRequestRequester requested) {
+    @PostMapping("/accept")
+    public void acceptHelpRequest(@RequestBody HelpRequestRequester requested) {
         service.completeHelpRequest(requested);
     }
 
@@ -63,7 +69,8 @@ public class HelpRequestInterfaceController {
      *
      * @param requested la richiesta di aiuto da rifiutare
      */
-    public void deniedHelpRequest(HelpRequestRequester requested) {
+    @PostMapping("/denied")
+    public void deniedHelpRequest(@RequestBody HelpRequestRequester requested) {
         requested.setReply("Richiesta di aiuto rifiutata dal mentore.");
         requested.setCall(null);
         service.completeHelpRequest(requested);
@@ -75,7 +82,8 @@ public class HelpRequestInterfaceController {
      * @param requested la richiesta di creazione della richiesta di aiuto
      * @return la richiesta di aiuto creata
      */
-    public HelpRequestResponse creationHelpRequest(HelpRequestRequester requested) {
+    @PostMapping("/create")
+    public HelpRequestResponse creationHelpRequest(@RequestBody HelpRequestRequester requested) {
         return service.creationHelpRequest(requested);
     }
 }

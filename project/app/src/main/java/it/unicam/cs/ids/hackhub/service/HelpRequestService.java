@@ -11,6 +11,7 @@ import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.repository.HelpRequestRepository;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.validator.HelpRequestValidator;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import java.util.Optional;
  * Fornisce operazioni per la creazione, visualizzazione e completamento delle richieste di aiuto
  * tra i membri del team e i mentori.
  */
+@Service
 public class HelpRequestService {
     private final HelpRequestRepository helpRequestRepository;
     private final HelpRequestValidator helpRequestValidator;
@@ -50,11 +52,12 @@ public class HelpRequestService {
      * @return la lista delle {@link HelpRequest} associate al mentore specificato
      */
     public List<HelpRequestResponse> showMyHelpRequests(Long mentorId) {
-        Optional<User> user = userRepository.findById(mentorId);
-        return helpRequestRepository.findByTo(user)
-                .stream()
-                .map(this::toResponse)
-                .toList();
+        User user = userRepository.getReferenceById(mentorId);
+            return helpRequestRepository.findByTo(user)
+                    .stream()
+                    .map(this::toResponse)
+                    .toList();
+
     }
 
     /**
@@ -83,7 +86,7 @@ public class HelpRequestService {
         if (!helpRequestValidator.validate(hr)) return null;
         if (!hr.getFrom().getRank().equals(Rank.MEMBRO_TEAM)) return null;
         if (!hr.getTo().getRank().equals(Rank.MENTORE)) return null;
-        for (Hackathon h : hackathonRepository.findHackathonsByStatus(Status.IN_CORSO)) {
+        for (Hackathon h : hackathonRepository.findByStatus(Status.IN_CORSO)) {
             if (!h.getMentors().contains(hr.getTo())) return null;
             if (!h.getParticipants().contains(hr.getFrom().getTeam())) return null;
         }
