@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.hackhub.service;
 
+import it.unicam.cs.ids.hackhub.entity.dto.HelpRequestResponse;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
@@ -48,9 +49,12 @@ public class HelpRequestService {
      * @param mentorId l'identificativo del mentore
      * @return la lista delle {@link HelpRequest} associate al mentore specificato
      */
-    public List<HelpRequest> showMyHelpRequests(Long mentorId) {
+    public List<HelpRequestResponse> showMyHelpRequests(Long mentorId) {
         Optional<User> user = userRepository.findById(mentorId);
-        return helpRequestRepository.findByTo(user);
+        return helpRequestRepository.findByTo(user)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     /**
@@ -59,8 +63,8 @@ public class HelpRequestService {
      * @param id l'identificativo della richiesta di aiuto
      * @return la {@link HelpRequest} corrispondente all'id fornito
      */
-    public HelpRequest showSelectedHelpRequest(Long id) {
-        return helpRequestRepository.getById(id);
+    public HelpRequestResponse showSelectedHelpRequest(Long id) {
+        return toResponse(helpRequestRepository.getReferenceById(id));
     }
 
     /**
@@ -75,7 +79,7 @@ public class HelpRequestService {
      * @param hr il richiedente contenente le informazioni della richiesta di aiuto
      * @return la {@link HelpRequest} creata, oppure {@code null} se la validazione fallisce
      */
-    public HelpRequest creationHelpRequest(HelpRequestRequester hr) {
+    public HelpRequestResponse creationHelpRequest(HelpRequestRequester hr) {
         if (!helpRequestValidator.validate(hr)) return null;
         if (!hr.getFrom().getRank().equals(Rank.MEMBRO_TEAM)) return null;
         if (!hr.getTo().getRank().equals(Rank.MENTORE)) return null;
@@ -87,7 +91,7 @@ public class HelpRequestService {
         notificationService.send("Richiesta di aiuto!",
                 "Hai ricevuto una richiesta di aiuto da " + hr.getFrom().getName(),
                 hr.getTo().getId());
-        return helpRequestRepository.getById(hr.getId());
+        return toResponse(helpRequestRepository.getReferenceById(hr.getId()));
     }
 
     /**
@@ -98,7 +102,7 @@ public class HelpRequestService {
      * @param hrr il richiedente contenente le informazioni di completamento della richiesta di aiuto
      */
     public void completeHelpRequest(HelpRequestRequester hrr) {
-        HelpRequest hr = helpRequestRepository.getById(hrr.getId());
+        HelpRequest hr = helpRequestRepository.getReferenceById(hrr.getId());
         hr.setReply(hrr.getReply());
         hr.setCall(hrr.getCall());
         hr.setCompleted(true);
@@ -106,6 +110,18 @@ public class HelpRequestService {
         notificationService.send("Richiesta di aiuto completata!",
                 "La tua richiesta di aiuto è stata completata dal mentore " + hr.getTo().getName(),
                 hr.getFrom().getId());
+    }
+
+    private HelpRequestResponse toResponse(HelpRequest hr) {
+        if (hr == null) return null;
+        return new HelpRequestResponse(hr.getId(),
+                hr.getTitle(),
+                hr.getDescription(),
+                hr.getReply(),
+                hr.getFrom().getId(),
+                hr.getTo().getId(),
+                hr.getCall(),
+                hr.isCompleted());
     }
 
 }
