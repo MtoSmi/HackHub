@@ -11,20 +11,23 @@ import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
+import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.validator.HackathonValidator;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service per la gestione degli hackathon.
  * Fornisce operazioni per la visualizzazione e la creazione degli hackathon,
  * delegando la persistenza al repository e la validazione al validator dedicato.
  */
+@Service
 public class HackathonService {
     private final HackathonRepository hackathonRepository;
     private final TeamRepository teamRepository;
+    private final UserRepository userRepository;
     private final HackathonValidator hackathonValidator;
     private final NotificationService notificationService;
 
@@ -35,9 +38,10 @@ public class HackathonService {
      * @param hValid   il validator per i dati degli hackathon
      * @param nService il service per l'invio delle notifiche
      */
-    public HackathonService(HackathonRepository hRepo, TeamRepository tRepo, HackathonValidator hValid, NotificationService nService) {
+    public HackathonService(HackathonRepository hRepo, TeamRepository tRepo, UserRepository userRepository, HackathonValidator hValid, NotificationService nService) {
         this.hackathonRepository = hRepo;
         this.teamRepository = tRepo;
+        this.userRepository = userRepository;
         this.hackathonValidator = hValid;
         this.notificationService = nService;
     }
@@ -55,13 +59,13 @@ public class HackathonService {
         return responses;
     }
 
-    public List<HackathonResponse> showMyHackathonList(Long id) {
-        Optional<Team> team = teamRepository.findById(id);
-        return team.map(value -> hackathonRepository.findHackathonByParticipantsIsContaining(Optional.of(value))
-                .stream()
-                .map(this::toResponse)
-                .toList()).orElseGet(ArrayList::new);
-    } //TODO: prendere lista interna team
+    public List<HackathonResponse> showMyHackathonList(String email) {
+        List<HackathonResponse> responses = new ArrayList<>();
+        for (Hackathon hackathon : userRepository.findByEmail(email).getTeam().getHackathons()) {
+            responses.add(toResponse(hackathon));
+        }
+        return responses;
+    }
 
     /**
      * Restituisce l'hackathon corrispondente all'identificativo fornito.
@@ -130,16 +134,19 @@ public class HackathonService {
         return toResponse(hackathonRepository.getReferenceById(oldH.getId()));
     }
 
-    public void subscribeHackathon(User u, Hackathon h) {
-        if (u.getTeam() == null) return;
+    public boolean subscribeHackathon(String email, Long id) {
+        User u = userRepository.findByEmail(email);
+        Hackathon h = hackathonRepository.getReferenceById(id);
+        if (u.getTeam() == null) return false;
         for (Hackathon h2 : u.getTeam().getHackathons()) {
-            if (!h2.getStatus().equals(Status.CONCLUSO)) return;
+            if (!h2.getStatus().equals(Status.CONCLUSO)) return false;
         }
-        if (u.getTeam().getDimension() > h.getMaxTeams()) return;
+        if (u.getTeam().getDimension() > h.getMaxTeams()) return false;
         h.getParticipants().add(u.getTeam());
         hackathonRepository.save(h);
         u.getTeam().getHackathons().add(h);
         teamRepository.save(u.getTeam());
+        return true;
     }
 
     private HackathonResponse toResponse(Hackathon h) {

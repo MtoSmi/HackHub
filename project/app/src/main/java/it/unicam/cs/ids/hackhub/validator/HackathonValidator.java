@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
  * inclusi nome, host, giudice, mentori, numero massimo di team, regolamento,
  * date, location e premio.
  */
+@Component
 public class HackathonValidator implements Validator<Hackathon> {
 
     /**

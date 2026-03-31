@@ -6,6 +6,7 @@ import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.validator.UserValidator;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class UserService {
      * @param uRepo  il repository utilizzato per la persistenza degli utenti
      * @param uValid il validator utilizzato per verificare i dati degli utenti
      */
-    public UserService(UserRepository uRepo, UserValidator uValid) {
+    public UserService(UserRepository uRepo, @Qualifier("userValidator") UserValidator uValid) {
         this.userRepository = uRepo;
         this.userValidator = uValid;
     }
