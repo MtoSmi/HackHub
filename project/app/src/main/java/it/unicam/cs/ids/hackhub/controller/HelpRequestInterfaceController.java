@@ -3,6 +3,7 @@ package it.unicam.cs.ids.hackhub.controller;
 import it.unicam.cs.ids.hackhub.entity.dto.HelpRequestResponse;
 import it.unicam.cs.ids.hackhub.entity.requester.HelpRequestRequester;
 import it.unicam.cs.ids.hackhub.service.HelpRequestService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
  * di presentazione.
  */
 @RestController
-@RequestMapping ("/api/v1/helpRequest")
+@RequestMapping("/api/v1/helpRequest")
 public class HelpRequestInterfaceController {
     /**
      * Servizio per le operazioni sulle richieste di aiuto.
@@ -38,8 +39,9 @@ public class HelpRequestInterfaceController {
      * @return la lista delle richieste di aiuto del mentore
      */
     @GetMapping("/showHelpRequest}")
-    public List<HelpRequestResponse> showMyHelpRequests(@RequestParam long mentorId) {
-        return service.showMyHelpRequests(mentorId);
+    public ResponseEntity<List<HelpRequestResponse>> showMyHelpRequests(@RequestParam long mentorId) {
+        List<HelpRequestResponse> response = service.showMyHelpRequests(mentorId);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -49,31 +51,32 @@ public class HelpRequestInterfaceController {
      * @return la richiesta di aiuto corrispondente all'id
      */
     @GetMapping("/showHelpRequest/{id}")
-    public HelpRequestResponse showSelectedHelpRequest(@PathVariable long id) {
-        return service.showSelectedHelpRequest(id);
+    public ResponseEntity<HelpRequestResponse> showSelectedHelpRequest(@PathVariable long id) {
+        HelpRequestResponse response = service.showSelectedHelpRequest(id);
+        if (response == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(response);
     }
 
     /**
      * Accetta una richiesta di aiuto, delegando l'operazione al servizio.
-     *
-     * @param requested la richiesta di aiuto da accettare
-     */
-    @PostMapping("/accept")
-    public void acceptHelpRequest(@RequestBody HelpRequestRequester requested) {
-        service.completeHelpRequest(requested);
+     **/
+    @PostMapping("/accept/{id}")
+    public ResponseEntity<Void> acceptHelpRequest(@RequestParam String reply, @RequestParam String call, @PathVariable Long id) {
+        boolean response = service.completeHelpRequest(id, reply, call);
+        if (response) return ResponseEntity.ok().build();
+        return ResponseEntity.unprocessableEntity().build();
     }
 
     /**
      * Rifiuta una richiesta di aiuto, impostando una risposta predefinita
      * e delegando il completamento al servizio.
      *
-     * @param requested la richiesta di aiuto da rifiutare
      */
-    @PostMapping("/denied")
-    public void deniedHelpRequest(@RequestBody HelpRequestRequester requested) {
-        requested.setReply("Richiesta di aiuto rifiutata dal mentore.");
-        requested.setCall(null);
-        service.completeHelpRequest(requested);
+    @PostMapping("/denied/{id}")
+    public ResponseEntity<Void> deniedHelpRequest(@PathVariable Long id) {
+        boolean response = service.completeHelpRequest(id, null, null);
+        if (response) return ResponseEntity.ok().build();
+        return ResponseEntity.unprocessableEntity().build();
     }
 
     /**
@@ -83,7 +86,9 @@ public class HelpRequestInterfaceController {
      * @return la richiesta di aiuto creata
      */
     @PostMapping("/create")
-    public HelpRequestResponse creationHelpRequest(@RequestBody HelpRequestRequester requested) {
-        return service.creationHelpRequest(requested);
+    public ResponseEntity<HelpRequestResponse> creationHelpRequest(@RequestBody HelpRequestRequester requested) {
+        HelpRequestResponse response = service.creationHelpRequest(requested);
+        if (response == null) return ResponseEntity.unprocessableEntity().build();
+        return ResponseEntity.ok(response);
     }
 }

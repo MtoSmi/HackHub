@@ -102,17 +102,16 @@ public class HelpRequestService {
      * e impostandola come completata. Invia una notifica al membro del team che aveva
      * effettuato la richiesta.
      *
-     * @param hrr il richiedente contenente le informazioni di completamento della richiesta di aiuto
      */
-    public void completeHelpRequest(HelpRequestRequester hrr) {
-        HelpRequest hr = helpRequestRepository.getReferenceById(hrr.getId());
-        hr.setReply(hrr.getReply());
-        hr.setCall(hrr.getCall());
+    public boolean completeHelpRequest(Long id, String r, String c) {
+        HelpRequest hr = helpRequestRepository.getReferenceById(id);
+        if (r == null) hr.setReply("La richiesta di aiuto è stata rifiutata.");
+        else hr.setReply(r);
+        hr.setCall(c);
         hr.setCompleted(true);
         helpRequestRepository.save(hr);
-        notificationService.send("Richiesta di aiuto completata!",
-                "La tua richiesta di aiuto è stata completata dal mentore " + hr.getTo().getName(),
-                hr.getFrom().getId());
+        notificationService.send("Richiesta di aiuto completata!", "La tua richiesta di aiuto è stata completata dal mentore " + hr.getTo().getName(), hr.getFrom().getId());
+        return true;
     }
 
     private HelpRequestResponse toResponse(HelpRequest hr) {
