@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.entity.model;
 
 import it.unicam.cs.ids.hackhub.entity.enumeration.Status;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,29 +12,49 @@ import java.util.List;
  * Questa classe modella un evento hackathon con tutte le informazioni necessarie
  * per gestire partecipanti, team, giudici, mentori, scadenze e stati di avanzamento.
  */
+@Entity
 public class Hackathon {
     /** Identificatore univoco dell'hackathon */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /** Nome dell'hackathon */
     private String name;
 
     /** Utente che organizza l'hackathon */
+    @ManyToOne
+    @JoinColumn(name = "host_id")
     private User host;
 
     /** Utente giudice delle sottomissioni */
+    @ManyToOne
+    @JoinColumn(name = "judge_id")
     private User judge;
 
     /** Lista dei mentori disponibili per l'hackathon */
+    @ManyToMany
+    @JoinTable(
+            name = "hackathon_mentors",
+            joinColumns = @JoinColumn(name = "hackathon_id"),
+            inverseJoinColumns = @JoinColumn(name = "mentor_id")
+    )
     private List<User> mentors;
 
     /** Lista dei team partecipanti all'hackathon */
+    @ManyToMany
+    @JoinTable(
+            name = "hackathon_participants",
+            joinColumns = @JoinColumn(name = "hackathon_id"),
+            inverseJoinColumns = @JoinColumn(name = "team_id")
+    )
     private List<Team> participants;
 
     /** Numero massimo di partecipanti per team che possono partecipare */
     private int maxTeams;
 
     /** Lista delle sottomissioni legate all'hackathon */
+    @Transient
     private List<Submission> submissions;
 
     /** Regolamento dell'hackathon */
@@ -55,6 +76,7 @@ public class Hackathon {
     private double reward;
 
     /** Stato attuale dell'hackathon */
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     /**

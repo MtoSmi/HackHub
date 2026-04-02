@@ -1,8 +1,10 @@
 package it.unicam.cs.ids.hackhub.controller;
 
+import it.unicam.cs.ids.hackhub.entity.dto.SubmissionResponse;
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import it.unicam.cs.ids.hackhub.service.SubmissionService;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller per interfaccia per la gestione delle operazioni sulle Submission.
@@ -10,6 +12,8 @@ import it.unicam.cs.ids.hackhub.service.SubmissionService;
  * Questa classe espone metodi di alto livello che delegano la logica al servizio
  * {@link it.unicam.cs.ids.hackhub.service.SubmissionService}, fungendo da punto di accesso per il livello di presentazione.
  */
+@RestController
+@RequestMapping("/api/v1/submission")
 public class SubmissionInterfaceController {
     /** Servizio per le operazioni sulle sottomissioni. */
     private final SubmissionService service;
@@ -29,7 +33,8 @@ public class SubmissionInterfaceController {
      * @param requested la richiesta di creazione della sottomissione
      * @return la sottomissione creata
      */
-    public Submission creationSubmission(SubmissionRequester requested, Long id) {
+    @PostMapping("/create")
+    public SubmissionResponse creationSubmission(@RequestBody SubmissionRequester requested, @RequestParam Long id) {
         return service.creationSubmission(id, requested);
     }
 }

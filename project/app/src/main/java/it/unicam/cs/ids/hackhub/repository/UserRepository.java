@@ -1,84 +1,19 @@
 package it.unicam.cs.ids.hackhub.repository;
 
 import it.unicam.cs.ids.hackhub.entity.model.User;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
- * Implementazione del repository per la gestione degli utenti.
- * Fornisce operazioni CRUD (Create, Read, Update) per le entità {@link User}.
+ * Repository per la gestione delle operazioni CRUD relative allo {@link User}.
  */
-public class UserRepository implements Repository<User> {
-
-    private List<User> users;
-
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
     /**
-     * Costruisce un nuovo {@code UserRepository} con una lista vuota di utenti.
-     */
-    public UserRepository() {
-        users = new ArrayList<>();
-    }
-
-    /**
-     * Restituisce la lista di tutti gli utenti presenti nel repository.
+     * Recupera un utente filtrato per email specifica.
      *
-     * @return una {@link List} contenente tutti gli utenti
+     * @param email utilizzata per filtrare l'utente
+     * @return un utente che corrisponde all'email fornita
      */
-    @Override
-    public List<User> getAll() {
-        return users;
-    }
-
-    /**
-     * Restituisce l'utente con l'identificativo specificato.
-     *
-     * @param id l'identificativo univoco dell'utente da cercare
-     * @return l'utente corrispondente all'id fornito, oppure {@code null} se non trovato
-     */
-    @Override
-    public User getById(Long id) {
-        for (User u : users) {
-            if (u.getId().equals(id)) return u;
-        }
-        return null;
-    }
-
-    public User getByEmail(String email) {
-        for (User u : users) {
-            if (u.getEmail().equals(email)) return u;
-        }
-        return null;
-    }
-
-    /**
-     * Aggiunge un nuovo utente al repository.
-     * Assegna all'utente un identificativo prima di inserirlo nella lista.
-     *
-     * @param u l'utente da aggiungere al repository
-     */
-    @Override
-    public void create(User u) {
-        u.setId(1L);
-        users.add(u);
-    }
-
-    /**
-     * Aggiorna un utente esistente nel repository.
-     * Cerca l'utente tramite il suo identificativo e, se trovato,
-     * lo sostituisce con il nuovo utente fornito.
-     *
-     * @param newU il nuovo utente contenente i dati aggiornati;
-     *             deve avere lo stesso identificativo dell'utente da sostituire
-     */
-    @Override
-    public void update(User newU) {
-        for (User oldU : users) {
-            if (oldU.getId().equals(newU.getId())) {
-                users.remove(oldU);
-                users.add(newU);
-                return;
-            }
-        }
-    }
+    User findByEmail(String email);
 }

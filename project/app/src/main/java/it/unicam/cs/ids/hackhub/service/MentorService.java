@@ -4,7 +4,9 @@ import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
+import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.validator.MentorValidator;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 /**
@@ -14,8 +16,10 @@ import java.util.ArrayList;
  */
 import java.util.List;
 
+@Service
 public class MentorService {
     private final MentorValidator mentorValidator;
+    private final UserRepository userRepository;
     private final HackathonRepository hackathonRepository;
 
     /**
@@ -25,8 +29,9 @@ public class MentorService {
      *                   possa ricoprire il ruolo di mentor
      * @param hRepo      il repository per accedere e aggiornare i dati degli hackathon
      */
-    public MentorService(MentorValidator mValidator, HackathonRepository hRepo) {
+    public MentorService(MentorValidator mValidator, UserRepository uRepo, HackathonRepository hRepo) {
         this.mentorValidator = mValidator;
+        this.userRepository = uRepo;
         this.hackathonRepository = hRepo;
     }
 
@@ -40,13 +45,15 @@ public class MentorService {
      * @param mentor l'utente da aggiungere come mentor all'hackathon
      * @param hId    l'identificativo univoco dell'hackathon a cui aggiungere il mentor
      */
-    public void addMentor(User mentor, Long hId) {
-        if(!mentorValidator.validate(mentor)) return;
-        mentor.setRank(Rank.MENTORE);
-        Hackathon h = hackathonRepository.getById(hId);
-        h.getMentors().add(mentor);
+    public boolean addMentor(String mentor, Long hId) {
+        User user = userRepository.findByEmail(mentor);
+        if(!mentorValidator.validate(user)) return false;
+        user.setRank(Rank.MENTORE);
+        Hackathon h = hackathonRepository.getReferenceById(hId);
+        h.getMentors().add(user);
 
-        hackathonRepository.update(h);
+        hackathonRepository.save(h);
+        return true;
 
     }
 }

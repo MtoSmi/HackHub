@@ -1,13 +1,18 @@
 package it.unicam.cs.ids.hackhub.service;
 
+import it.unicam.cs.ids.hackhub.entity.dto.ResponseResponse;
+import it.unicam.cs.ids.hackhub.entity.dto.SubmissionResponse;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Response;
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
+import it.unicam.cs.ids.hackhub.entity.model.Valuation;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.validator.SubmissionValidator;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,6 +20,7 @@ import java.util.List;
  * Fornisce le operazioni necessarie per creare e associare
  * una submission a un hackathon specifico.
  */
+@Service
 public class SubmissionService {
     private final SubmissionValidator submissionValidator;
     private final HackathonRepository hackathonRepository;
@@ -42,30 +48,52 @@ public class SubmissionService {
      * @param s   il richiedente della submission contenente i dati da registrare
      * @return la {@link Submission} creata, oppure {@code null} se la validazione fallisce
      */
-    public Submission creationSubmission(Long hId, SubmissionRequester s) {
+    public SubmissionResponse creationSubmission(Long hId, SubmissionRequester s) {
         if (!submissionValidator.validate(s)) return null;
-        Hackathon h = hackathonRepository.getById(hId);
+        Hackathon h = hackathonRepository.getReferenceById(hId);
         h.getSubmissions().add(s);
-        hackathonRepository.update(h);
-        return s;
+        hackathonRepository.save(h);
+        return toResponse(s);
     }
 
-    public Submission sendSubmission(Long hid, Response r, Submission s) {
+    public SubmissionResponse sendSubmission(Long hid, Response r, Submission s) {
         if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
         s.getResponses().add(r);
-        Hackathon h = hackathonRepository.getById(hid);
-        hackathonRepository.update(h);
-        return s;
+        Hackathon h = hackathonRepository.getReferenceById(hid);
+        hackathonRepository.save(h);
+        return toResponse(s);
     }
 
-    public Response evaluateSubmission(Long hid, Submission s, int rId, Valutation v) {
+    public ResponseResponse evaluateSubmission(Long hid, Submission s, int rId, Valuation v) {
         s.getResponses().get(rId).setValutation(v);
-        Hackathon h = hackathonRepository.getById(hid);
-        hackathonRepository.update(h);
-        return s.getResponses().get(rId);
+        Hackathon h = hackathonRepository.getReferenceById(hid);
+        hackathonRepository.save(h);
+        return toResponse(s.getResponses().get(rId));
     }
 
-    public List<Submission> showSubmissionList(Hackathon h) {
-        return h.getSubmissions();
+    public List<SubmissionResponse> showSubmissionList(Hackathon h) {
+        List<SubmissionResponse> responses = new ArrayList<>();
+        for (Submission submission : h.getSubmissions()) {
+            responses.add(toResponse(submission));
+        }
+        return responses;
+    }
+
+    private ResponseResponse toResponse(Response r) {
+        if (r == null) return null;
+        return new ResponseResponse();
+    }
+
+    private SubmissionResponse toResponse(Submission s) {
+        if (s == null) return null;
+        return new SubmissionResponse(
+                s.getId(),
+                s.getTitle(),
+                s.getDescription(),
+                s.getStartDate(),
+                s.getEndDate(),
+                s.getResponses().stream().map(Response::getId).toList(),
+                s.isComplete()
+        );
     }
 }

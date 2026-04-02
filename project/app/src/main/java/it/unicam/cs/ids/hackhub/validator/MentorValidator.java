@@ -2,11 +2,13 @@ package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import org.springframework.stereotype.Component;
 
 /**
  * Validator specifico per gli utenti con ruolo di Mentor.
  * Estende {@link UserValidator} aggiungendo il controllo sul rank dell'utente.
  */
+@Component
 public class MentorValidator extends UserValidator {
 
     /**

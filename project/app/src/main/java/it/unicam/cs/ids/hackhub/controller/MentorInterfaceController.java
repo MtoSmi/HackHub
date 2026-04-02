@@ -2,6 +2,10 @@ package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.service.MentorService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller per interfaccia per la gestione delle operazioni sui mentori.
@@ -9,6 +13,8 @@ import it.unicam.cs.ids.hackhub.service.MentorService;
  * Questa classe espone metodi di alto livello che delegano la logica al servizio
  * {@link MentorService}, fungendo da punto di accesso per il livello di presentazione.
  */
+@RestController
+@RequestMapping("/api/v1/mentor")
 public class MentorInterfaceController {
     /** Servizio per le operazioni sui mentori. */
     private final MentorService service;
@@ -27,7 +33,10 @@ public class MentorInterfaceController {
      * @param user il mentore da aggiungere
      * @param hackathonId l'identificativo dell'hackathon a cui aggiungere il mentore
      */
-    public void addMentor(User user, Long hackathonId) {
-        service.addMentor(user, hackathonId);
+    @PostMapping("/add")
+    public ResponseEntity<Void> addMentor(String user, Long hackathonId) {
+        boolean response = service.addMentor(user, hackathonId);
+        if (response) return ResponseEntity.ok().build();
+        return ResponseEntity.unprocessableEntity().build();
     }
 }

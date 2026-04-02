@@ -1,12 +1,14 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.HelpRequest;
+import org.springframework.stereotype.Component;
 
 /**
  * Validator per le richieste di aiuto ({@link HelpRequest}).
  * Implementa l'interfaccia {@link Validator} per verificare la correttezza
  * dei dati di una richiesta di aiuto prima della sua elaborazione.
  */
+@Component
 public class HelpRequestValidator implements Validator<HelpRequest> {
 
     /**

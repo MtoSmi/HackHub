@@ -1,13 +1,18 @@
 package it.unicam.cs.ids.hackhub.entity.model;
 
+import jakarta.persistence.*;
+
 /**
  * Rappresenta una richiesta di aiuto nel sistema HackHub.
  *
  * Questa classe modella una richiesta di assistenza inviata da un utente a un altro utente(mentore).
  * La richiesta può essere completata e ricevere una risposta.
  */
+@Entity
 public class HelpRequest {
     /** Identificatore univoco della richiesta di aiuto */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /** Titolo o argomento della richiesta di aiuto */
@@ -20,9 +25,11 @@ public class HelpRequest {
     private String reply;
 
     /** Utente che ha inviato la richiesta di aiuto */
+    @OneToOne
     private User from;
 
     /** Mentore che riceve la richiesta di aiuto e deve fornire assistenza */
+    @OneToOne
     private User to;
 
     /** Link o identificativo della chiamata virtuale/riunione per l'aiuto */

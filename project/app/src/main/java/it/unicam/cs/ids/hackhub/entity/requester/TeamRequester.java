@@ -9,4 +9,9 @@ import it.unicam.cs.ids.hackhub.entity.model.Team;
  * per distinguere i team in fase di input o workflow durante la creazione.
  */
 public class TeamRequester extends Team {
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
 }

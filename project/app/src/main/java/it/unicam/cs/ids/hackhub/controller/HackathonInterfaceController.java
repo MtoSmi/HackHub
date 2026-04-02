@@ -1,9 +1,13 @@
 package it.unicam.cs.ids.hackhub.controller;
 
+import it.unicam.cs.ids.hackhub.entity.dto.HackathonResponse;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.service.HackathonService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -13,6 +17,8 @@ import java.util.List;
  * Questa classe espone metodi di alto livello che delegano la logica al servizio
  * {@link HackathonService}, fungendo da punto di accesso per il livello di presentazione.
  */
+@RestController
+@RequestMapping("/api/v1/hackathon")
 public class HackathonInterfaceController {
     /** Servizio per le operazioni sugli hackathon. */
     private final HackathonService service;
@@ -32,8 +38,13 @@ public class HackathonInterfaceController {
      * @param requested la richiesta di creazione dell'hackathon
      * @return l'hackathon creato
      */
-    public Hackathon creationHackathon(HackathonRequester requested) {
-        return service.creationHackathon(requested);
+    @PostMapping("/create")
+    public ResponseEntity<HackathonResponse> creationHackathon(@RequestBody HackathonRequester requested) {
+        HackathonResponse response = service.creationHackathon(requested);
+        if (response == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
@@ -41,8 +52,9 @@ public class HackathonInterfaceController {
      *
      * @return la lista degli hackathon
      */
-    public List<Hackathon> showHackathonList() {
-        return service.showHackathonList();
+    @GetMapping("/showList")
+    public ResponseEntity<List<HackathonResponse>> showHackathonList() {
+        return ResponseEntity.ok(service.showHackathonList());
     }
 
     /**
@@ -51,11 +63,21 @@ public class HackathonInterfaceController {
      * @param id l'identificativo dell'hackathon
      * @return l'hackathon corrispondente all'id
      */
-    public Hackathon showSelectedHackathon(long id) {
-        return service.showSelectedHackathon(id);
+    @GetMapping("/showSelected/{id}")
+    public ResponseEntity<HackathonResponse> showSelectedHackathon(@PathVariable Long id) {
+        HackathonResponse response = service.showSelectedHackathon(id);
+        if (response == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
     }
 
-    public void subscribeTeam(User user, Hackathon hackathon) {
-        service.subscribeHackathon(user, hackathon);
+    @PostMapping("/subscribe")
+    public ResponseEntity<Void> subscribeTeam(@RequestParam String email, Long id) {
+        boolean response = service.subscribeHackathon(email, id);
+        if (response) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.unprocessableEntity().build();
     }
 }
