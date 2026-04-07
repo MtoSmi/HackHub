@@ -9,6 +9,7 @@ import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.HackathonUpdateRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
@@ -120,8 +121,9 @@ public class HackathonService {
         return toResponse(hackathonRepository.getReferenceById(newH.getId()));
     }
 
-    public HackathonResponse updateHackathonInformation(Hackathon oldH, Hackathon h) {
-        if (!hackathonValidator.validate(h)) return null;
+    public HackathonResponse updateHackathonInformation(HackathonUpdateRequester h) {
+        //if (!hackathonValidator.validate(h)) return null; //TODO: Aggiungere validator appropriato e selezione dati da aggiornare
+        Hackathon oldH = hackathonRepository.getReferenceById(h.getId());
         oldH.setName(h.getName());
         oldH.setMaxTeams(h.getMaxTeams());
         oldH.setRegulation(h.getRegulation());
@@ -130,8 +132,8 @@ public class HackathonService {
         oldH.setEndDate(h.getEndDate());
         oldH.setLocation(h.getLocation());
         oldH.setReward(h.getReward());
-        hackathonRepository.save(oldH);
-        return toResponse(hackathonRepository.getReferenceById(oldH.getId()));
+
+        return toResponse(hackathonRepository.save(oldH));
     }
 
     public boolean subscribeHackathon(String email, Long id) {

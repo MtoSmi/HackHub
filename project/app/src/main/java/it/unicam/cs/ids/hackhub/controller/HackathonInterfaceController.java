@@ -4,6 +4,7 @@ import it.unicam.cs.ids.hackhub.entity.dto.HackathonResponse;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.HackathonUpdateRequester;
 import it.unicam.cs.ids.hackhub.service.HackathonService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,5 +80,12 @@ public class HackathonInterfaceController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.unprocessableEntity().build();
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<HackathonResponse> updateHackathon(@RequestBody HackathonUpdateRequester requested) {
+        HackathonResponse response = service.updateHackathonInformation(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(response);
     }
 }
