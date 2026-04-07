@@ -7,7 +7,9 @@ import it.unicam.cs.ids.hackhub.entity.model.Response;
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.model.Valuation;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.ValuationRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
+import it.unicam.cs.ids.hackhub.repository.ResponseRepository;
 import it.unicam.cs.ids.hackhub.validator.SubmissionValidator;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ import java.util.List;
 public class SubmissionService {
     private final SubmissionValidator submissionValidator;
     private final HackathonRepository hackathonRepository;
+    private final ResponseRepository responseRepository;
 
     /**
      * Costruisce un'istanza di {@code SubmissionService} con le dipendenze fornite.
@@ -31,9 +34,10 @@ public class SubmissionService {
      * @param sValidator il validator utilizzato per verificare la correttezza delle submission
      * @param hRepo      il repository utilizzato per accedere e aggiornare gli hackathon
      */
-    public SubmissionService(SubmissionValidator sValidator, HackathonRepository hRepo) {
+    public SubmissionService(SubmissionValidator sValidator, HackathonRepository hRepo, ResponseRepository responseRepository) {
         this.submissionValidator = sValidator;
         this.hackathonRepository = hRepo;
+        this.responseRepository = responseRepository;
     }
 
     /**
@@ -64,11 +68,11 @@ public class SubmissionService {
         return toResponse(s);
     }
 
-    public ResponseResponse evaluateSubmission(Long hid, Submission s, int rId, Valuation v) {
-        s.getResponses().get(rId).setValuation(v);
-        Hackathon h = hackathonRepository.getReferenceById(hid);
-        hackathonRepository.save(h);
-        return toResponse(s.getResponses().get(rId));
+    public ResponseResponse evaluateSubmission(ValuationRequester r) {
+        Response res = responseRepository.getReferenceById(r.getResponseId());
+        Valuation val = new Valuation(r.getVote(), r.getNote());
+        res.setValuation(val);
+        return toResponse(responseRepository.save(res));
     }
 
     public List<SubmissionResponse> showSubmissionList(Hackathon h) {
@@ -81,7 +85,12 @@ public class SubmissionService {
 
     private ResponseResponse toResponse(Response r) {
         if (r == null) return null;
-        return new ResponseResponse();
+        return new ResponseResponse(
+                r.getId(),
+                r.getSubmission().getId(),
+                r.getFile(),
+                r.getValuation()
+        );
     }
 
     private SubmissionResponse toResponse(Submission s) {

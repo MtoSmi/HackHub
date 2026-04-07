@@ -1,9 +1,13 @@
 package it.unicam.cs.ids.hackhub.controller;
 
+import it.unicam.cs.ids.hackhub.entity.dto.ResponseResponse;
 import it.unicam.cs.ids.hackhub.entity.dto.SubmissionResponse;
+import it.unicam.cs.ids.hackhub.entity.dto.ValuationResponse;
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.ValuationRequester;
 import it.unicam.cs.ids.hackhub.service.SubmissionService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -36,5 +40,12 @@ public class SubmissionInterfaceController {
     @PostMapping("/create")
     public SubmissionResponse creationSubmission(@RequestBody SubmissionRequester requested, @RequestParam Long id) {
         return service.creationSubmission(id, requested);
+    }
+
+    @PostMapping("/evaluation")
+    public ResponseEntity<ResponseResponse> evaluateResponse(@RequestBody ValuationRequester requested) {
+        ResponseResponse result = service.evaluateSubmission(requested);
+        if (result == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().body(result);
     }
 }

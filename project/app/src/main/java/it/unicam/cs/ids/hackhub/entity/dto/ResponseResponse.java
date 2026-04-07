@@ -1,6 +1,12 @@
 package it.unicam.cs.ids.hackhub.entity.dto;
 
+import it.unicam.cs.ids.hackhub.entity.model.Response;
+import it.unicam.cs.ids.hackhub.entity.model.Valuation;
+
 public record ResponseResponse(
-        //TODO: Implementazione futura
+        Long id,
+        Long submissionId,
+        String response,
+        Valuation valuation
 ) {
 }

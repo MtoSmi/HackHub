@@ -94,7 +94,7 @@ public class HackathonService {
      * @return il nuovo {@link Hackathon} creato e salvato, oppure {@code null} in caso di errore
      */
     public HackathonResponse creationHackathon(HackathonRequester h) {
-        if (!hackathonValidator.validate(h)) return null;
+        if (!hackathonValidator.validate(h)) return null; // TODO: inserire appropriato validate pèer id utenti non veri utenti completi
         if (!h.getHost().getRank().equals(Rank.ORGANIZZATORE)) return null;
         if (!h.getJudge().getRank().equals(Rank.STANDARD)) return null;
         for (User m : h.getMentors()) {
