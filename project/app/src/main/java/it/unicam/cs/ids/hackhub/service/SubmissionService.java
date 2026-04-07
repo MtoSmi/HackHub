@@ -65,7 +65,7 @@ public class SubmissionService {
     }
 
     public ResponseResponse evaluateSubmission(Long hid, Submission s, int rId, Valuation v) {
-        s.getResponses().get(rId).setValutation(v);
+        s.getResponses().get(rId).setValuation(v);
         Hackathon h = hackathonRepository.getReferenceById(hid);
         hackathonRepository.save(h);
         return toResponse(s.getResponses().get(rId));

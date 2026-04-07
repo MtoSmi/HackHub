@@ -4,12 +4,11 @@ import it.unicam.cs.ids.hackhub.entity.dto.UserResponse;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.UserUpdateRequester;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Service per la gestione degli utenti.
@@ -66,21 +65,20 @@ public class UserService {
         return null;
     }
 
-    public UserResponse updateUserInformation(User oldU, User u) {
+    public UserResponse updateUserInformation(UserUpdateRequester u) {
         if (!userValidator.validate(u)) return null;
-        for (User other : removeUser(oldU.getId())) {
-            if (u.getEmail().equals(other.getEmail())) return null;
+        for (User other : userRepository.findAll()) {
+            if (!u.getId().equals(other.getId())){
+                if (u.getEmail().equals(other.getEmail())) return null;
+            }
         }
-        oldU.setName(u.getName());
-        oldU.setSurname(u.getSurname());
-        oldU.setEmail(u.getEmail());
-        oldU.setPassword(u.getPassword());
+        User updatedUser = userRepository.getReferenceById(u.getId());
+        updatedUser.setName(u.getName());
+        updatedUser.setSurname(u.getSurname());
+        updatedUser.setEmail(u.getEmail());
+        updatedUser.setPassword(u.getPassword());
 
-        return toResponse(userRepository.save(oldU));
-    }
-
-    private List<User> removeUser(Long id) {
-        return userRepository.findAll().stream().filter(user -> !user.getId().equals(id)).toList();
+        return toResponse(userRepository.save(updatedUser));
     }
 
     public boolean rankUpgrade(String email) {

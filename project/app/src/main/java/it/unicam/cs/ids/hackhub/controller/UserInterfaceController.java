@@ -3,6 +3,7 @@ package it.unicam.cs.ids.hackhub.controller;
 import it.unicam.cs.ids.hackhub.entity.dto.UserResponse;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.UserUpdateRequester;
 import it.unicam.cs.ids.hackhub.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +74,13 @@ public class UserInterfaceController {
         } else {
             return ResponseEntity.unprocessableEntity().build();
         }
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<UserResponse> updateInformation(@RequestBody UserUpdateRequester requested) {
+        UserResponse response = service.updateUserInformation(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(response);
     }
 
 }

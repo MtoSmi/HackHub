@@ -38,7 +38,7 @@ public class HelpRequestInterfaceController {
      * @param mentorId l'identificativo del mentore
      * @return la lista delle richieste di aiuto del mentore
      */
-    @GetMapping("/showHelpRequest}")
+    @GetMapping("/showHelpRequest")
     public ResponseEntity<List<HelpRequestResponse>> showMyHelpRequests(@RequestParam long mentorId) {
         List<HelpRequestResponse> response = service.showMyHelpRequests(mentorId);
         return ResponseEntity.ok(response);

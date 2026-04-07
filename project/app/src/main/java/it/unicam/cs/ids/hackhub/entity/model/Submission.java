@@ -1,5 +1,7 @@
 package it.unicam.cs.ids.hackhub.entity.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -8,8 +10,11 @@ import java.util.List;
  * Una submission contiene le informazioni relative al risultato atteso dai team,
  * incluse le risposte fornite dai team e lo stato di completamento.
  */
+@Entity
 public class Submission {
     /** Identificatore univoco della submission */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     /** Titolo della submission */
@@ -25,6 +30,7 @@ public class Submission {
     private LocalDateTime endDate;
 
     /** Lista delle risposte associate alla submission */
+    @OneToMany
     private List<Response> responses;
 
     /** Indica se la submission è completa */
