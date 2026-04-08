@@ -4,6 +4,7 @@ import it.unicam.cs.ids.hackhub.entity.dto.ResponseResponse;
 import it.unicam.cs.ids.hackhub.entity.dto.SubmissionResponse;
 import it.unicam.cs.ids.hackhub.entity.dto.ValuationResponse;
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
+import it.unicam.cs.ids.hackhub.entity.requester.ResponseRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.ValuationRequester;
 import it.unicam.cs.ids.hackhub.service.SubmissionService;
@@ -45,6 +46,13 @@ public class SubmissionInterfaceController {
     @PostMapping("/evaluation")
     public ResponseEntity<ResponseResponse> evaluateResponse(@RequestBody ValuationRequester requested) {
         ResponseResponse result = service.evaluateSubmission(requested);
+        if (result == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().body(result);
+    }
+
+    @PostMapping("/reply")
+    public ResponseEntity<ResponseResponse> sendSubmission(@RequestBody ResponseRequester requested) {
+        ResponseResponse result = service.sendSubmission(requested);
         if (result == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok().body(result);
     }

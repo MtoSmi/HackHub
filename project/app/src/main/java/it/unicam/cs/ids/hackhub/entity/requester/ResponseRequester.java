@@ -1,10 +1,9 @@
 package it.unicam.cs.ids.hackhub.entity.requester;
 
-public record ValuationRequester(
+public record ResponseRequester(
         Long hackathonId,
         Long submissionId,
-        Long responseId,
-        int vote,
-        String note
+        String file,
+        Long sender
 ) {
 }

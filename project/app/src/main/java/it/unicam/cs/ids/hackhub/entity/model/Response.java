@@ -11,10 +11,21 @@ public class Response {
     private String file;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    private Team sender;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     private Submission submission;
 
     @OneToOne
     private Valuation valuation;
+
+    public Response(String file) {
+        this.file = file;
+    }
+
+    public Response() {
+
+    }
 
     public Long getId() {
         return id;
@@ -32,6 +43,14 @@ public class Response {
         this.file = file;
     }
 
+    public Team getSender() {
+        return sender;
+    }
+
+    public void setSender(Team sender) {
+        this.sender = sender;
+    }
+
     public Submission getSubmission() {
         return submission;
     }
@@ -47,4 +66,5 @@ public class Response {
     public void setValuation(Valuation valuation) {
         this.valuation = valuation;
     }
+
 }
