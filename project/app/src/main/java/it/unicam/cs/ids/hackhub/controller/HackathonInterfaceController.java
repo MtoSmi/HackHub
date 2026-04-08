@@ -1,8 +1,6 @@
 package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.dto.HackathonResponse;
-import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
-import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonUpdateRequester;
 import it.unicam.cs.ids.hackhub.service.HackathonService;
@@ -14,14 +12,16 @@ import java.util.List;
 
 /**
  * Controller per interfaccia per la gestione delle operazioni sugli hackathon.
- *</p>
+ * </p>
  * Questa classe espone metodi di alto livello che delegano la logica al servizio
  * {@link HackathonService}, fungendo da punto di accesso per il livello di presentazione.
  */
 @RestController
 @RequestMapping("/api/v1/hackathon")
 public class HackathonInterfaceController {
-    /** Servizio per le operazioni sugli hackathon. */
+    /**
+     * Servizio per le operazioni sugli hackathon.
+     */
     private final HackathonService service;
 
     /**
