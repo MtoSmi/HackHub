@@ -1,12 +1,14 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.Response;
+import org.springframework.stereotype.Component;
 
 /**
  * Validator per le istanze di {@link Response}.
  * Implementa l'interfaccia {@link Validator} per verificare che una response
  * rispetti tutti i vincoli necessari prima di essere accettata nel sistema.
  */
+@Component
 public class ResponseValidator implements Validator<Response> {
     /**
      * Valida un oggetto {@link Response} verificando i seguenti vincoli:
