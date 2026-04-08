@@ -48,16 +48,16 @@ public class SubmissionService {
      * In caso di successo, la submission viene aggiunta all'hackathon e
      * l'hackathon viene aggiornato nel repository.
      *
-     * @param hId l'identificativo univoco dell'hackathon a cui associare la submission
      * @param s   il richiedente della submission contenente i dati da registrare
      * @return la {@link Submission} creata, oppure {@code null} se la validazione fallisce
      */
-    public SubmissionResponse creationSubmission(Long hId, SubmissionRequester s) {
-        if (!submissionValidator.validate(s)) return null;
-        Hackathon h = hackathonRepository.getReferenceById(hId);
-        h.getSubmissions().add(s);
+    public SubmissionResponse creationSubmission(SubmissionRequester s) {
+        //if (!submissionValidator.validate(s)) return null; //TODO: manca il validator corretto per la richiesta di submission
+        Hackathon h = hackathonRepository.getReferenceById(s.hackathonId());
+        Submission submission = new Submission(s.title(), s.description(), s.startDate(), s.endDate());
+        h.getSubmissions().add(submission);
         hackathonRepository.save(h);
-        return toResponse(s);
+        return toResponse(submission);
     }
 
     public SubmissionResponse sendSubmission(Long hid, Response r, Submission s) {

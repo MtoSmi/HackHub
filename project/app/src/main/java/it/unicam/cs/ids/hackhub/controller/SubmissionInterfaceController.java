@@ -38,8 +38,8 @@ public class SubmissionInterfaceController {
      * @return la sottomissione creata
      */
     @PostMapping("/create")
-    public SubmissionResponse creationSubmission(@RequestBody SubmissionRequester requested, @RequestParam Long id) {
-        return service.creationSubmission(id, requested);
+    public SubmissionResponse creationSubmission(@RequestBody SubmissionRequester requested) {
+        return service.creationSubmission(requested);
     }
 
     @PostMapping("/evaluation")
