@@ -29,10 +29,10 @@ public class SubmissionValidator implements Validator<SubmissionRequester> {
     @Override
     public boolean validate(SubmissionRequester s) {
         if (s == null) return false;
-        if (s.getTitle() == null || s.getTitle().isEmpty()) return false;
-        if (s.getDescription() == null || s.getDescription().isEmpty()) return false;
-        if (s.getStartDate() == null || s.getEndDate() == null) return false;
-        if (LocalDateTime.now().isAfter(s.getStartDate())) return false;
-        return !s.getStartDate().isAfter(s.getEndDate());
+        if (s.title() == null || s.title().isEmpty()) return false;
+        if (s.description() == null || s.description().isEmpty()) return false;
+        if (s.startDate() == null || s.endDate() == null) return false;
+        if (LocalDateTime.now().isAfter(s.startDate())) return false;
+        return !s.startDate().isAfter(s.endDate());
     }
 }

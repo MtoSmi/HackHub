@@ -21,7 +21,7 @@ public class ValuationValidator implements Validator<ValuationRequester> {
      */
     @Override
     public boolean validate(ValuationRequester valuation) {
-        if (valuation.getVote() < 0 || valuation.getVote() > 10) return false;
-        return valuation.getNote() != null && !valuation.getNote().isBlank();
+        if (valuation.vote() < 0 || valuation.vote() > 10) return false;
+        return valuation.note() != null && !valuation.note().isBlank();
     }
 }

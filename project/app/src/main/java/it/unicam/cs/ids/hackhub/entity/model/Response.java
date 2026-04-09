@@ -1,8 +1,14 @@
 package it.unicam.cs.ids.hackhub.entity.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@NoArgsConstructor
+@Setter
 public class Response {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,7 +18,7 @@ public class Response {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Team sender;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Submission submission;
 
@@ -23,48 +29,14 @@ public class Response {
         this.file = file;
     }
 
-    public Response() {
-
+    @Override
+    public String toString() {
+        return "Response{" +
+                "id=" + id +
+                ", file='" + file + '\'' +
+                ", senderId=" + (sender == null ? null : sender.getId()) +
+                ", submissionId=" + (submission == null ? null : submission.getId()) +
+                ", valuationId=" + (valuation == null ? null : valuation.getId()) +
+                '}';
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFile() {
-        return file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
-    }
-
-    public Team getSender() {
-        return sender;
-    }
-
-    public void setSender(Team sender) {
-        this.sender = sender;
-    }
-
-    public Submission getSubmission() {
-        return submission;
-    }
-
-    public void setSubmission(Submission submission) {
-        this.submission = submission;
-    }
-
-    public Valuation getValuation() {
-        return valuation;
-    }
-
-    public void setValuation(Valuation valuation) {
-        this.valuation = valuation;
-    }
-
 }

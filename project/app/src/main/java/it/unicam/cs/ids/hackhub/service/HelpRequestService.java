@@ -84,17 +84,19 @@ public class HelpRequestService {
      */
     public HelpRequestResponse creationHelpRequest(HelpRequestRequester hr) {
         if (!helpRequestValidator.validate(hr)) return null;
-        if (!hr.getFrom().getRank().equals(Rank.MEMBRO_TEAM)) return null;
-        if (!hr.getTo().getRank().equals(Rank.MENTORE)) return null;
+        User u = userRepository.getReferenceById(hr.fromId());
+        User m = userRepository.getReferenceById(hr.toId());
+        if (!u.getRank().equals(Rank.MEMBRO_TEAM)) return null;
+        if (!m.getRank().equals(Rank.MENTORE)) return null;
         for (Hackathon h : hackathonRepository.findByStatus(Status.IN_CORSO)) {
-            if (!h.getMentors().contains(hr.getTo())) return null;
-            if (!h.getParticipants().contains(hr.getFrom().getTeam())) return null;
+            if (!h.getMentors().contains(m)) return null;
+            if (!h.getParticipants().contains(u.getTeam())) return null;
         }
-        helpRequestRepository.save(hr);
+        HelpRequest helpRequest = new HelpRequest(hr.title(), hr.description(), u, m);
         notificationService.send("Richiesta di aiuto!",
-                "Hai ricevuto una richiesta di aiuto da " + hr.getFrom().getName(),
-                hr.getTo().getId());
-        return toResponse(helpRequestRepository.getReferenceById(hr.getId()));
+                "Hai ricevuto una richiesta di aiuto da " + u.getName(),
+                m.getId());
+        return toResponse(helpRequestRepository.save(helpRequest));
     }
 
     /**
