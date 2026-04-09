@@ -133,7 +133,7 @@ public class Notification {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", to=" + to +
+                ", toId=" + to +
                 '}';
     }
 }

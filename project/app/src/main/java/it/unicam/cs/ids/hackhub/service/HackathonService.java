@@ -84,7 +84,7 @@ public class HackathonService {
      * <p>
      * La creazione viene rifiutata (restituendo {@code null}) nei seguenti casi:
      * - I dati non superano la validazione
-     * - L'host non ha il rank {@link Rank#ORGANIZZATORE}
+     * - L'hostId non ha il rank {@link Rank#ORGANIZZATORE}
      * - Il giudice non ha il rank {@link Rank#STANDARD}
      * - Almeno un mentore non ha il rank {@link Rank#STANDARD}
      * - Esiste già un hackathon equivalente nel sistema

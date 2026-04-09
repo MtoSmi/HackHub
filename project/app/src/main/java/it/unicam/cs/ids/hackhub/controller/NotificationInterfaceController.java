@@ -1,7 +1,6 @@
 package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.dto.NotificationResponse;
-import it.unicam.cs.ids.hackhub.entity.model.Notification;
 import it.unicam.cs.ids.hackhub.service.NotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

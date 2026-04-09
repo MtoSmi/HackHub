@@ -106,7 +106,7 @@ public class Hackathon {
     /**
      * Restituisce l'utente organizzatore dell'hackathon.
      *
-     * @return l'host dell'hackathon
+     * @return l'hostId dell'hackathon
      */
     public User getHost() {
         return host;
@@ -115,7 +115,7 @@ public class Hackathon {
     /**
      * Restituisce il giudice.
      *
-     * @return il judge dell'hackathon
+     * @return il judgeId dell'hackathon
      */
     public User getJudge() {
         return judge;
@@ -239,7 +239,7 @@ public class Hackathon {
     /**
      * Imposta l'utente organizzatore dell'hackathon.
      *
-     * @param host il nuovo host
+     * @param host il nuovo hostId
      */
     public void setHost(User host) {
         this.host = host;
@@ -248,7 +248,7 @@ public class Hackathon {
     /**
      * Imposta il giudice.
      *
-     * @param judge il nuovo judge
+     * @param judge il nuovo judgeId
      */
     public void setJudge(User judge) {
         this.judge = judge;
@@ -361,10 +361,10 @@ public class Hackathon {
         return "Hackathon{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", host=" + host +
-                ", judge=" + judge +
-                ", mentors=" + mentors +
-                ", participants=" + participants +
+                ", hostId=" + host +
+                ", judgeId=" + judge +
+                ", mentorsId=" + mentors +
+                ", participantsId=" + participants +
                 ", maxTeams=" + maxTeams +
                 ", submissions=" + submissions +
                 ", regulation='" + regulation + '\'' +

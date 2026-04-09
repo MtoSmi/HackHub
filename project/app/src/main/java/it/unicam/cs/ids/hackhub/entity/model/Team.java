@@ -148,7 +148,7 @@ public class Team {
                 ", name='" + name + '\'' +
                 ", dimension=" + dimension +
                 ", members=" + members +
-                ", hackathons=" + hackathons +
+                ", hackathonsId=" + hackathons +
                 '}';
     }
 }

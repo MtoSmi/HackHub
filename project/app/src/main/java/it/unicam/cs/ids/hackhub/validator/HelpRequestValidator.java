@@ -20,7 +20,7 @@ public class HelpRequestValidator implements Validator<HelpRequest> {
      * - Il titolo è {@code null} o vuoto
      * - La descrizione è {@code null} o vuota
      * - La risposta è già presente (non {@code null} e non vuota)
-     * - Il mittente ({@code from}) o il destinatario ({@code to}) sono {@code null}
+     * - Il mittente ({@code from}) o il destinatario ({@code toId}) sono {@code null}
      * - Il campo {@code call} è {@code null} o vuoto
      *
      * @param hr la richiesta di aiuto da validare

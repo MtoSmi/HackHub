@@ -213,7 +213,7 @@ public class HelpRequest {
                 ", description='" + description + '\'' +
                 ", reply='" + reply + '\'' +
                 ", from=" + from +
-                ", to=" + to +
+                ", toId=" + to +
                 ", call='" + call + '\'' +
                 ", completed=" + completed +
                 '}';

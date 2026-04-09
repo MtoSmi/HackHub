@@ -1,6 +1,5 @@
 package it.unicam.cs.ids.hackhub.controller;
 
-import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.service.MentorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

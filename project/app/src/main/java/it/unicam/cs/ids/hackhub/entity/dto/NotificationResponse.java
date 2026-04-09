@@ -4,6 +4,6 @@ public record NotificationResponse(
         Long id,
         String title,
         String description,
-        Long to
+        Long toId
 ) {
 }

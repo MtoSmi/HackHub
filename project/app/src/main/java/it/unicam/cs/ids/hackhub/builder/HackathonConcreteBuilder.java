@@ -47,7 +47,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta l'utente host (organizzatore) dell'hackathon.
+     * Imposta l'utente hostId (organizzatore) dell'hackathon.
      *
      * @param host l'oggetto User che rappresenta l'organizzatore
      * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
