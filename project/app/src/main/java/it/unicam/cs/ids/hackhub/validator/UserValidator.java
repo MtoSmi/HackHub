@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
 import org.springframework.stereotype.Component;
 
 /**
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
  * Verifica che i campi principali dell'utente siano presenti e validi.
  */
 @Component
-public class UserValidator implements Validator<User> {
+public class UserValidator implements Validator<UserRequester> {
 
     /**
      * Valida un oggetto {@link User} verificando che i campi obbligatori siano presenti e non vuoti.
@@ -24,7 +25,7 @@ public class UserValidator implements Validator<User> {
      * @return {@code true} se l'utente è valido, {@code false} altrimenti
      */
     @Override
-    public boolean validate(User u) {
+    public boolean validate(UserRequester u) {
         if(u == null) return false;
         if(u.getName() == null || u.getName().isBlank()) return false;
         if(u.getSurname() == null || u.getSurname().isBlank()) return false;

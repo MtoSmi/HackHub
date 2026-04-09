@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.Response;
+import it.unicam.cs.ids.hackhub.entity.requester.ResponseRequester;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
  * rispetti tutti i vincoli necessari prima di essere accettata nel sistema.
  */
 @Component
-public class ResponseValidator implements Validator<Response> {
+public class ResponseValidator implements Validator<ResponseRequester> {
     /**
      * Valida un oggetto {@link Response} verificando i seguenti vincoli:
      * - Il file non deve essere {@code null} o vuoto
@@ -19,7 +20,7 @@ public class ResponseValidator implements Validator<Response> {
      * @return {@code true} se valido, {@code false} altrimenti
      */
     @Override
-    public boolean validate(Response response) {
+    public boolean validate(ResponseRequester response) {
         if (response.getFile() == null || response.getFile().isBlank()) return false;
         return response.getSubmission() != null;
     }

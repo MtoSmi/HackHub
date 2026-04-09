@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.Valuation;
+import it.unicam.cs.ids.hackhub.entity.requester.ValuationRequester;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
  * rispetti tutti i vincoli necessari prima di essere accettata nel sistema.
  */
 @Component
-public class ValuationValidator implements Validator<Valuation> {
+public class ValuationValidator implements Validator<ValuationRequester> {
     /**
      * Valida un oggetto {@link Valuation} verificando i seguenti vincoli:
      * - Il voto deve essere compreso tra 0 e 10
@@ -19,7 +20,7 @@ public class ValuationValidator implements Validator<Valuation> {
      * @return {@code true} se valido, {@code false} altrimenti
      */
     @Override
-    public boolean validate(Valuation valuation) {
+    public boolean validate(ValuationRequester valuation) {
         if (valuation.getVote() < 0 || valuation.getVote() > 10) return false;
         return valuation.getNote() != null && !valuation.getNote().isBlank();
     }

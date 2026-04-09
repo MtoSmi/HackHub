@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
+import it.unicam.cs.ids.hackhub.entity.requester.HackathonUpdateRequester;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
  * rispetti tutti i vincoli necessari prima di essere aggiornato nel sistema.
  */
 @Component
-public class HackathonUpdateValidator implements Validator<Hackathon> {
+public class HackathonUpdateValidator implements Validator<HackathonUpdateRequester> {
 
     /**
      * Valida un oggetto {@link Hackathon} verificando i seguenti vincoli:
@@ -29,7 +30,7 @@ public class HackathonUpdateValidator implements Validator<Hackathon> {
      * @return {@code true} se valido, {@code false} altrimenti
      */
     @Override
-    public boolean validate(Hackathon hackathon) {
+    public boolean validate(HackathonUpdateRequester hackathon) {
         if (hackathon == null) return false;
         if (hackathon.getName() == null || hackathon.getName().isBlank()) return false;
         if (hackathon.getMaxTeams() <= 0) return false;

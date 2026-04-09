@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
+import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,7 +20,7 @@ public class HackathonValidator extends HackathonUpdateValidator {
      * @return {@code true} se valido, {@code false} altrimenti
      */
     @Override
-    public boolean validate(Hackathon hackathon) {
+    public boolean validate(HackathonRequester hackathon) {
         if (!super.validate(hackathon)) return false;
         return hackathon.getHost() != null && hackathon.getJudge() != null && hackathon.getMentors() != null;
     }

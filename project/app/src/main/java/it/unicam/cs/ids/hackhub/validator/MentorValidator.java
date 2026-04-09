@@ -2,6 +2,7 @@ package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,7 +21,7 @@ public class MentorValidator extends UserValidator {
      * {@code false} altrimenti
      */
     @Override
-    public boolean validate(User mentor) {
+    public boolean validate(UserRequester mentor) {
         if (!super.validate(mentor)) return false;
         return mentor.getRank().equals(Rank.STANDARD);
     }

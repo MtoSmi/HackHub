@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.Team;
+import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
  * dei dati di un team prima del suo utilizzo o persistenza.
  */
 @Component
-public class TeamValidator implements Validator<Team> {
+public class TeamValidator implements Validator<TeamRequester> {
 
     /**
      * Valida un oggetto {@link Team} verificando che:
@@ -22,7 +23,7 @@ public class TeamValidator implements Validator<Team> {
      * @return {@code true} se il team è valido, {@code false} altrimenti
      */
     @Override
-    public boolean validate(Team t) {
+    public boolean validate(TeamRequester t) {
         if (t == null) return false;
         return t.getName() != null && !t.getName().isBlank();
     }

@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
+import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
  * rispetti tutti i vincoli necessari prima di essere accettata nel sistema.
  */
 @Component
-public class SubmissionValidator implements Validator<Submission> {
+public class SubmissionValidator implements Validator<SubmissionRequester> {
 
     /**
      * Valida una {@link Submission} verificando che:
@@ -26,7 +27,7 @@ public class SubmissionValidator implements Validator<Submission> {
      * @return {@code true} se la submission è valida, {@code false} altrimenti
      */
     @Override
-    public boolean validate(Submission s) {
+    public boolean validate(SubmissionRequester s) {
         if (s == null) return false;
         if (s.getTitle() == null || s.getTitle().isEmpty()) return false;
         if (s.getDescription() == null || s.getDescription().isEmpty()) return false;
