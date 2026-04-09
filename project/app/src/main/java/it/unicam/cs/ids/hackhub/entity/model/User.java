@@ -3,6 +3,7 @@ package it.unicam.cs.ids.hackhub.entity.model;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -10,34 +11,49 @@ import lombok.Setter;
  */
 @Entity
 @Getter
+@NoArgsConstructor
 @Setter
 @Table(name = "users")
 public class User {
-    /** Identificatore univoco dell'utente */
+    /**
+     * Identificatore univoco dell'utente
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Nome dell'utente */
+    /**
+     * Nome dell'utente
+     */
     private String name;
 
-    /** Cognome dell'utente */
+    /**
+     * Cognome dell'utente
+     */
     private String surname;
 
-    /** Indirizzo email dell'utente */
+    /**
+     * Indirizzo email dell'utente
+     */
     @Column(unique = true)
     private String email;
 
-    /** Password dell'utente */
+    /**
+     * Password dell'utente
+     */
     private String password;
 
-    /** Team a cui appartiene l'utente, null se non appartiene a nessun team */
+    /**
+     * Team a cui appartiene l'utente, null se non appartiene a nessun team
+     */
     @SuppressWarnings("JpaDataSourceORMInspection")
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
 
-    /** Ruolo dell'utente nel sistema */
+    /**
+     * Ruolo dell'utente nel sistema
+     */
     @Enumerated(EnumType.STRING)
     private Rank rank;
 
@@ -45,9 +61,9 @@ public class User {
      * Costruisce un nuovo utente con i dati di base.
      * Inizializza il team a null e il rank a STANDARD.
      *
-     * @param name il nome dell'utente
-     * @param surname il cognome dell'utente
-     * @param email l'indirizzo email dell'utente
+     * @param name     il nome dell'utente
+     * @param surname  il cognome dell'utente
+     * @param email    l'indirizzo email dell'utente
      * @param password la password dell'utente
      */
     public User(String name, String surname, String email, String password) {
@@ -57,9 +73,6 @@ public class User {
         this.password = password;
         this.team = null;
         this.rank = Rank.STANDARD;
-    }
-
-    public User() {
     }
 
     /**

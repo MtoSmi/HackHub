@@ -5,10 +5,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Setter
 public class Valuation {
     @Id
@@ -22,7 +24,12 @@ public class Valuation {
         this.note = note;
     }
 
-    public Valuation() {
-
+    @Override
+    public String toString() {
+        return "Valuation{" +
+                "id=" + id +
+                ", vote=" + vote +
+                ", note='" + note + '\'' +
+                '}';
     }
 }

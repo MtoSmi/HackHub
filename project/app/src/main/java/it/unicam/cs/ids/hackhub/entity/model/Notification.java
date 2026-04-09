@@ -2,6 +2,7 @@ package it.unicam.cs.ids.hackhub.entity.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -12,6 +13,7 @@ import lombok.Setter;
  */
 @Entity
 @Getter
+@NoArgsConstructor
 @Setter
 public class Notification {
     /**
@@ -50,10 +52,6 @@ public class Notification {
         this.to = to;
     }
 
-    public Notification() {
-
-    }
-
     /**
      * Restituisce una rappresentazione in stringa della notifica.
      *
@@ -65,7 +63,7 @@ public class Notification {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", toId=" + to +
+                ", toId=" + (to == null ? null : to.getId()) +
                 '}';
     }
 }

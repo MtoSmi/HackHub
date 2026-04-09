@@ -2,69 +2,80 @@ package it.unicam.cs.ids.hackhub.entity.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * Rappresenta una richiesta di aiuto nel sistema HackHub.
- *
+ * <p>
  * Questa classe modella una richiesta di assistenza inviata da un utente a un altro utente(mentore).
  * La richiesta può essere completata e ricevere una risposta.
  */
 @Entity
 @Getter
+@NoArgsConstructor
 @Setter
 public class HelpRequest {
-    /** Identificatore univoco della richiesta di aiuto */
+    /**
+     * Identificatore univoco della richiesta di aiuto
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Titolo o argomento della richiesta di aiuto */
+    /**
+     * Titolo o argomento della richiesta di aiuto
+     */
     private String title;
 
-    /** Descrizione dettagliata della richiesta di aiuto */
+    /**
+     * Descrizione dettagliata della richiesta di aiuto
+     */
     private String description;
 
-    /** Risposta fornita dal mentore destinatario della richiesta */
+    /**
+     * Risposta fornita dal mentore destinatario della richiesta
+     */
     private String reply;
 
-    /** Utente che ha inviato la richiesta di aiuto */
+    /**
+     * Utente che ha inviato la richiesta di aiuto
+     */
     @OneToOne
     private User from;
 
-    /** Mentore che riceve la richiesta di aiuto e deve fornire assistenza */
+    /**
+     * Mentore che riceve la richiesta di aiuto e deve fornire assistenza
+     */
     @OneToOne
     private User to;
 
-    /** Link o identificativo della chiamata virtuale/riunione per l'aiuto */
+    /**
+     * Link o identificativo della chiamata virtuale/riunione per l'aiuto
+     */
     private String call;
 
-    /** Indica se la richiesta di aiuto è stata gestita*/
+    /**
+     * Indica se la richiesta di aiuto è stata gestita
+     */
     private boolean completed;
 
     /**
      * Costruisce una nuova richiesta di aiuto con i parametri essenziali.
      * Inizializza il flag di completamento a false.
      *
-     * @param title il titolo della richiesta di aiuto
+     * @param title       il titolo della richiesta di aiuto
      * @param description la descrizione dettagliata del problema
-     * @param to l'utente (mentore) destinatario della richiesta
+     * @param from        l'utente che invia la richiesta di aiuto
+     * @param to          l'utente (mentore) destinatario della richiesta
      */
-    public HelpRequest(String title, String description, User to) {
+    public HelpRequest(String title, String description, User from, User to) {
         this.title = title;
         this.description = description;
+        this.reply = null;
+        this.from = from;
         this.to = to;
-        this.completed = false;
-    }
-
-    public HelpRequest() {
-    }
-
-    public HelpRequest(String title, String description, User u, User m) {
-        this.title = title;
-        this.description = description;
-        this.from = u;
-        this.to = m;
+        this.call = null;
         this.completed = false;
     }
 
@@ -80,8 +91,8 @@ public class HelpRequest {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", reply='" + reply + '\'' +
-                ", from=" + from +
-                ", toId=" + to +
+                ", fromId=" + (from == null ? null : from.getId()) +
+                ", toId=" + (to == null ? null : to.getId()) +
                 ", call='" + call + '\'' +
                 ", completed=" + completed +
                 '}';

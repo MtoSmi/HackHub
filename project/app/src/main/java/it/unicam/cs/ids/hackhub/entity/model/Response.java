@@ -2,10 +2,12 @@ package it.unicam.cs.ids.hackhub.entity.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Setter
 public class Response {
     @Id
@@ -27,7 +29,14 @@ public class Response {
         this.file = file;
     }
 
-    public Response() {
-
+    @Override
+    public String toString() {
+        return "Response{" +
+                "id=" + id +
+                ", file='" + file + '\'' +
+                ", senderId=" + (sender == null ? null : sender.getId()) +
+                ", submissionId=" + (submission == null ? null : submission.getId()) +
+                ", valuationId=" + (valuation == null ? null : valuation.getId()) +
+                '}';
     }
 }

@@ -2,6 +2,7 @@ package it.unicam.cs.ids.hackhub.entity.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.List;
  */
 @Entity
 @Getter
+@NoArgsConstructor
 @Setter
 public class Submission {
     /**
@@ -55,12 +57,6 @@ public class Submission {
      */
     private boolean complete;
 
-    /**
-     * Costruttore di default per la classe Submission.
-     */
-    public Submission() {
-    }
-
     public Submission(String title, String description, LocalDateTime localDateTime, LocalDateTime localDateTime1) {
         this.title = title;
         this.description = description;
@@ -68,5 +64,18 @@ public class Submission {
         this.endDate = localDateTime1;
         this.responses = new ArrayList<>();
         this.complete = false;
+    }
+
+    @Override
+    public String toString() {
+        return "Submission{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", responsesId=" + (responses == null ? null : responses.stream().map(Response::getId).toList()) +
+                ", complete=" + complete +
+                '}';
     }
 }

@@ -3,6 +3,7 @@ package it.unicam.cs.ids.hackhub.entity.model;
 import it.unicam.cs.ids.hackhub.entity.enumeration.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.util.List;
  */
 @Entity
 @Getter
+@NoArgsConstructor
 @Setter
 public class Hackathon {
     /**
@@ -114,12 +116,6 @@ public class Hackathon {
     private Status status;
 
     /**
-     * Costruttore di default per la classe Hackathon.
-     */
-    public Hackathon() {
-    }
-
-    /**
      * Restituisce una rappresentazione in stringa dell'hackathon.
      *
      * @return una stringa contenente tutti gli attributi dell'hackathon
@@ -129,12 +125,12 @@ public class Hackathon {
         return "Hackathon{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", hostId=" + host +
-                ", judgeId=" + judge +
-                ", mentorsId=" + mentors +
-                ", participantsId=" + participants +
+                ", hostId=" + (host == null ? null : host.getId()) +
+                ", judgeId=" + (judge == null ? null : judge.getId()) +
+                ", mentorsId=" + (mentors == null ? null : mentors.stream().map(User::getId).toList()) +
+                ", participantsId=" + (participants == null ? null : participants.stream().map(Team::getId).toList()) +
                 ", maxTeams=" + maxTeams +
-                ", submissions=" + submissions +
+                ", submissions=" + (submissions == null ? null : submissions.stream().map(Submission::getId).toList()) +
                 ", regulation='" + regulation + '\'' +
                 ", deadline=" + deadline +
                 ", startDate=" + startDate +
