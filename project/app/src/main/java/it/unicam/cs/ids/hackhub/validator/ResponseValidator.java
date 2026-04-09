@@ -21,7 +21,7 @@ public class ResponseValidator implements Validator<ResponseRequester> {
      */
     @Override
     public boolean validate(ResponseRequester response) {
-        if (response.getFile() == null || response.getFile().isBlank()) return false;
-        return response.getSubmission() != null;
+        if (response.file() == null || response.file().isBlank()) return false;
+        return response.submissionId() != null;
     }
 }

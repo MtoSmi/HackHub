@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.validator;
 
 import it.unicam.cs.ids.hackhub.entity.model.HelpRequest;
+import it.unicam.cs.ids.hackhub.entity.requester.HelpRequestRequester;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
  * dei dati di una richiesta di aiuto prima della sua elaborazione.
  */
 @Component
-public class HelpRequestValidator implements Validator<HelpRequest> {
+public class HelpRequestValidator implements Validator<HelpRequestRequester> {
 
     /**
      * Valida una richiesta di aiuto verificando che tutti i campi obbligatori
@@ -27,12 +28,10 @@ public class HelpRequestValidator implements Validator<HelpRequest> {
      * @return {@code true} se la richiesta è valida, {@code false} altrimenti
      */
     @Override
-    public boolean validate(HelpRequest hr) {
+    public boolean validate(HelpRequestRequester hr) {
         if(hr == null) return false;
-        if(hr.getTitle() == null || hr.getTitle().isBlank()) return false;
-        if(hr.getDescription() == null || hr.getDescription().isBlank()) return false;
-        if(hr.getReply() != null && !hr.getReply().isBlank()) return false;
-        if(hr.getFrom() == null || hr.getTo() == null) return false;
-        return hr.getCall() == null || hr.getCall().isBlank();
+        if(hr.title() == null || hr.title().isBlank()) return false;
+        if(hr.description() == null || hr.description().isBlank()) return false;
+        return hr.fromId() != null && hr.toId() != null;
     }
 }

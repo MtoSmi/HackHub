@@ -25,6 +25,6 @@ public class TeamValidator implements Validator<TeamRequester> {
     @Override
     public boolean validate(TeamRequester t) {
         if (t == null) return false;
-        return t.getName() != null && !t.getName().isBlank();
+        return t.name() != null && !t.name().isBlank();
     }
 }

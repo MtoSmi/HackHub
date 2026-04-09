@@ -56,6 +56,14 @@ public class HelpRequest {
     public HelpRequest() {
     }
 
+    public HelpRequest(String title, String description, User u, User m) {
+        this.title = title;
+        this.description = description;
+        this.from = u;
+        this.to = m;
+        this.completed = false;
+    }
+
     /**
      * Restituisce l'identificatore univoco della richiesta di aiuto.
      *
