@@ -39,13 +39,13 @@ public class Team {
     /**
      * Lista degli utenti che sono membri del team
      */
-    @OneToMany(mappedBy = "team")
+    @OneToMany
     private List<User> members;
 
     /**
      * Lista degli hackathon a cui il team partecipa o ha partecipato
      */
-    @ManyToMany(mappedBy = "participants")
+    @ManyToMany
     private List<Hackathon> hackathons;
 
     /**

@@ -36,36 +36,24 @@ public class Hackathon {
      * Utente che organizza l'hackathon
      */
     @ManyToOne
-    @JoinColumn(name = "host_id")
     private User host;
 
     /**
      * Utente giudice delle sottomissioni
      */
     @ManyToOne
-    @JoinColumn(name = "judge_id")
     private User judge;
 
     /**
      * Lista dei mentori disponibili per l'hackathon
      */
     @ManyToMany
-    @JoinTable(
-            name = "hackathon_mentors",
-            joinColumns = @JoinColumn(name = "hackathon_id"),
-            inverseJoinColumns = @JoinColumn(name = "mentor_id")
-    )
     private List<User> mentors;
 
     /**
      * Lista dei team partecipanti all'hackathon
      */
     @ManyToMany
-    @JoinTable(
-            name = "hackathon_participants",
-            joinColumns = @JoinColumn(name = "hackathon_id"),
-            inverseJoinColumns = @JoinColumn(name = "team_id")
-    )
     private List<Team> participants;
 
     /**
@@ -76,7 +64,7 @@ public class Hackathon {
     /**
      * Lista delle sottomissioni legate all'hackathon
      */
-    @Transient
+    @OneToMany
     private List<Submission> submissions;
 
     /**

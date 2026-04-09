@@ -46,9 +46,7 @@ public class User {
     /**
      * Team a cui appartiene l'utente, null se non appartiene a nessun team
      */
-    @SuppressWarnings("JpaDataSourceORMInspection")
-    @ManyToOne
-    @JoinColumn(name = "team_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
     /**
