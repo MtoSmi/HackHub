@@ -5,8 +5,8 @@ public record HelpRequestResponse(
         String title,
         String description,
         String reply,
-        Long from,
-        Long to,
+        Long fromId,
+        Long toId,
         String call,
         boolean completed
 ) {

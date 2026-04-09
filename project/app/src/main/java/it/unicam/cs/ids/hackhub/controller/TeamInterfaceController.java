@@ -1,6 +1,8 @@
 package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.dto.TeamResponse;
+import it.unicam.cs.ids.hackhub.entity.requester.AcceptTeamInviteRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.TeamInviteRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
 import it.unicam.cs.ids.hackhub.service.TeamService;
 import org.springframework.http.HttpStatus;
@@ -38,8 +40,8 @@ public class TeamInterfaceController {
      * @return il team creato
      */
     @PostMapping("/creation")
-    public ResponseEntity<TeamResponse> creationTeam(@RequestBody TeamRequester requested, @RequestParam String creatorEmail) {
-        TeamResponse created = service.creationTeam(requested, creatorEmail);
+    public ResponseEntity<TeamResponse> creationTeam(@RequestBody TeamRequester requested) {
+        TeamResponse created = service.creationTeam(requested);
         if (created == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -53,8 +55,8 @@ public class TeamInterfaceController {
     }
 
     @PostMapping("/inviteMember/")
-    public ResponseEntity<Void> inviteMember(@RequestParam String email, @RequestParam String team) {
-        boolean result = service.inviteMember(email, team);
+    public ResponseEntity<Void> inviteMember(@RequestBody TeamInviteRequester requested) {
+        boolean result = service.inviteMember(requested);
         if (result) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {
@@ -63,8 +65,8 @@ public class TeamInterfaceController {
     }
 
     @PostMapping("/acceptInvite")
-    public ResponseEntity<Void> acceptInvite(@RequestParam String email, @RequestParam String team) {
-        boolean result = service.acceptInvite(email, team);
+    public ResponseEntity<Void> acceptInvite(@RequestBody AcceptTeamInviteRequester requested) {
+        boolean result = service.acceptInvite(requested);
         if (result) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {

@@ -6,7 +6,7 @@ public record TeamResponse(
         Long id,
         String name,
         int dimension,
-        List<Long> members,
+        List<Long> membersId,
         List<Long> hackathons
 ) {
 }

@@ -9,7 +9,7 @@ public record SubmissionResponse(
         String description,
         LocalDateTime startDate,
         LocalDateTime endDate,
-        List<Long> responses,
+        List<Long> responsesId,
         boolean complete
 ) {
 }

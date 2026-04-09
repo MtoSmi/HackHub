@@ -3,6 +3,7 @@ package it.unicam.cs.ids.hackhub.entity.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +41,15 @@ public class Submission {
      * Costruttore di default per la classe Submission.
      */
     public Submission() {
+    }
+
+    public Submission(String title, String description, LocalDateTime localDateTime, LocalDateTime localDateTime1) {
+        this.title = title;
+        this.description = description;
+        this.startDate = localDateTime;
+        this.endDate = localDateTime1;
+        this.responses = new ArrayList<>();
+        this.complete = false;
     }
 
     /**

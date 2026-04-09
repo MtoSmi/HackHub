@@ -1,7 +1,6 @@
 package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.dto.UserResponse;
-import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.UserRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.UserUpdateRequester;
 import it.unicam.cs.ids.hackhub.service.UserService;
@@ -11,14 +10,16 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller di interfaccia per la gestione delle operazioni sugli utenti.
-  * Espone metodi di alto livello che delegano la logica al servizio
+ * Espone metodi di alto livello che delegano la logica al servizio
  * {@link UserService}, fungendo da punto di accesso per il livello
  * di presentazione.
  */
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserInterfaceController {
-    /** Servizio per le operazioni sugli utenti. */
+    /**
+     * Servizio per le operazioni sugli utenti.
+     */
     private final UserService service;
 
     /**
@@ -26,7 +27,7 @@ public class UserInterfaceController {
      *
      * @param service il servizio da usare per le operazioni sugli utenti
      */
-    public UserInterfaceController(UserService service){
+    public UserInterfaceController(UserService service) {
         this.service = service;
     }
 
@@ -38,11 +39,9 @@ public class UserInterfaceController {
      */
     @PostMapping("/registration")
     public ResponseEntity<UserResponse> registration(@RequestBody UserRequester requested) {
-        UserResponse created = service.registration(requested);
-        if (created == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        UserResponse response = service.registration(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
@@ -53,27 +52,21 @@ public class UserInterfaceController {
      */
     @GetMapping("/showInformation/{email}")
     public ResponseEntity<UserResponse> showInformation(@PathVariable String email) {
-        UserResponse user = service.showInformation(email);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(service.showInformation(email));
     }
 
     @PostMapping("/access")
     public ResponseEntity<UserResponse> access(@RequestParam String email, @RequestParam String password) {
-        UserResponse user = service.access(email, password);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(user);
+        UserResponse response = service.access(email, password);
+        if (response == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/rankUpgrade")
     public ResponseEntity<Void> rankUpgrade(@RequestParam String email) {
         boolean success = service.rankUpgrade(email);
-        if (success) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.unprocessableEntity().build();
-        }
+        if (success) return ResponseEntity.ok().build();
+        return ResponseEntity.unprocessableEntity().build();
     }
 
     @PostMapping("/update")

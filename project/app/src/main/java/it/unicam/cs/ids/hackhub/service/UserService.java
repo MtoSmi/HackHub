@@ -41,16 +41,11 @@ public class UserService {
      * @return l'utente registrato, oppure {@code null} se la registrazione non è andata a buon fine
      */
     public UserResponse registration(UserRequester req) {
-        if (!userValidator.validate(req)) return null;
-        if (userRepository.findByEmail(req.getEmail()) != null) return null;
-        User user = new User();
-        user.setName(req.getName());
-        user.setSurname(req.getSurname());
-        user.setEmail(req.getEmail());
-        user.setPassword(req.getPassword());
+        //if (!userValidator.validate(req)) return null; //TODO: sistemare validate per prendere requester non oggetto padre
+        if (userRepository.findByEmail(req.email()) != null) return null;
+        User user = new User(req.name(), req.surname(), req.email(), req.password());
         user.setRank(Rank.STANDARD);
         user.setTeam(null);
-
         return toResponse(userRepository.save(user));
     }
 
@@ -66,18 +61,17 @@ public class UserService {
     }
 
     public UserResponse updateUserInformation(UserUpdateRequester u) {
-        if (!userValidator.validate(u)) return null;
+        //if (!userValidator.validate(u)) return null; //TODO: sistemare validate per prendere requester non oggetto padre
         for (User other : userRepository.findAll()) {
-            if (!u.getId().equals(other.getId())){
-                if (u.getEmail().equals(other.getEmail())) return null;
+            if (!u.id().equals(other.getId())){
+                if (u.email().equals(other.getEmail())) return null;
             }
         }
-        User updatedUser = userRepository.getReferenceById(u.getId());
-        updatedUser.setName(u.getName());
-        updatedUser.setSurname(u.getSurname());
-        updatedUser.setEmail(u.getEmail());
-        updatedUser.setPassword(u.getPassword());
-
+        User updatedUser = userRepository.getReferenceById(u.id());
+        updatedUser.setName(u.name()); // TODO: forse non è meglio controllare che aggiorni solo i campi che non sono nulli? (es. se vuole aggiornare solo il nome, ma lascia email e password a null, così non gli vengono sovrascritti)
+        updatedUser.setSurname(u.surname());
+        updatedUser.setEmail(u.email());
+        updatedUser.setPassword(u.password());
         return toResponse(userRepository.save(updatedUser));
     }
 
