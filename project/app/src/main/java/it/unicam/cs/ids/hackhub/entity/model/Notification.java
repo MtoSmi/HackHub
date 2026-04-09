@@ -1,6 +1,8 @@
 package it.unicam.cs.ids.hackhub.entity.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Rappresenta una notifica nel sistema HackHub.
@@ -9,6 +11,8 @@ import jakarta.persistence.*;
  * o altri avvisi relativi al sistema.
  */
 @Entity
+@Getter
+@Setter
 public class Notification {
     /**
      * Identificatore univoco della notifica
@@ -48,78 +52,6 @@ public class Notification {
 
     public Notification() {
 
-    }
-
-    /**
-     * Restituisce l'identificatore univoco della notifica.
-     *
-     * @return l'ID della notifica
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * Imposta l'identificatore univoco della notifica.
-     *
-     * @param id l'ID da assegnare alla notifica
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    /**
-     * Restituisce il titolo della notifica.
-     *
-     * @return il titolo della notifica
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * Imposta il titolo della notifica.
-     *
-     * @param title il nuovo titolo della notifica
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * Restituisce la descrizione della notifica.
-     *
-     * @return la descrizione dettagliata della notifica
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Imposta la descrizione della notifica.
-     *
-     * @param description la nuova descrizione della notifica
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Restituisce l'utente destinatario della notifica.
-     *
-     * @return l'utente a cui è indirizzata la notifica
-     */
-    public User getTo() {
-        return to;
-    }
-
-    /**
-     * Imposta l'utente destinatario della notifica.
-     *
-     * @param to l'utente destinatario della notifica
-     */
-    public void setTo(User to) {
-        this.to = to;
     }
 
     /**

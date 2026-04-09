@@ -1,6 +1,8 @@
 package it.unicam.cs.ids.hackhub.entity.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Rappresenta una richiesta di aiuto nel sistema HackHub.
@@ -9,6 +11,8 @@ import jakarta.persistence.*;
  * La richiesta può essere completata e ricevere una risposta.
  */
 @Entity
+@Getter
+@Setter
 public class HelpRequest {
     /** Identificatore univoco della richiesta di aiuto */
     @Id
@@ -62,150 +66,6 @@ public class HelpRequest {
         this.from = u;
         this.to = m;
         this.completed = false;
-    }
-
-    /**
-     * Restituisce l'identificatore univoco della richiesta di aiuto.
-     *
-     * @return l'ID della richiesta
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * Imposta l'identificatore univoco della richiesta di aiuto.
-     *
-     * @param id l'ID da assegnare
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    /**
-     * Restituisce il titolo della richiesta di aiuto.
-     *
-     * @return il titolo della richiesta
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * Imposta il titolo della richiesta di aiuto.
-     *
-     * @param title il nuovo titolo
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * Restituisce la descrizione della richiesta di aiuto.
-     *
-     * @return la descrizione dettagliata della richiesta
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Imposta la descrizione della richiesta di aiuto.
-     *
-     * @param description la nuova descrizione
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Restituisce la risposta fornita alla richiesta di aiuto.
-     *
-     * @return la risposta fornita dal mentore, o null se non ancora gestita
-     */
-    public String getReply() {
-        return reply;
-    }
-
-    /**
-     * Imposta la risposta fornita alla richiesta di aiuto.
-     *
-     * @param reply la risposta da fornire alla richiesta
-     */
-    public void setReply(String reply) {
-        this.reply = reply;
-    }
-
-    /**
-     * Restituisce l'utente che ha inviato la richiesta di aiuto.
-     *
-     * @return l'utente mittente della richiesta
-     */
-    public User getFrom() {
-        return from;
-    }
-
-    /**
-     * Imposta l'utente che ha inviato la richiesta di aiuto.
-     *
-     * @param from l'utente mittente
-     */
-    public void setFrom(User from) {
-        this.from = from;
-    }
-
-    /**
-     * Restituisce l'utente (mentore) destinatario della richiesta di aiuto.
-     *
-     * @return il mentore destinatario della richiesta
-     */
-    public User getTo() {
-        return to;
-    }
-
-    /**
-     * Imposta l'utente (mentore) destinatario della richiesta di aiuto.
-     *
-     * @param to il mentore destinatario
-     */
-    public void setTo(User to) {
-        this.to = to;
-    }
-
-    /**
-     * Restituisce il link o l'identificativo della chiamata virtuale per l'aiuto.
-     *
-     * @return l'URL della chiamata o dell'identificativo della riunione
-     */
-    public String getCall() {
-        return call;
-    }
-
-    /**
-     * Imposta il link o l'identificativo della chiamata virtuale per l'aiuto.
-     *
-     * @param call il link della chiamata o identificativo della riunione
-     */
-    public void setCall(String call) {
-        this.call = call;
-    }
-
-    /**
-     * Indica se la richiesta di aiuto è stata gestita.
-     *
-     * @return true se la richiesta è stata gestita, false altrimenti
-     */
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    /**
-     * Imposta lo stato di completamento della richiesta di aiuto.
-     *
-     * @param completed true se la richiesta è stata gestita, false altrimenti
-     */
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
     }
 
     /**

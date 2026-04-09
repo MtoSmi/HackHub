@@ -1,8 +1,12 @@
 package it.unicam.cs.ids.hackhub.entity.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Response {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,7 +16,7 @@ public class Response {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Team sender;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Submission submission;
 
@@ -26,45 +30,4 @@ public class Response {
     public Response() {
 
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFile() {
-        return file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
-    }
-
-    public Team getSender() {
-        return sender;
-    }
-
-    public void setSender(Team sender) {
-        this.sender = sender;
-    }
-
-    public Submission getSubmission() {
-        return submission;
-    }
-
-    public void setSubmission(Submission submission) {
-        this.submission = submission;
-    }
-
-    public Valuation getValuation() {
-        return valuation;
-    }
-
-    public void setValuation(Valuation valuation) {
-        this.valuation = valuation;
-    }
-
 }
