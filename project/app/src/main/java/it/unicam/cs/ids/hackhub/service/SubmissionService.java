@@ -87,7 +87,8 @@ public class SubmissionService {
         return toResponse(responseRepository.save(res));
     }
 
-    public List<SubmissionResponse> showSubmissionList(Hackathon h) {
+    public List<SubmissionResponse> showSubmissionList(Long id) {
+        Hackathon h = hackathonRepository.getReferenceById(id);
         List<SubmissionResponse> responses = new ArrayList<>();
         for (Submission submission : h.getSubmissions()) {
             responses.add(toResponse(submission));
