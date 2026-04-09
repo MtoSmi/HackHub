@@ -11,8 +11,8 @@ public record HackathonRequester(
         int maxTeams,
         String regulation,
         LocalDateTime deadline,
-        LocalDateTime startTime,
-        LocalDateTime endTime,
+        LocalDateTime startDate,
+        LocalDateTime endDate,
         String location,
         double reward
 ) {

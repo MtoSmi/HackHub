@@ -103,7 +103,7 @@ public class HackathonService {
                 .buildName(h.name()).buildHost(userRepository.getReferenceById(h.hostId())).buildJudge(userRepository.getReferenceById(h.judgeId()))
                 .buildMentors(List.of(userRepository.getReferenceById(h.mentorId()))).buildMaxTeam(h.maxTeams()).buildSubmissions()
                 .buildRegulation(h.regulation()).buildDeadline(h.deadline())
-                .buildStartDate(h.startTime()).buildEndDate(h.endTime())
+                .buildStartDate(h.startTime()).buildEndDate(h.endDate())
                 .buildLocation(h.location()).buildReward(h.reward()).buildParticipants(new ArrayList<>()).getResult();
         for (Hackathon other : hackathonRepository.findAll()) {
             if (newH.equals(other)) return null;

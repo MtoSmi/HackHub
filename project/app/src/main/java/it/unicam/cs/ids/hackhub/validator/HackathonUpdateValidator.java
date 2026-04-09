@@ -32,13 +32,13 @@ public class HackathonUpdateValidator implements Validator<HackathonUpdateReques
     @Override
     public boolean validate(HackathonUpdateRequester hackathon) {
         if (hackathon == null) return false;
-        if (hackathon.getName() == null || hackathon.getName().isBlank()) return false;
-        if (hackathon.getMaxTeams() <= 0) return false;
-        if (hackathon.getRegulation() == null || hackathon.getRegulation().isBlank()) return false;
-        if (hackathon.getDeadline() == null || hackathon.getStartDate() == null || hackathon.getEndDate() == null) return false;
-        if (LocalDateTime.now().isAfter(hackathon.getDeadline())) return false;
-        if (hackathon.getDeadline().isAfter(hackathon.getStartDate()) || hackathon.getStartDate().isAfter(hackathon.getEndDate())) return false;
-        if (hackathon.getLocation() == null || hackathon.getLocation().isBlank()) return false;
-        return hackathon.getReward() > 0.0;
+        if (hackathon.name() == null || hackathon.name().isBlank()) return false;
+        if (hackathon.maxTeams() <= 0) return false;
+        if (hackathon.regulation() == null || hackathon.regulation().isBlank()) return false;
+        if (hackathon.deadline() == null || hackathon.startDate() == null || hackathon.endDate() == null) return false;
+        if (LocalDateTime.now().isAfter(hackathon.deadline())) return false;
+        if (hackathon.deadline().isAfter(hackathon.startDate()) || hackathon.startDate().isAfter(hackathon.endDate())) return false;
+        if (hackathon.location() == null || hackathon.location().isBlank()) return false;
+        return hackathon.reward() > 0.0;
     }
 }

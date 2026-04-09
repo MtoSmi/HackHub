@@ -14,13 +14,11 @@ import it.unicam.cs.ids.hackhub.service.HackathonService;
 import it.unicam.cs.ids.hackhub.service.MentorService;
 import it.unicam.cs.ids.hackhub.service.NotificationService;
 import it.unicam.cs.ids.hackhub.validator.HackathonValidator;
-import it.unicam.cs.ids.hackhub.validator.MentorValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 public class AggiungiMentoreTest {
