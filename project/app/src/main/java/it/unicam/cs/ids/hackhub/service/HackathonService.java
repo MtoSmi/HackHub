@@ -152,8 +152,9 @@ public class HackathonService {
         User u = userRepository.findByEmail(r.email());
         Hackathon h = hackathonRepository.getReferenceById(r.hackathonId());
         if (!u.getRank().equals(Rank.STANDARD)) return false;
-        if (!h.getEndDate().isBefore(LocalDateTime.now())) return false;
+        if (!h.getEndDate().isAfter(LocalDateTime.now())) return false;
         u.setRank(Rank.MENTORE);
+        userRepository.save(u);
         h.getMentors().add(u);
         hackathonRepository.save(h);
         return true;
