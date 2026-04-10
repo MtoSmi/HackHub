@@ -49,7 +49,7 @@ public class Submission {
     /**
      * Lista delle risposte associate alla submission
      */
-    @OneToMany
+    @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL)
     private List<Response> responses;
 
     /**

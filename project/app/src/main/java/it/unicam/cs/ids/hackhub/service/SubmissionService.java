@@ -70,18 +70,21 @@ public class SubmissionService {
         return toResponse(submission);
     }
 
-    public ResponseResponse sendSubmission(ResponseRequester r) {
-        if (!responseValidator.validate(r))  return null;
-        Hackathon h = hackathonRepository.getReferenceById(r.hackathonId());
-        Submission s = submissionRepository.getReferenceById(r.submissionId());
-        if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
-        Response response = new Response(r.file());
-        response.setSubmission(s);
-        response.setSender(teamRepository.getReferenceById(r.sender()));
-        s.getResponses().add(response);
-        hackathonRepository.save(h);
-        return toResponse(responseRepository.save(response));
-    }
+       public ResponseResponse sendSubmission(ResponseRequester r) {
+           if (!responseValidator.validate(r)) return null;
+           Submission s = submissionRepository.getReferenceById(r.submissionId());
+           if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
+           for (Response response : s.getResponses()) {
+               if (response.getSender().getId().equals(r.sender())) return null;
+           }
+           Response response = new Response(r.file());
+           response.setSubmission(s);
+           response.setSender(teamRepository.getReferenceById(r.sender()));
+           responseRepository.save(response);
+           s.getResponses().add(response);
+           submissionRepository.save(s);
+           return toResponse(response);
+       }
 
     public ResponseResponse evaluateSubmission(ValuationRequester r) {
         Response res = responseRepository.getReferenceById(r.responseId());

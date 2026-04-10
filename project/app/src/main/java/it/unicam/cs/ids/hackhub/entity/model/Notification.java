@@ -36,7 +36,7 @@ public class Notification {
     /**
      * Utente destinatario della notifica
      */
-    @OneToOne
+    @ManyToOne
     private User to;
 
     /**
