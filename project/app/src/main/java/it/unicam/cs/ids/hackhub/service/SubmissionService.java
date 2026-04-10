@@ -13,6 +13,7 @@ import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.repository.ResponseRepository;
 import it.unicam.cs.ids.hackhub.repository.SubmissionRepository;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
+import it.unicam.cs.ids.hackhub.validator.ResponseValidator;
 import it.unicam.cs.ids.hackhub.validator.SubmissionValidator;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ public class SubmissionService {
     private final ResponseRepository responseRepository;
     private final SubmissionRepository submissionRepository;
     private final TeamRepository teamRepository;
+    private final ResponseValidator responseValidator;
 
     /**
      * Costruisce un'istanza di {@code SubmissionService} con le dipendenze fornite.
@@ -39,12 +41,13 @@ public class SubmissionService {
      * @param sValidator il validator utilizzato per verificare la correttezza delle submission
      * @param hRepo      il repository utilizzato per accedere e aggiornare gli hackathon
      */
-    public SubmissionService(SubmissionValidator sValidator, HackathonRepository hRepo, ResponseRepository responseRepository, SubmissionRepository submissionRepository, TeamRepository teamRepository) {
+    public SubmissionService(SubmissionValidator sValidator, HackathonRepository hRepo, ResponseRepository responseRepository, SubmissionRepository submissionRepository, TeamRepository teamRepository, ResponseValidator responseValidator) {
         this.submissionValidator = sValidator;
         this.hackathonRepository = hRepo;
         this.responseRepository = responseRepository;
         this.submissionRepository = submissionRepository;
         this.teamRepository = teamRepository;
+        this.responseValidator = responseValidator;
     }
 
     /**
@@ -68,7 +71,7 @@ public class SubmissionService {
     }
 
     public ResponseResponse sendSubmission(ResponseRequester r) {
-        //TODO: aggiungere validator per l'invio della sottomissione in ingresso da salvare
+        if (!responseValidator.validate(r))  return null;
         Hackathon h = hackathonRepository.getReferenceById(r.hackathonId());
         Submission s = submissionRepository.getReferenceById(r.submissionId());
         if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
