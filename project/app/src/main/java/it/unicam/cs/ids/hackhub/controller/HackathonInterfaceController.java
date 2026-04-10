@@ -92,4 +92,11 @@ public class HackathonInterfaceController {
     public ResponseEntity<List<HackathonResponse>> showMyHackathonList(@PathVariable String email) {
        return ResponseEntity.ok(service.showMyHackathonList(email));
     }
+
+    @PostMapping("/addMentor")
+    public ResponseEntity<Void> addMentor(@RequestBody SubscribeHackathonRequester requested) {
+        boolean response = service.addMentor(requested);
+        if (response) return ResponseEntity.ok().build();
+        return ResponseEntity.unprocessableEntity().build();
+    }
 }

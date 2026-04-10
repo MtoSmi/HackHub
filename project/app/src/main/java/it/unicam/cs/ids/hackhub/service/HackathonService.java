@@ -18,6 +18,7 @@ import it.unicam.cs.ids.hackhub.validator.HackathonUpdateValidator;
 import it.unicam.cs.ids.hackhub.validator.HackathonValidator;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,6 +145,17 @@ public class HackathonService {
         hackathonRepository.save(h);
         u.getTeam().getHackathons().add(h);
         teamRepository.save(u.getTeam());
+        return true;
+    }
+
+    public boolean addMentor(SubscribeHackathonRequester r) {
+        User u = userRepository.findByEmail(r.email());
+        Hackathon h = hackathonRepository.getReferenceById(r.hackathonId());
+        if (!u.getRank().equals(Rank.STANDARD)) return false;
+        if (!h.getEndDate().isBefore(LocalDateTime.now())) return false;
+        u.setRank(Rank.MENTORE);
+        h.getMentors().add(u);
+        hackathonRepository.save(h);
         return true;
     }
 
