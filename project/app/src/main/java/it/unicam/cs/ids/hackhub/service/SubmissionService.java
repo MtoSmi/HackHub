@@ -13,6 +13,7 @@ import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.repository.ResponseRepository;
 import it.unicam.cs.ids.hackhub.repository.SubmissionRepository;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
+import it.unicam.cs.ids.hackhub.validator.ResponseValidator;
 import it.unicam.cs.ids.hackhub.validator.SubmissionValidator;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ public class SubmissionService {
     private final ResponseRepository responseRepository;
     private final SubmissionRepository submissionRepository;
     private final TeamRepository teamRepository;
+    private final ResponseValidator responseValidator;
 
     /**
      * Costruisce un'istanza di {@code SubmissionService} con le dipendenze fornite.
@@ -39,17 +41,17 @@ public class SubmissionService {
      * @param sValidator il validator utilizzato per verificare la correttezza delle submission
      * @param hRepo      il repository utilizzato per accedere e aggiornare gli hackathon
      */
-    public SubmissionService(SubmissionValidator sValidator, HackathonRepository hRepo, ResponseRepository responseRepository, SubmissionRepository submissionRepository, TeamRepository teamRepository) {
+    public SubmissionService(SubmissionValidator sValidator, HackathonRepository hRepo, ResponseRepository responseRepository, SubmissionRepository submissionRepository, TeamRepository teamRepository, ResponseValidator responseValidator) {
         this.submissionValidator = sValidator;
         this.hackathonRepository = hRepo;
         this.responseRepository = responseRepository;
         this.submissionRepository = submissionRepository;
         this.teamRepository = teamRepository;
+        this.responseValidator = responseValidator;
     }
 
     /**
      * Crea una nuova submission e la associa all'hackathon specificato.
-     *
      * La submission viene prima validata tramite il {@link SubmissionValidator}.
      * Se la validazione fallisce, viene restituito {@code null}.
      * In caso di successo, la submission viene aggiunta all'hackathon e
@@ -59,26 +61,30 @@ public class SubmissionService {
      * @return la {@link Submission} creata, oppure {@code null} se la validazione fallisce
      */
     public SubmissionResponse creationSubmission(SubmissionRequester s) {
-        //if (!submissionValidator.validate(s)) return null; //TODO: manca il validator corretto per la richiesta di submission
+        if (!submissionValidator.validate(s)) return null;
         Hackathon h = hackathonRepository.getReferenceById(s.hackathonId());
         Submission submission = new Submission(s.title(), s.description(), s.startDate(), s.endDate());
+        submissionRepository.save(submission);
         h.getSubmissions().add(submission);
         hackathonRepository.save(h);
         return toResponse(submission);
     }
 
-    public ResponseResponse sendSubmission(ResponseRequester r) {
-        //TODO: aggiungere validator per l'invio della sottomissione in ingresso da salvare
-        Hackathon h = hackathonRepository.getReferenceById(r.hackathonId());
-        Submission s = submissionRepository.getReferenceById(r.submissionId());
-        if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
-        Response response = new Response(r.file());
-        response.setSubmission(s);
-        response.setSender(teamRepository.getReferenceById(r.sender()));
-        s.getResponses().add(response);
-        hackathonRepository.save(h);
-        return toResponse(responseRepository.save(response));
-    }
+       public ResponseResponse sendSubmission(ResponseRequester r) {
+           if (!responseValidator.validate(r)) return null;
+           Submission s = submissionRepository.getReferenceById(r.submissionId());
+           if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
+           for (Response response : s.getResponses()) {
+               if (response.getSender().getId().equals(r.sender())) return null;
+           }
+           Response response = new Response(r.file());
+           response.setSubmission(s);
+           response.setSender(teamRepository.getReferenceById(r.sender()));
+           responseRepository.save(response);
+           s.getResponses().add(response);
+           submissionRepository.save(s);
+           return toResponse(response);
+       }
 
     public ResponseResponse evaluateSubmission(ValuationRequester r) {
         Response res = responseRepository.getReferenceById(r.responseId());

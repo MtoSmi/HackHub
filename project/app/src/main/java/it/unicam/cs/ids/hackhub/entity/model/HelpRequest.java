@@ -41,13 +41,13 @@ public class HelpRequest {
     /**
      * Utente che ha inviato la richiesta di aiuto
      */
-    @OneToOne
+    @ManyToOne
     private User from;
 
     /**
      * Mentore che riceve la richiesta di aiuto e deve fornire assistenza
      */
-    @OneToOne
+    @ManyToOne
     private User to;
 
     /**

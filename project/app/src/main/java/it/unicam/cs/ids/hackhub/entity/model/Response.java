@@ -22,7 +22,7 @@ public class Response {
     @ManyToOne(fetch = FetchType.LAZY)
     private Submission submission;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Valuation valuation;
 
     public Response(String file) {
