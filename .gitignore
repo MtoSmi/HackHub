@@ -33,3 +33,6 @@ replay_pid*
 # Database files
 *.mv.db
 *.trace.db
+
+# Credential Google Calendar Api
+/project/app/src/main/resources/credentials.json
