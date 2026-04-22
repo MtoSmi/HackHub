@@ -35,4 +35,4 @@ replay_pid*
 *.trace.db
 
 # Credential Google Calendar Api
-/project/app/src/main/resources/credentials.json
+/project/app/src/main/resources/calendar-credentials.json
