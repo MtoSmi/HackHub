@@ -90,12 +90,19 @@ public class HackathonInterfaceController {
 
     @GetMapping("/show/{email}")
     public ResponseEntity<List<HackathonResponse>> showMyHackathonList(@PathVariable String email) {
-       return ResponseEntity.ok(service.showMyHackathonList(email));
+        return ResponseEntity.ok(service.showMyHackathonList(email));
     }
 
     @PostMapping("/addMentor")
     public ResponseEntity<Void> addMentor(@RequestBody SubscribeHackathonRequester requested) {
         boolean response = service.addMentor(requested);
+        if (response) return ResponseEntity.ok().build();
+        return ResponseEntity.unprocessableEntity().build();
+    }
+
+    @PostMapping("/declareWinner")
+    public ResponseEntity<Void> declareWinner(@RequestParam Long id, @RequestParam String team) {
+        boolean response = service.declareWinner(id, team);
         if (response) return ResponseEntity.ok().build();
         return ResponseEntity.unprocessableEntity().build();
     }
