@@ -21,7 +21,7 @@ public class Violation {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     /**
      * Descrizione della violazione
