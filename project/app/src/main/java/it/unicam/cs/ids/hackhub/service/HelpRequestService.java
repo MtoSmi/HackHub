@@ -6,6 +6,7 @@ import it.unicam.cs.ids.hackhub.entity.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.HelpRequest;
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import it.unicam.cs.ids.hackhub.entity.requester.CallRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.HelpRequestRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.repository.HelpRequestRepository;
@@ -14,7 +15,6 @@ import it.unicam.cs.ids.hackhub.validator.HelpRequestValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service per la gestione delle richieste di aiuto all'interno della piattaforma HackHub.
@@ -28,6 +28,7 @@ public class HelpRequestService {
     private final HackathonRepository hackathonRepository;
     private final NotificationService notificationService;
     private final UserRepository userRepository;
+    private final CalendarService calendarService;
 
     /**
      * Costruisce un nuovo {@code HelpRequestService} con le dipendenze necessarie.
@@ -37,12 +38,13 @@ public class HelpRequestService {
      * @param hRepo       il repository per la gestione degli hackathon
      * @param nService    il service per l'invio delle notifiche
      */
-    public HelpRequestService(HelpRequestRepository hrRepo, HelpRequestValidator hrValidator, HackathonRepository hRepo, NotificationService nService, UserRepository urepo) {
+    public HelpRequestService(HelpRequestRepository hrRepo, HelpRequestValidator hrValidator, HackathonRepository hRepo, NotificationService nService, UserRepository urepo, CalendarService calendarService) {
         this.helpRequestRepository = hrRepo;
         this.helpRequestValidator = hrValidator;
         this.hackathonRepository = hRepo;
         this.notificationService = nService;
         this.userRepository = urepo;
+        this.calendarService = calendarService;
     }
 
     /**
@@ -53,10 +55,10 @@ public class HelpRequestService {
      */
     public List<HelpRequestResponse> showMyHelpRequests(Long mentorId) {
         User user = userRepository.getReferenceById(mentorId);
-            return helpRequestRepository.findByTo(user)
-                    .stream()
-                    .map(this::toResponse)
-                    .toList();
+        return helpRequestRepository.findByTo(user)
+                .stream()
+                .map(this::toResponse)
+                .toList();
 
     }
 
@@ -76,7 +78,7 @@ public class HelpRequestService {
      * - Il richiedente abbia il ruolo di {@code MEMBRO_TEAM}
      * - Il destinatario abbia il ruolo di {@code MENTORE}
      * - Il mentore destinatario e il team del richiedente siano coinvolti in almeno un hackathon in corso
-     *
+     * <p>
      * In caso di successo, invia una notifica al mentore destinatario.
      *
      * @param hr il richiedente contenente le informazioni della richiesta di aiuto
@@ -97,6 +99,16 @@ public class HelpRequestService {
                 "Hai ricevuto una richiesta di aiuto da " + u.getName(),
                 m.getId());
         return toResponse(helpRequestRepository.save(helpRequest));
+    }
+
+    public String createCall(CallRequester callRequester) {
+        String result;
+        try {
+            result = calendarService.createEvent(callRequester);
+        } catch (Exception e) {
+            return null;
+        }
+        return result;
     }
 
     /**
