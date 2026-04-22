@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.dto.HelpRequestResponse;
+import it.unicam.cs.ids.hackhub.entity.requester.CallRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.HelpRequestRequester;
 import it.unicam.cs.ids.hackhub.service.HelpRequestService;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +55,13 @@ public class HelpRequestInterfaceController {
     public ResponseEntity<HelpRequestResponse> showSelectedHelpRequest(@PathVariable long id) {
         HelpRequestResponse response = service.showSelectedHelpRequest(id);
         if (response == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/createCall")
+    public ResponseEntity<String> createCall(@RequestBody CallRequester callRequester) {
+        String response = service.createCall(callRequester);
+        if (response == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response);
     }
 
