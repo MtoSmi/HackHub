@@ -167,12 +167,15 @@ public class HackathonService {
         Hackathon h = hackathonRepository.getReferenceById(id);
         Team t = teamRepository.findByName(team);
         if (!h.getParticipants().contains(t) || !(h.getStatus() == Status.IN_VALUTAZIONE)) return false;
+        String result;
         try {
-            boolean result = paymentService.createOrder(h.getReward(), t.getMembers().getFirst().getEmail());
+            result = paymentService.initiatePayment(h.getReward(), t.getMembers().getFirst().getEmail());
         } catch (Exception e) {
             return false;
         }
+        if (result == null) return false;
         h.setStatus(Status.CONCLUSO);
+        hackathonRepository.save(h);
         return true;
     }
 
