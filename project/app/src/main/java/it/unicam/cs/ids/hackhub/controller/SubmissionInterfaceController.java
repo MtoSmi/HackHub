@@ -3,6 +3,7 @@ package it.unicam.cs.ids.hackhub.controller;
 import it.unicam.cs.ids.hackhub.entity.dto.ResponseResponse;
 import it.unicam.cs.ids.hackhub.entity.dto.SubmissionResponse;
 import it.unicam.cs.ids.hackhub.entity.requester.ResponseRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.ResponseUpdateRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.ValuationRequester;
 import it.unicam.cs.ids.hackhub.service.SubmissionService;
@@ -55,6 +56,13 @@ public class SubmissionInterfaceController {
     @PostMapping("/reply")
     public ResponseEntity<ResponseResponse> sendSubmission(@RequestBody ResponseRequester requested) {
         ResponseResponse result = service.sendSubmission(requested);
+        if (result == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().body(result);
+    }
+
+    @PostMapping("/updatereply")
+    public ResponseEntity<ResponseResponse> resendSubmission(@RequestBody ResponseUpdateRequester requested) {
+        ResponseResponse result = service.resendSubmission(requested);
         if (result == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok().body(result);
     }
