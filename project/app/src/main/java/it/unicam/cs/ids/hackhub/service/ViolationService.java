@@ -17,6 +17,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service per la gestione delle violazioni.
+ * Fornisce operazioni per la visualizzazione e la creazione delle violazioni,
+ * nonché per la valutazione delle stesse da parte degli host.
+ */
 @Service
 public class ViolationService {
     private final ViolationRepository vRepo;
@@ -26,6 +31,16 @@ public class ViolationService {
     private final HackathonRepository hRepo;
     private final NotificationService nSer;
 
+    /**
+     * Costruisce un nuovo {@code ViolationService} con i repository e i validator necessari.
+     *
+     * @param vRepo il repository per la gestione delle violazioni
+     * @param vVal il validator per le violazioni
+     * @param uRepo il repository per la gestione degli utenti
+     * @param tRepo il repository per la gestione dei team
+     * @param hRepo il repository per la gestione degli hackathon
+     * @param nSer il service per l'invio delle notifiche
+     */
     public ViolationService(ViolationRepository vRepo, ViolationValidator vVal, UserRepository uRepo, TeamRepository tRepo, HackathonRepository hRepo, NotificationService nSer) {
         this.vRepo = vRepo;
         this.vVal = vVal;
@@ -35,18 +50,36 @@ public class ViolationService {
         this.nSer = nSer;
     }
 
-    public List<ViolationResponse> showMyViolations(Long toId) {
-        User host = uRepo.getReferenceById(toId);
+    /**
+     * Restituisce la lista delle violazioni che l'host ha ricevuto.
+     *
+     * @param hostId l'identificativo dell'host
+     * @return la lista delle violazioni dell'host
+     */
+    public List<ViolationResponse> showMyViolations(Long hostId) {
+        User host = uRepo.getReferenceById(hostId);
         return vRepo.findByTo(host)
                 .stream()
                 .map(this::toResponse)
                 .toList();
     }
 
+    /**
+     * Restituisce una specifica violazione in base all'identificativo.
+     *
+     * @param id l'identificativo della violazione
+     * @return la violazione corrispondente all'id, oppure {@code null} se non esiste
+     */
     public ViolationResponse showSelectedViolation(Long id) {
         return toResponse(vRepo.getReferenceById(id));
     }
 
+    /**
+     * Crea una nuova violazione a partire dai dati forniti tramite {@link ViolationRequester}.
+     *
+     * @param v i dati della violazione da creare
+     * @return la violazione creata, oppure {@code null} se i dati non sono validi
+     */
     public ViolationResponse createViolation(ViolationRequester v) {
         if (!vVal.validate(v)) return null;
         Team t = tRepo.getReferenceById(v.teamId());
@@ -64,6 +97,13 @@ public class ViolationService {
         return toResponse(vRepo.save(violation));
     }
 
+    /**
+     * Valuta una violazione selezionata tramite identificativo, fornendo una risposta da parte dell'host.
+     *
+     * @param id l'identificativo della violazione da valutare
+     * @param r la risposta alla violazione da salvare
+     * @return {@code true} se la valutazione è stata effettuata con successo, {@code false} altrimenti
+     */
     public boolean evaluateViolation(Long id , String r) {
         Violation v = vRepo.getReferenceById(id);
         if (r == null || r.isBlank()) return false;
