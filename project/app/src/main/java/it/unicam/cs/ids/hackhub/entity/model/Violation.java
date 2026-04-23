@@ -40,10 +40,16 @@ public class Violation {
     private Team team;
 
     /**
+     * Mentore che ha segnalato la violazione
+     */
+    @ManyToOne
+    private User from;
+
+    /**
      * Organizzatore che riceve la violazione
      */
     @ManyToOne
-    private User host;
+    private User to;
 
     /**
      * Indica se la violazione è stata gestita
@@ -56,13 +62,15 @@ public class Violation {
      *
      * @param description la descrizione della violazione
      * @param team il team associato alla violazione
-     * @param host l'organizzatore che riceve la violazione
+     * @param from il mentore che segnala la violazione
+     * @param to l'organizzatore che riceve la violazione
      */
-    public Violation(String description, Team team, User host) {
+    public Violation(String description, Team team, User from, User to) {
         this.description = description;
         this.reply = null;
         this.team = team;
-        this.host = host;
+        this.from = from;
+        this.to = to;
         this.completed = false;
     }
 
@@ -78,7 +86,8 @@ public class Violation {
                 ", description='" + description + '\'' +
                 ", reply='" + reply + '\'' +
                 ", teamId=" + (team == null ? null : team.getId()) +
-                ", hostId=" + (host == null ? null : host.getId()) +
+                ", fromId=" + (from == null ? null : from.getId()) +
+                ", fromId=" + (to == null ? null : to.getId()) +
                 ", completed=" + completed +
                 '}';
     }
