@@ -18,5 +18,5 @@ public interface ViolationRepository extends JpaRepository<Violation, Long> {
      * @param host utilizzato per filtrare le violazioni
      * @return una lista di violazioni che corrispondono all'host fornito
      */
-    List<Violation> findByHost(User host);
+    List<Violation> findByTo(User host);
 }
