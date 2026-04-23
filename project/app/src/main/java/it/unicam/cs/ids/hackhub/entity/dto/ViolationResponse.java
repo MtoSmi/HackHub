@@ -5,7 +5,8 @@ public record ViolationResponse(
         String description,
         String reply,
         Long teamId,
-        Long hostId,
+        Long fromId,
+        Long toId,
         boolean completed
 ) {
 }
