@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.hackhub.repository;
 
-import it.unicam.cs.ids.hackhub.entity.enumeration.Status;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

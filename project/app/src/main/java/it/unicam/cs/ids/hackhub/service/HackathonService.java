@@ -2,8 +2,8 @@ package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.builder.HackathonConcreteBuilder;
 import it.unicam.cs.ids.hackhub.entity.dto.HackathonResponse;
-import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
-import it.unicam.cs.ids.hackhub.entity.enumeration.Status;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.model.Team;

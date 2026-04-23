@@ -1,7 +1,7 @@
 package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.entity.dto.TeamResponse;
-import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Notification;
 import it.unicam.cs.ids.hackhub.entity.model.Team;

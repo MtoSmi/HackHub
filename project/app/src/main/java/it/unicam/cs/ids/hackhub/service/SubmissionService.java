@@ -2,7 +2,7 @@ package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.entity.dto.ResponseResponse;
 import it.unicam.cs.ids.hackhub.entity.dto.SubmissionResponse;
-import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.*;
 import it.unicam.cs.ids.hackhub.entity.requester.ResponseRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.ResponseUpdateRequester;

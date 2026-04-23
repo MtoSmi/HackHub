@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.hackhub.entity.model;
 
-import it.unicam.cs.ids.hackhub.entity.enumeration.Rank;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
