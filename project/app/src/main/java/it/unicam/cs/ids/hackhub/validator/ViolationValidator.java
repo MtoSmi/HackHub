@@ -27,6 +27,6 @@ public class ViolationValidator implements Validator<ViolationRequester> {
     public boolean validate(ViolationRequester v) {
         if (v == null) return false;
         if (v.description() == null || v.description().isBlank()) return false;
-        return v.teamId() != null && v.hostId() != null;
+        return v.teamId() != null && v.fromId() != null && v.toId() != null;
     }
 }
