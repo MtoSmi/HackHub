@@ -41,6 +41,10 @@ dependencies {
     implementation("com.google.api-client:google-api-client:2.0.0")
     implementation("com.google.auth:google-auth-library-oauth2-http:1.16.0")
     implementation("com.google.apis:google-api-services-calendar:v3-rev20220715-2.0.0")
+
+    //PayPal API
+    implementation("com.paypal.sdk:checkout-sdk:2.0.0")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
