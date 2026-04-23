@@ -35,6 +35,7 @@ public class HackathonService {
     private final HackathonValidator hackathonValidator;
     private final HackathonUpdateValidator updateValidator;
     private final NotificationService notificationService;
+    private final PaymentService paymentService;
 
     /**
      * Costruisce un'istanza di {@code HackathonService} con le dipendenze fornite.
@@ -43,13 +44,14 @@ public class HackathonService {
      * @param hValid   il validator per i dati degli hackathon
      * @param nService il service per l'invio delle notifiche
      */
-    public HackathonService(HackathonRepository hRepo, TeamRepository tRepo, UserRepository userRepository, HackathonValidator hValid, HackathonUpdateValidator updateValidator, NotificationService nService) {
+    public HackathonService(HackathonRepository hRepo, TeamRepository tRepo, UserRepository userRepository, HackathonValidator hValid, HackathonUpdateValidator updateValidator, NotificationService nService, PaymentService paymentService) {
         this.hackathonRepository = hRepo;
         this.teamRepository = tRepo;
         this.userRepository = userRepository;
         this.hackathonValidator = hValid;
         this.updateValidator = updateValidator;
         this.notificationService = nService;
+        this.paymentService = paymentService;
     }
 
     /**
@@ -102,7 +104,8 @@ public class HackathonService {
         if (!hackathonValidator.validate(h)) return null;
         if (!userRepository.getReferenceById(h.hostId()).getRank().equals(Rank.ORGANIZZATORE)) return null;
         if (!userRepository.getReferenceById(h.judgeId()).getRank().equals(Rank.STANDARD)) return null;
-        if (!userRepository.getReferenceById(h.mentorId()).getRank().equals(Rank.STANDARD)) return null; // All'inizio può inserire solo un mentore
+        if (!userRepository.getReferenceById(h.mentorId()).getRank().equals(Rank.STANDARD))
+            return null; // All'inizio può inserire solo un mentore
         Hackathon newH = new HackathonConcreteBuilder()
                 .buildName(h.name()).buildHost(userRepository.getReferenceById(h.hostId())).buildJudge(userRepository.getReferenceById(h.judgeId()))
                 .buildMentors(List.of(userRepository.getReferenceById(h.mentorId()))).buildMaxTeam(h.maxTeams()).buildSubmissions()
@@ -156,6 +159,22 @@ public class HackathonService {
         u.setRank(Rank.MENTORE);
         userRepository.save(u);
         h.getMentors().add(u);
+        hackathonRepository.save(h);
+        return true;
+    }
+
+    public boolean declareWinner(Long id, String team) {
+        Hackathon h = hackathonRepository.getReferenceById(id);
+        Team t = teamRepository.findByName(team);
+        if (!h.getParticipants().contains(t) || !(h.getStatus() == Status.IN_VALUTAZIONE)) return false;
+        String result;
+        try {
+            result = paymentService.initiatePayment(h.getReward(), t.getMembers().getFirst().getEmail());
+        } catch (Exception e) {
+            return false;
+        }
+        if (result == null) return false;
+        h.setStatus(Status.CONCLUSO);
         hackathonRepository.save(h);
         return true;
     }

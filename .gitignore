@@ -36,3 +36,6 @@ replay_pid*
 
 # Credential Google Calendar Api
 /project/app/config/calendar-credentials.json
+
+# Credential PayPal Api
+/project/app/config/paypal-credentials.json
