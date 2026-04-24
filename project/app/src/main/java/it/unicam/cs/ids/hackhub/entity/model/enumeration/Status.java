@@ -1,4 +1,4 @@
-package it.unicam.cs.ids.hackhub.entity.enumeration;
+package it.unicam.cs.ids.hackhub.entity.model.enumeration;
 
 public enum Status {
     IN_ISCRIZIONE,

@@ -2,17 +2,14 @@ package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.entity.dto.ResponseResponse;
 import it.unicam.cs.ids.hackhub.entity.dto.SubmissionResponse;
-import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
-import it.unicam.cs.ids.hackhub.entity.model.Response;
-import it.unicam.cs.ids.hackhub.entity.model.Submission;
-import it.unicam.cs.ids.hackhub.entity.model.Valuation;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
+import it.unicam.cs.ids.hackhub.entity.model.*;
 import it.unicam.cs.ids.hackhub.entity.requester.ResponseRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.ResponseUpdateRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.ValuationRequester;
-import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
-import it.unicam.cs.ids.hackhub.repository.ResponseRepository;
-import it.unicam.cs.ids.hackhub.repository.SubmissionRepository;
-import it.unicam.cs.ids.hackhub.repository.TeamRepository;
+import it.unicam.cs.ids.hackhub.repository.*;
+import it.unicam.cs.ids.hackhub.validator.ResponseUpdateValidator;
 import it.unicam.cs.ids.hackhub.validator.ResponseValidator;
 import it.unicam.cs.ids.hackhub.validator.SubmissionValidator;
 import org.springframework.stereotype.Service;
@@ -34,6 +31,8 @@ public class SubmissionService {
     private final SubmissionRepository submissionRepository;
     private final TeamRepository teamRepository;
     private final ResponseValidator responseValidator;
+    private final ResponseUpdateValidator ruVal;
+    private final UserRepository userRepository;
 
     /**
      * Costruisce un'istanza di {@code SubmissionService} con le dipendenze fornite.
@@ -41,13 +40,15 @@ public class SubmissionService {
      * @param sValidator il validator utilizzato per verificare la correttezza delle submission
      * @param hRepo      il repository utilizzato per accedere e aggiornare gli hackathon
      */
-    public SubmissionService(SubmissionValidator sValidator, HackathonRepository hRepo, ResponseRepository responseRepository, SubmissionRepository submissionRepository, TeamRepository teamRepository, ResponseValidator responseValidator) {
+    public SubmissionService(SubmissionValidator sValidator, HackathonRepository hRepo, ResponseRepository responseRepository, SubmissionRepository submissionRepository, TeamRepository teamRepository, ResponseValidator responseValidator, UserRepository userRepository, ResponseUpdateValidator ruVal) {
         this.submissionValidator = sValidator;
         this.hackathonRepository = hRepo;
         this.responseRepository = responseRepository;
         this.submissionRepository = submissionRepository;
         this.teamRepository = teamRepository;
         this.responseValidator = responseValidator;
+        this.ruVal = ruVal;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -70,21 +71,39 @@ public class SubmissionService {
         return toResponse(submission);
     }
 
-       public ResponseResponse sendSubmission(ResponseRequester r) {
-           if (!responseValidator.validate(r)) return null;
-           Submission s = submissionRepository.getReferenceById(r.submissionId());
-           if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
-           for (Response response : s.getResponses()) {
-               if (response.getSender().getId().equals(r.sender())) return null;
-           }
-           Response response = new Response(r.file());
-           response.setSubmission(s);
-           response.setSender(teamRepository.getReferenceById(r.sender()));
-           responseRepository.save(response);
-           s.getResponses().add(response);
-           submissionRepository.save(s);
-           return toResponse(response);
-       }
+    public ResponseResponse sendSubmission(ResponseRequester r) {
+        if (!responseValidator.validate(r)) return null;
+        Submission s = submissionRepository.getReferenceById(r.submissionId());
+        User u = userRepository.getReferenceById(r.sender());
+        if (u.getRank() != Rank.MEMBRO_TEAM) return null;
+        if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
+        for (Response response : s.getResponses()) {
+            if (response.getSender().getId().equals(r.sender())) return null;
+        }
+        Response response = new Response(r.file());
+        response.setSubmission(s);
+        response.setSender(teamRepository.getReferenceById(r.sender()));
+        responseRepository.save(response);
+        s.getResponses().add(response);
+        submissionRepository.save(s);
+        return toResponse(response);
+    }
+
+    public ResponseResponse resendSubmission(ResponseUpdateRequester ru) {
+        if (!ruVal.validate(ru)) return null;
+        Response r = responseRepository.getReferenceById(ru.responseId());
+        Submission s = submissionRepository.getReferenceById(r.getSubmission().getId());
+        User u = userRepository.getReferenceById(ru.sender());
+        if (u.getRank() != Rank.MEMBRO_TEAM) return null;
+        if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
+        s.getResponses().remove(r);
+        r.setFile(ru.file());
+        r.setSender(teamRepository.getReferenceById(ru.sender()));
+        responseRepository.save(r);
+        s.getResponses().add(r);
+        submissionRepository.save(s);
+        return toResponse(r);
+    }
 
     public ResponseResponse evaluateSubmission(ValuationRequester r) {
         Response res = responseRepository.getReferenceById(r.responseId());
