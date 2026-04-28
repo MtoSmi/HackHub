@@ -6,9 +6,11 @@ import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Notification;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.requester.AcceptTeamInviteRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamInviteRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.TeamUpdateRequester;
 import it.unicam.cs.ids.hackhub.repository.NotificationRepository;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
@@ -113,7 +115,7 @@ public class TeamService {
         return false;
     }
 
-    public boolean updateTeam(TeamUpdateRequester tu) {
+    public TeamResponse updateTeam(TeamUpdateRequester tu) {
         Team team = teamRepository.getReferenceById(tu.teamId());
         if (!team.getMembers().contains(userRepository.getReferenceById(tu.editorId()))) throw new IllegalArgumentException("Utente non autorizzato a modificare il team");
         if (tu.name() == null || tu.name().isEmpty()) throw new IllegalArgumentException("Il nome del team non può essere vuoto");
@@ -122,8 +124,23 @@ public class TeamService {
         }
         team.setName(tu.name());
         teamRepository.save(team);
-        return true;
+        return toResponse(teamRepository.getReferenceById(tu.teamId()));
 
+    }
+
+    public boolean dropTeam(Long tId, Long uId) {
+        if (tId == null || uId == null) throw new IllegalArgumentException("ID del team e dell'utente non possono essere null");
+        Team team = teamRepository.getReferenceById(tId);
+        if (!team.getMembers().contains(userRepository.getReferenceById(uId))) throw new IllegalArgumentException("Utente non presente nel team");
+        if (team.getHackathons().getLast().getStatus() != Status.CONCLUSO) throw new IllegalStateException("Impossibile abbandonare il team durante un hackathon in corso");
+        team.getMembers().remove(userRepository.getReferenceById(uId));
+        team.setDimension(team.getMembers().size());
+        teamRepository.save(team);
+        User user = userRepository.getReferenceById(uId);
+        user.setTeam(null);
+        user.setRank(Rank.STANDARD);
+        userRepository.save(user);
+        return true;
     }
 
     private TeamResponse toResponse(Team team) {
