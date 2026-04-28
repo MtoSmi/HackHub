@@ -100,9 +100,23 @@ public class HackathonInterfaceController {
         return ResponseEntity.unprocessableEntity().build();
     }
 
+    @PostMapping("/removeMentor")
+    public ResponseEntity<Void> removeMentor(@RequestParam Long hId, @RequestParam Long mentorId) {
+        boolean response = service.removeMentor(hId, mentorId);
+        if (response) return ResponseEntity.ok().build();
+        return ResponseEntity.unprocessableEntity().build();
+    }
+
     @PostMapping("/declareWinner")
     public ResponseEntity<Void> declareWinner(@RequestParam Long id, @RequestParam String team) {
         boolean response = service.declareWinner(id, team);
+        if (response) return ResponseEntity.ok().build();
+        return ResponseEntity.unprocessableEntity().build();
+    }
+
+    @PostMapping("/dropHackathon")
+    public ResponseEntity<Void> dropHackathon(@RequestParam Long hId, @RequestParam Long tId) {
+        boolean response = service.dropHackathon(hId, tId);
         if (response) return ResponseEntity.ok().build();
         return ResponseEntity.unprocessableEntity().build();
     }
