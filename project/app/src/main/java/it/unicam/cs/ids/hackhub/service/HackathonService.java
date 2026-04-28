@@ -179,6 +179,14 @@ public class HackathonService {
         return true;
     }
 
+    public boolean removeMentor(Long hId, Long mId) {
+        if (hId == null || mId == null) throw new IllegalArgumentException("ID mentore o ID Hackathon non possono essere nulli");
+        Hackathon h = hackathonRepository.getReferenceById(hId);
+        h.getMentors().removeIf(m -> m.getId().equals(mId));
+        hackathonRepository.save(h);
+        return true;
+    }
+
     private HackathonResponse toResponse(Hackathon h) {
         if (h == null) return null;
         return new HackathonResponse(
