@@ -85,6 +85,12 @@ public class UserService {
         return true;
     }
 
+    public boolean removeAccount(Long id) {
+        if (id == null) throw new IllegalArgumentException("ID utente non può essere nullo");
+        userRepository.delete(userRepository.getReferenceById(id));
+        return true;
+    }
+
     /**
      * Restituisce le informazioni di un utente dato il suo identificativo.
      *
