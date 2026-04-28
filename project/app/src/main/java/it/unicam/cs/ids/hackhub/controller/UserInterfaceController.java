@@ -62,6 +62,12 @@ public class UserInterfaceController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestParam Long id) {
+        if (id == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/rankUpgrade")
     public ResponseEntity<Void> rankUpgrade(@RequestParam String email) {
         boolean success = service.rankUpgrade(email);
@@ -74,6 +80,13 @@ public class UserInterfaceController {
         UserResponse response = service.updateUserInformation(requested);
         if (response == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/remove")
+    public ResponseEntity<Void> removeAccount(@RequestParam Long id) {
+        boolean success = service.removeAccount(id);
+        if (success) return ResponseEntity.ok().build();
+        return ResponseEntity.unprocessableEntity().build();
     }
 
 }
