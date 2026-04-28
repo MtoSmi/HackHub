@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service per la gestione dei team.
@@ -110,6 +111,19 @@ public class TeamService {
             return true;
         }
         return false;
+    }
+
+    public boolean updateTeam(TeamUpdateRequester tu) {
+        Team team = teamRepository.getReferenceById(tu.teamId());
+        if (!team.getMembers().contains(userRepository.getReferenceById(tu.editorId()))) throw new IllegalArgumentException("Utente non autorizzato a modificare il team");
+        if (tu.name() == null || tu.name().isEmpty()) throw new IllegalArgumentException("Il nome del team non può essere vuoto");
+        for (Team other : teamRepository.findAll()) {
+            if (team.getName().equals(other.getName())) throw new IllegalArgumentException("Esiste già un team con questo nome");
+        }
+        team.setName(tu.name());
+        teamRepository.save(team);
+        return true;
+
     }
 
     private TeamResponse toResponse(Team team) {
