@@ -179,6 +179,28 @@ public class HackathonService {
         return true;
     }
 
+    public boolean removeMentor(Long hId, Long mId) {
+        if (hId == null || mId == null) throw new IllegalArgumentException("ID mentore o ID Hackathon non possono essere nulli");
+        Hackathon h = hackathonRepository.getReferenceById(hId);
+        if (h.getStatus() == Status.CONCLUSO || h.getStatus() == Status.IN_VALUTAZIONE) throw new IllegalStateException("Non è possibile abbandonare un hackathon concluso o in valutazione");
+
+        h.getMentors().removeIf(m -> m.getId().equals(mId));
+        hackathonRepository.save(h);
+        return true;
+    }
+
+    public boolean dropHackathon(Long hId, Long tId) {
+        if (hId == null || tId == null) throw new IllegalArgumentException("ID team o ID Hackathon non possono essere nulli");
+        Hackathon h = hackathonRepository.getReferenceById(hId);
+        if (h.getStatus() == Status.CONCLUSO || h.getStatus() == Status.IN_VALUTAZIONE) throw new IllegalStateException("Non è possibile abbandonare un hackathon concluso o in valutazione");
+        h.getParticipants().removeIf(t -> t.getId().equals(tId));
+        hackathonRepository.save(h);
+        Team t = teamRepository.getReferenceById(tId);
+        t.getHackathons().removeIf(h2 -> h2.getId().equals(hId));
+        teamRepository.save(t);
+        return true;
+    }
+
     private HackathonResponse toResponse(Hackathon h) {
         if (h == null) return null;
         return new HackathonResponse(

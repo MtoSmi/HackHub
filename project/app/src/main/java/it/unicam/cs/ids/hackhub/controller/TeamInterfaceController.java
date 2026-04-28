@@ -4,6 +4,7 @@ import it.unicam.cs.ids.hackhub.entity.dto.TeamResponse;
 import it.unicam.cs.ids.hackhub.entity.requester.AcceptTeamInviteRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamInviteRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.TeamUpdateRequester;
 import it.unicam.cs.ids.hackhub.service.TeamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,15 @@ public class TeamInterfaceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @PostMapping("/update")
+    public ResponseEntity<TeamResponse> updateTeam(@RequestBody TeamUpdateRequester requested) {
+        TeamResponse updated = service.updateTeam(requested);
+        if (updated == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(updated);
+    }
+
     @GetMapping("/showInformation/{name}")
     public ResponseEntity<TeamResponse> showInformation(@PathVariable String name) {
         TeamResponse team = service.showInformation(name);
@@ -67,6 +77,16 @@ public class TeamInterfaceController {
     @PostMapping("/acceptInvite")
     public ResponseEntity<Void> acceptInvite(@RequestBody AcceptTeamInviteRequester requested) {
         boolean result = service.acceptInvite(requested);
+        if (result) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+    }
+
+    @PostMapping("/dropTeam")
+    public ResponseEntity<Void> dropTeam(@RequestParam Long tId, @RequestParam Long uId) {
+        boolean result = service.dropTeam(tId, uId);
         if (result) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {
