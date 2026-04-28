@@ -4,6 +4,7 @@ import it.unicam.cs.ids.hackhub.entity.dto.TeamResponse;
 import it.unicam.cs.ids.hackhub.entity.requester.AcceptTeamInviteRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamInviteRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.TeamUpdateRequester;
 import it.unicam.cs.ids.hackhub.service.TeamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
