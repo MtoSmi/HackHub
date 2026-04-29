@@ -5,6 +5,6 @@ public record UserUpdateRequester(
         String name,
         String surname,
         String email,
-        String password
+        String password //TODO: controllare che la password sia inserita altrimenti rifiutare la richiesta
 ) {
 }

@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+//TODO: sistemare commenti
 /**
  * Rappresenta un hackathon nel sistema HackHub.
  * <p>
@@ -118,7 +118,7 @@ public class Hackathon {
                 ", mentorsId=" + (mentors == null ? null : mentors.stream().map(User::getId).toList()) +
                 ", participantsId=" + (participants == null ? null : participants.stream().map(Team::getId).toList()) +
                 ", maxTeams=" + maxTeams +
-                ", submissions=" + (submissions == null ? null : submissions.stream().map(Submission::getId).toList()) +
+                ", submissions=" + (submissions == null ? null : submissions.stream().map(Submission::getId).toList()) + //TODO: aggiungere id
                 ", regulation='" + regulation + '\'' +
                 ", deadline=" + deadline +
                 ", startDate=" + startDate +

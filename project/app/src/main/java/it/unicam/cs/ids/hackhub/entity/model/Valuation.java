@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+//TODO: inserire commenti
 @Entity
 @Getter
 @NoArgsConstructor

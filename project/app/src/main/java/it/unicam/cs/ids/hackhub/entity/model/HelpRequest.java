@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+//TODO: controllare commenti
 /**
  * Rappresenta una richiesta di aiuto nel sistema HackHub.
  * <p>
@@ -49,7 +49,7 @@ public class HelpRequest {
      */
     @ManyToOne
     private User to;
-
+//TODO: è l'identificativo all'evento presente sul calendar esterno, richiamabile tramite ricerca da id
     /**
      * Link o identificativo della chiamata virtuale/riunione per l'aiuto
      */

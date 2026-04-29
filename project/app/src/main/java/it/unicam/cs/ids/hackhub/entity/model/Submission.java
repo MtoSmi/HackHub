@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+//TODO: controllare commenti
 /**
  * Rappresenta una submission in un hackathon.
  * Una submission contiene le informazioni relative al risultato atteso dai team,
@@ -61,7 +61,7 @@ public class Submission {
         this.title = title;
         this.description = description;
         this.startDate = localDateTime;
-        this.endDate = localDateTime1;
+        this.endDate = localDateTime1; //TODO: rinominare corretto
         this.responses = new ArrayList<>();
         this.complete = false;
     }

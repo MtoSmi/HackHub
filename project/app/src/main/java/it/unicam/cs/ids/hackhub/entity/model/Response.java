@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+//TODO: aggiungere commenti
 @Entity
 @Getter
 @NoArgsConstructor
@@ -17,7 +17,7 @@ public class Response {
     private String file;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Team sender;
+    private Team sender; //TODO: sender diventa from
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Submission submission;

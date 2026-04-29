@@ -75,7 +75,7 @@ public class HackathonInterfaceController {
     }
 
     @PostMapping("/subscribe")
-    public ResponseEntity<Void> subscribeTeam(@RequestBody SubscribeHackathonRequester requested) {
+    public ResponseEntity<Void> subscribeTeam(@RequestBody SubscribeHackathonRequester requested) { //TODO: prendere come param userId (da cui recuperare il team di appartenenza) e hackathonId (hackathon a cui iscrivere il team)
         boolean response = service.subscribeHackathon(requested);
         if (response) return ResponseEntity.ok().build();
         return ResponseEntity.unprocessableEntity().build();
@@ -94,7 +94,7 @@ public class HackathonInterfaceController {
     }
 
     @PostMapping("/addMentor")
-    public ResponseEntity<Void> addMentor(@RequestBody SubscribeHackathonRequester requested) {
+    public ResponseEntity<Void> addMentor(@RequestBody SubscribeHackathonRequester requested) { //TODO: prendere come param editorId (id host) e mentorEmail (mail del mentore da aggiungere)
         boolean response = service.addMentor(requested);
         if (response) return ResponseEntity.ok().build();
         return ResponseEntity.unprocessableEntity().build();

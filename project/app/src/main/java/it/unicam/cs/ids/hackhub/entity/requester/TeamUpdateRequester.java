@@ -1,7 +1,8 @@
 package it.unicam.cs.ids.hackhub.entity.requester;
 
 public record TeamUpdateRequester(
-        Long teamId,
+        //TODO: spostate editorId in alto
+        Long teamId, //TODO: rimuovere perche si recupera il team dall'editorId
         String name,
         Long editorId
 ) {

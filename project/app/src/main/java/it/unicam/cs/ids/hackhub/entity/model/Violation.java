@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+//TODO: controllare commenti
 /**
  * Rappresenta una violazione nel sistema HackHub.
  * <p>

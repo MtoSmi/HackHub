@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-
+//TODO: controllare commenti
 /**
  * Rappresenta un team nel sistema HackHub.
  * Questa classe modella un team che può partecipare a uno o più hackathon,
@@ -56,7 +56,7 @@ public class Team {
      */
     public Team(String name) {
         this.name = name;
-        this.dimension = 1;
+        this.dimension = 1; //TODO: controllare che dovrebbe essere fatto con size in creazione
     }
 
     /**

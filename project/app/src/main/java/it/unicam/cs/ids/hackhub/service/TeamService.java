@@ -90,14 +90,14 @@ public class TeamService {
         User invitante = userRepository.findByEmail(r.invitingEmail());
         Team team = teamRepository.getReferenceById(r.teamId());
         if (invitante != null && team.getMembers().contains(invitante) && invitato != null && invitato.getRank() == Rank.STANDARD) {
-            notificationService.send("Invito ricevuto!", "Sei stato invitato a unirti al team " + team.getName() + " da " + invitante.getName(), invitato.getId());
+            notificationService.send("Invito ricevuto!", "Sei stato invitato a unirti al team " + team.getName() + " da " + invitante.getName(), invitato.getId()); //TODO: inserire tra graffe l'ìd dell'utente es. Fabio{12}
             return true;
         }
         return false;
 
     }
 
-    public boolean acceptInvite(AcceptTeamInviteRequester r) {
+    public boolean acceptInvite(AcceptTeamInviteRequester r) { //TODO: prendere l'id presente tra graffe e recuperare il team da li
         User user = userRepository.findByEmail(r.invitedEmail());
         Team team = teamRepository.findByName(r.team());
         Notification notification = notificationRepository.getReferenceById(r.notificationId());
