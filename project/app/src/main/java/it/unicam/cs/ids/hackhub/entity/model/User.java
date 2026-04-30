@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 //TODO: controllare commenti
+
 /**
  * Rappresenta un utente del sistema HackHub.
  */
@@ -85,7 +86,6 @@ public class User {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' + //TODO: rimuovere password da toString
                 ", teamId=" + (team == null ? null : team.getId()) +
                 ", rank=" + rank +
                 '}';

@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 //TODO: inserire commenti
 @Entity
 @Getter
@@ -16,7 +17,9 @@ public class Valuation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private int vote;
+
     private String note;
 
     public Valuation(int vote, String note) {

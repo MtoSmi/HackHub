@@ -7,10 +7,7 @@ import it.unicam.cs.ids.hackhub.entity.model.Notification;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.model.enumeration.Status;
-import it.unicam.cs.ids.hackhub.entity.requester.AcceptTeamInviteRequester;
-import it.unicam.cs.ids.hackhub.entity.requester.TeamInviteRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
-import it.unicam.cs.ids.hackhub.entity.requester.TeamUpdateRequester;
 import it.unicam.cs.ids.hackhub.repository.NotificationRepository;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
@@ -20,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Service per la gestione dei team.
@@ -60,7 +56,7 @@ public class TeamService {
      * @param t il {@link TeamRequester} contenente i dati del team da creare
      * @return il {@link Team} creato e salvato nel repository, oppure {@code null} se la creazione non è consentita
      */
-    public TeamResponse creationTeam(TeamRequester t) {
+    public TeamResponse creationTeam(TeamRequester t) { //TODO: members e hackathons vengono creati nel costruttore
         if (!teamValidator.validate(t)) return null;
         Team team = new Team(t.name());
         User creator = userRepository.findByEmail(t.creatorEmail());
@@ -85,7 +81,7 @@ public class TeamService {
         return toResponse(teamRepository.findByName(name));
     }
 
-    public boolean inviteMember(TeamInviteRequester r) {
+    public boolean inviteMember(TeamInviteRequester r) { //TODO: prendere l'id presente tra graffe e recuperare il team da li'
         User invitato = userRepository.findByEmail(r.invitedEmail());
         User invitante = userRepository.findByEmail(r.invitingEmail());
         Team team = teamRepository.getReferenceById(r.teamId());
@@ -115,7 +111,7 @@ public class TeamService {
         return false;
     }
 
-    public TeamResponse updateTeam(TeamUpdateRequester tu) {
+    public TeamResponse updateTeam(TeamUpdateRequester t) { //TODO: prendere TeamRequester e recuperare team da li
         Team team = teamRepository.getReferenceById(tu.teamId());
         if (!team.getMembers().contains(userRepository.getReferenceById(tu.editorId()))) throw new IllegalArgumentException("Utente non autorizzato a modificare il team");
         if (tu.name() == null || tu.name().isEmpty()) throw new IllegalArgumentException("Il nome del team non può essere vuoto");

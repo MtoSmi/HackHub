@@ -10,7 +10,6 @@ import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonUpdateRequester;
-import it.unicam.cs.ids.hackhub.entity.requester.SubscribeHackathonRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;

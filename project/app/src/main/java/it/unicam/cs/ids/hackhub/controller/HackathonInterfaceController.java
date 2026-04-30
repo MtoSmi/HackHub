@@ -3,7 +3,6 @@ package it.unicam.cs.ids.hackhub.controller;
 import it.unicam.cs.ids.hackhub.entity.dto.HackathonResponse;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonUpdateRequester;
-import it.unicam.cs.ids.hackhub.entity.requester.SubscribeHackathonRequester;
 import it.unicam.cs.ids.hackhub.service.HackathonService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
