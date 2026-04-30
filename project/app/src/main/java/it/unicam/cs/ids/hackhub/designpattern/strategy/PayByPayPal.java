@@ -1,41 +1,29 @@
-package it.unicam.cs.ids.hackhub.strategy;
+package it.unicam.cs.ids.hackhub.designpattern.strategy;
 
 import com.paypal.core.PayPalHttpClient;
 import com.paypal.orders.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.List;
 
 @Component
-public class OrderService implements PayPal {
+public class PayByPayPal implements PayStrategy {
 
     private final PayPalHttpClient httpClient;
 
     @Autowired
-    public OrderService(PayPalConfiguration payPalConfiguration) {
+    public PayByPayPal(PayPalConfiguration payPalConfiguration) {
         this.httpClient = payPalConfiguration.getHttpClient();
     }
 
-    public Order createOrder(Double amount, String email) {
+    public Order pay(Double amount, String email) {
         OrderRequest orderRequest = buildOrderRequest(amount, email);
         OrdersCreateRequest request = new OrdersCreateRequest().requestBody(orderRequest);
         try {
             return httpClient.execute(request).result();
         } catch (Exception e) {
-            throw new RuntimeException("Impossibile creare ordine di pagamento PayPal: ", e);
-        }
-    }
-
-    public boolean captureOrder(String orderId) {
-        OrdersCaptureRequest request = new OrdersCaptureRequest(orderId);
-        request.requestBody(new OrderActionRequest());
-        try {
-            Order result = httpClient.execute(request).result();
-            return "COMPLETED".equals(result.status());
-        } catch (IOException e) {
-            return false;
+            throw new RuntimeException("Impossibile creare ordine di pagamento PayStrategy: ", e);
         }
     }
 
