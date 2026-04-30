@@ -1,4 +1,4 @@
-package it.unicam.cs.ids.hackhub.builder;
+package it.unicam.cs.ids.hackhub.designpattern.builder;
 
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
