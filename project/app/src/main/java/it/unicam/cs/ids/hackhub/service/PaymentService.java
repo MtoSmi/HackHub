@@ -2,7 +2,7 @@ package it.unicam.cs.ids.hackhub.service;
 
 import com.paypal.orders.LinkDescription;
 import com.paypal.orders.Order;
-import it.unicam.cs.ids.hackhub.paypal.PayPal;
+import it.unicam.cs.ids.hackhub.strategy.PayPal;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

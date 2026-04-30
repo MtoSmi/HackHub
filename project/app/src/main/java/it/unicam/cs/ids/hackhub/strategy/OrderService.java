@@ -1,4 +1,4 @@
-package it.unicam.cs.ids.hackhub.paypal;
+package it.unicam.cs.ids.hackhub.strategy;
 
 import com.paypal.core.PayPalHttpClient;
 import com.paypal.orders.*;

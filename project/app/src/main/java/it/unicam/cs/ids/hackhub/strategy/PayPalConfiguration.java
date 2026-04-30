@@ -1,4 +1,4 @@
-package it.unicam.cs.ids.hackhub.paypal;
+package it.unicam.cs.ids.hackhub.strategy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paypal.core.PayPalEnvironment;
