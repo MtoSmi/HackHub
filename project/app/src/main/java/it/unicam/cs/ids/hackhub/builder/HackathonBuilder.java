@@ -1,7 +1,6 @@
 package it.unicam.cs.ids.hackhub.builder;
 
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
-import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 
@@ -78,7 +77,7 @@ public interface HackathonBuilder {
      * @param regulation il testo del regolamento
      * @return questa istanza HackathonBuilder per il concatenamento dei metodi
      */
-    HackathonBuilder buildRegulation (String regulation);
+    HackathonBuilder buildRegulation(String regulation);
 
     /**
      * Imposta la scadenza per l'iscrizione all'hackathon.

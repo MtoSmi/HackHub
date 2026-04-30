@@ -1,10 +1,10 @@
 package it.unicam.cs.ids.hackhub.builder;
 
-import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
-import it.unicam.cs.ids.hackhub.entity.model.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Status;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,7 +20,9 @@ import java.util.List;
  */
 public class HackathonConcreteBuilder implements HackathonBuilder {
 
-    /** L'istanza di Hackathon in corso di costruzione */
+    /**
+     * L'istanza di Hackathon in corso di costruzione
+     */
     private final Hackathon hackathon;
 
     /**
@@ -78,7 +80,9 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
      */
     @Override
     public HackathonBuilder buildMentors(List<User> mentors) {
-        for (User m : mentors) { m.setRank(Rank.MENTORE); }
+        for (User m : mentors) {
+            m.setRank(Rank.MENTORE);
+        }
         hackathon.setMentors(new ArrayList<>(mentors));
         return this;
     }
