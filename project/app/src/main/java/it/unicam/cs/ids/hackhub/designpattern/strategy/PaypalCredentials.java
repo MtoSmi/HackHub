@@ -1,4 +1,4 @@
-package it.unicam.cs.ids.hackhub.strategy;
+package it.unicam.cs.ids.hackhub.designpattern.strategy;
 
 import lombok.Getter;
 import lombok.Setter;

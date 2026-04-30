@@ -1,4 +1,4 @@
-package it.unicam.cs.ids.hackhub.strategy;
+package it.unicam.cs.ids.hackhub.designpattern.strategy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paypal.core.PayPalEnvironment;
@@ -43,14 +43,12 @@ public class PayPalConfiguration {
         } else {
             loadFromJson();
         }
-
         PayPalEnvironment environment;
         if (resolvedBaseUrl != null && resolvedBaseUrl.contains("sandbox")) {
             environment = new PayPalEnvironment.Sandbox(resolvedClientId, resolvedClientSecret);
         } else {
             environment = new PayPalEnvironment.Live(resolvedClientId, resolvedClientSecret);
         }
-
         httpClient = new PayPalHttpClient(environment);
     }
 
@@ -58,21 +56,14 @@ public class PayPalConfiguration {
         try {
             ObjectMapper mapper = new ObjectMapper();
             PaypalCredentials creds = mapper.readValue(new File(credentialsPath), PaypalCredentials.class);
-
             if (!StringUtils.hasText(creds.getClientId()) || !StringUtils.hasText(creds.getClientSecret())) {
-                throw new IllegalStateException("File JSON PayPal non valido: mancano clientId o clientSecret");
+                throw new IllegalStateException("File JSON PayStrategy non valido: mancano clientId o clientSecret");
             }
-
-            resolvedBaseUrl = StringUtils.hasText(creds.getBaseUrl())
-                    ? creds.getBaseUrl().trim()
-                    : "https://api-m.sandbox.paypal.com";
+            resolvedBaseUrl = StringUtils.hasText(creds.getBaseUrl()) ? creds.getBaseUrl().trim() : "https://api-m.sandbox.paypal.com";
             resolvedClientId = creds.getClientId().trim();
             resolvedClientSecret = creds.getClientSecret().trim();
-
         } catch (IOException e) {
-            throw new IllegalStateException(
-                    "Impossibile leggere le credenziali PayPal da " + credentialsPath, e
-            );
+            throw new IllegalStateException("Impossibile leggere le credenziali PayStrategy da " + credentialsPath, e);
         }
     }
 }
