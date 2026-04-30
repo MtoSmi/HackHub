@@ -9,7 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//TODO: controllare commenti, inserire controllo risposta unificato.
+//TODO: controllare commenti
+
 /**
  * Controller per interfaccia per la gestione delle operazioni sugli hackathon.
  * </p>
@@ -40,22 +41,44 @@ public class HackathonInterfaceController {
      * @return l'hackathon creato
      */
     @PostMapping("/create")
-    public ResponseEntity<HackathonResponse> creationHackathon(@RequestBody HackathonRequester requested) {
+    public ResponseEntity<HackathonResponse> createHackathon(@RequestBody HackathonRequester requested) {
         HackathonResponse response = service.creationHackathon(requested);
-        if (response == null) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (response == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
-     * Restituisce la lista di tutti gli hackathon disponibili.
+     * Aggiorna le informazioni di un hackathon esistente a partire dalla richiesta fornita.
+     *
+     * @param requested la richiesta di aggiornamento dell'hackathon
+     * @return l'hackathon aggiornato
+     */
+    @PostMapping("/update")
+    public ResponseEntity<HackathonResponse> updateHackathon(@RequestBody HackathonUpdateRequester requested) {
+        HackathonResponse response = service.updateHackathonInformation(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(204).body(response);
+    }
+
+    /**
+     * Restituisce la lista di tutti gli hackathon disponibili nella piattaforma.
      *
      * @return la lista degli hackathon
      */
     @GetMapping("/showList")
     public ResponseEntity<List<HackathonResponse>> showHackathonList() {
         return ResponseEntity.ok(service.showHackathonList());
+    }
+
+    /**
+     * Restituisce la lista degli hackathon a cui l'utente identificato dall'id è iscritto.
+     *
+     * @param id l'identificativo dell'utente
+     * @return la lista degli hackathon a cui l'utente è iscritto
+     */
+    @GetMapping("/show/{id}")
+    public ResponseEntity<List<HackathonResponse>> showMyHackathonList(@PathVariable Long id) {
+        return ResponseEntity.ok(service.showMyHackathonList(id));
     }
 
     /**
@@ -67,58 +90,42 @@ public class HackathonInterfaceController {
     @GetMapping("/showSelected/{id}")
     public ResponseEntity<HackathonResponse> showSelectedHackathon(@PathVariable Long id) {
         HackathonResponse response = service.showSelectedHackathon(id);
-        if (response == null) {
-            return ResponseEntity.notFound().build();
-        }
+        if (response == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/subscribe")
-    public ResponseEntity<Void> subscribeTeam(@RequestBody SubscribeHackathonRequester requested) { //TODO: prendere come param userId (da cui recuperare il team di appartenenza) e hackathonId (hackathon a cui iscrivere il team)
-        boolean response = service.subscribeHackathon(requested);
-        if (response) return ResponseEntity.ok().build();
-        return ResponseEntity.unprocessableEntity().build();
-    }
-
-    @PostMapping("/update")
-    public ResponseEntity<HackathonResponse> updateHackathon(@RequestBody HackathonUpdateRequester requested) {
-        HackathonResponse response = service.updateHackathonInformation(requested);
-        if (response == null) return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/show/{email}") //TODO: prendere come variabile l'id non la mail
-    public ResponseEntity<List<HackathonResponse>> showMyHackathonList(@PathVariable String email) {
-        return ResponseEntity.ok(service.showMyHackathonList(email));
     }
 
     @PostMapping("/addMentor")
-    public ResponseEntity<Void> addMentor(@RequestBody SubscribeHackathonRequester requested) { //TODO: prendere come param editorId (id host) e mentorEmail (mail del mentore da aggiungere)
-        boolean response = service.addMentor(requested);
-        if (response) return ResponseEntity.ok().build();
-        return ResponseEntity.unprocessableEntity().build();
+    public ResponseEntity<Void> addMentor(@RequestParam Long hId, @RequestParam String email) {
+        boolean response = service.addMentor(hId, email);
+        if (!response) return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @PostMapping("/removeMentor")
-    public ResponseEntity<Void> removeMentor(@RequestParam Long hId, @RequestParam Long mentorId) {
-        boolean response = service.removeMentor(hId, mentorId);
-        if (response) return ResponseEntity.ok().build();
-        return ResponseEntity.unprocessableEntity().build();
+    public ResponseEntity<Void> removeMentor(@RequestParam Long hId, @RequestParam Long mId) {
+        boolean response = service.removeMentor(hId, mId);
+        if (!response) return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @PostMapping("/subscribe")
+    public ResponseEntity<Void> subscribeHackathon(@RequestParam Long hId, @RequestParam Long uId) {
+        boolean response = service.subscribeHackathon(hId, uId);
+        if (!response) return ResponseEntity.unprocessableEntity().build();
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/drop")
+    public ResponseEntity<Void> dropHackathon(@RequestParam Long hId, @RequestParam Long uId) {
+        boolean response = service.dropHackathon(hId, uId);
+        if (!response) return ResponseEntity.unprocessableEntity().build();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/declareWinner")
-    public ResponseEntity<Void> declareWinner(@RequestParam Long id, @RequestParam String team) {
-        boolean response = service.declareWinner(id, team);
-        if (response) return ResponseEntity.ok().build();
-        return ResponseEntity.unprocessableEntity().build();
-    }
-
-    @PostMapping("/dropHackathon")
-    public ResponseEntity<Void> dropHackathon(@RequestParam Long hId, @RequestParam Long tId) {
-        boolean response = service.dropHackathon(hId, tId);
-        if (response) return ResponseEntity.ok().build();
-        return ResponseEntity.unprocessableEntity().build();
+    public ResponseEntity<Void> declareWinner(@RequestParam Long eId, @RequestParam Long hId, @RequestParam String team) {
+        boolean response = service.declareWinner(eId, hId, team);
+        if (!response) return ResponseEntity.unprocessableEntity().build();
+        return ResponseEntity.ok().build();
     }
 }
-
-//TODO: createHackathon, updateHackathon, showHackathonList, showMyHackathonList, showSelectedHackathon, addMentor, removeMentor, subscribeHackathon, dropHackathon, declareWinner

@@ -2,12 +2,12 @@ package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.designpattern.builder.HackathonConcreteBuilder;
 import it.unicam.cs.ids.hackhub.entity.dto.HackathonResponse;
-import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
-import it.unicam.cs.ids.hackhub.entity.model.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.HackathonUpdateRequester;
 import it.unicam.cs.ids.hackhub.repository.HackathonRepository;
@@ -17,7 +17,6 @@ import it.unicam.cs.ids.hackhub.validator.HackathonUpdateValidator;
 import it.unicam.cs.ids.hackhub.validator.HackathonValidator;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,29 +27,58 @@ import java.util.List;
  */
 @Service
 public class HackathonService {
-    private final HackathonRepository hackathonRepository;
-    private final TeamRepository teamRepository;
-    private final UserRepository userRepository;
-    private final HackathonValidator hackathonValidator;
-    private final HackathonUpdateValidator updateValidator;
-    private final NotificationService notificationService;
-    private final PaymentService paymentService;
+    private final HackathonRepository hRepo;
+    private final TeamRepository tRepo;
+    private final UserRepository uRepo;
+    private final NotificationService nSer;
+    private final PaymentService pSer;
+    private final HackathonValidator hVal;
+    private final HackathonUpdateValidator huVal;
 
-    /**
-     * Costruisce un'istanza di {@code HackathonService} con le dipendenze fornite.
-     *
-     * @param hRepo    il repository per la persistenza degli hackathon
-     * @param hValid   il validator per i dati degli hackathon
-     * @param nService il service per l'invio delle notifiche
-     */
-    public HackathonService(HackathonRepository hRepo, TeamRepository tRepo, UserRepository userRepository, HackathonValidator hValid, HackathonUpdateValidator updateValidator, NotificationService nService, PaymentService paymentService) {
-        this.hackathonRepository = hRepo;
-        this.teamRepository = tRepo;
-        this.userRepository = userRepository;
-        this.hackathonValidator = hValid;
-        this.updateValidator = updateValidator;
-        this.notificationService = nService;
-        this.paymentService = paymentService;
+
+    public HackathonService(HackathonRepository hRepo, TeamRepository tRepo, UserRepository uRepo, HackathonValidator hVal, HackathonUpdateValidator huVal, NotificationService nSer, PaymentService pSer) {
+        this.hRepo = hRepo;
+        this.tRepo = tRepo;
+        this.uRepo = uRepo;
+        this.hVal = hVal;
+        this.huVal = huVal;
+        this.nSer = nSer;
+        this.pSer = pSer;
+    }
+
+    public HackathonResponse creationHackathon(HackathonRequester requested) {
+        if (!hVal.validate(requested)) return null;
+        if (!uRepo.getReferenceById(requested.hostId()).getRank().equals(Rank.ORGANIZZATORE)) return null;
+        if (!uRepo.getReferenceById(requested.judgeId()).getRank().equals(Rank.STANDARD)) return null;
+        if (!uRepo.getReferenceById(requested.mentorId()).getRank().equals(Rank.STANDARD))
+            return null;
+        Hackathon newH = new HackathonConcreteBuilder()
+                .buildName(requested.name()).buildHost(uRepo.getReferenceById(requested.hostId())).buildJudge(uRepo.getReferenceById(requested.judgeId()))
+                .buildMentors(List.of(uRepo.getReferenceById(requested.mentorId()))).buildMaxTeam(requested.maxTeams()).buildSubmissions()
+                .buildRegulation(requested.regulation()).buildDeadline(requested.deadline())
+                .buildStartDate(requested.startDate()).buildEndDate(requested.endDate())
+                .buildLocation(requested.location()).buildReward(requested.reward()).buildParticipants(new ArrayList<>()).getResult();
+        for (Hackathon other : hRepo.findAll()) {
+            if (newH.equals(other)) return null;
+        }
+        hRepo.save(newH);
+        nSer.send("Sei un giudice!", "Sei appena diventato un giudice del nuovo hackathon " + requested.name(), requested.judgeId());
+        nSer.send("Sei un mentore!", "Sei appena diventato un mentore del nuovo hackathon " + requested.name(), requested.mentorId());
+        return toResponse(hRepo.getReferenceById(newH.getId()));
+    }
+
+    public HackathonResponse updateHackathonInformation(HackathonUpdateRequester requested) {
+        if (!huVal.validate(requested)) return null;
+        Hackathon h = hRepo.getReferenceById(requested.id());
+        h.setName(requested.name());
+        h.setMaxTeams(requested.maxTeams());
+        h.setRegulation(requested.regulation());
+        h.setDeadline(requested.deadline());
+        h.setStartDate(requested.startDate());
+        h.setEndDate(requested.endDate());
+        h.setLocation(requested.location());
+        h.setReward(requested.reward());
+        return toResponse(hRepo.save(h));
     }
 
     /**
@@ -60,15 +88,15 @@ public class HackathonService {
      */
     public List<HackathonResponse> showHackathonList() {
         List<HackathonResponse> responses = new ArrayList<>();
-        for (Hackathon hackathon : hackathonRepository.findAll()) {
+        for (Hackathon hackathon : hRepo.findAll()) {
             responses.add(toResponse(hackathon));
         }
         return responses;
     }
 
-    public List<HackathonResponse> showMyHackathonList(String email) {
+    public List<HackathonResponse> showMyHackathonList(Long uId) {
         List<HackathonResponse> responses = new ArrayList<>();
-        for (Hackathon hackathon : userRepository.findByEmail(email).getTeam().getHackathons()) {
+        for (Hackathon hackathon : uRepo.getReferenceById(uId).getTeam().getHackathons()) {
             responses.add(toResponse(hackathon));
         }
         return responses;
@@ -77,126 +105,73 @@ public class HackathonService {
     /**
      * Restituisce l'hackathon corrispondente all'identificativo fornito.
      *
-     * @param id l'identificativo univoco dell'hackathon
+     * @param hId l'identificativo univoco dell'hackathon
      * @return l'hackathon corrispondente, oppure {@code null} se non trovato
      */
-    public HackathonResponse showSelectedHackathon(Long id) {
-        return toResponse(hackathonRepository.getReferenceById(id));
+    public HackathonResponse showSelectedHackathon(Long hId) {
+        return toResponse(hRepo.getReferenceById(hId));
     }
 
-    /**
-     * Crea un nuovo hackathon a partire dai dati forniti tramite {@link HackathonRequester}.
-     * <p>
-     * La creazione viene rifiutata (restituendo {@code null}) nei seguenti casi:
-     * - I dati non superano la validazione
-     * - L'hostId non ha il rank {@link Rank#ORGANIZZATORE}
-     * - Il giudice non ha il rank {@link Rank#STANDARD}
-     * - Almeno un mentore non ha il rank {@link Rank#STANDARD}
-     * - Esiste già un hackathon equivalente nel sistema
-     * <p>
-     * In caso di successo, vengono inviate notifiche al giudice e a tutti i mentori.
-     *
-     * @param h il requester contenente i dati del nuovo hackathon
-     * @return il nuovo {@link Hackathon} creato e salvato, oppure {@code null} in caso di errore
-     */
-    public HackathonResponse creationHackathon(HackathonRequester h) {
-        if (!hackathonValidator.validate(h)) return null;
-        if (!userRepository.getReferenceById(h.hostId()).getRank().equals(Rank.ORGANIZZATORE)) return null;
-        if (!userRepository.getReferenceById(h.judgeId()).getRank().equals(Rank.STANDARD)) return null;
-        if (!userRepository.getReferenceById(h.mentorId()).getRank().equals(Rank.STANDARD))
-            return null; // All'inizio può inserire solo un mentore
-        Hackathon newH = new HackathonConcreteBuilder()
-                .buildName(h.name()).buildHost(userRepository.getReferenceById(h.hostId())).buildJudge(userRepository.getReferenceById(h.judgeId()))
-                .buildMentors(List.of(userRepository.getReferenceById(h.mentorId()))).buildMaxTeam(h.maxTeams()).buildSubmissions()
-                .buildRegulation(h.regulation()).buildDeadline(h.deadline())
-                .buildStartDate(h.startDate()).buildEndDate(h.endDate())
-                .buildLocation(h.location()).buildReward(h.reward()).buildParticipants(new ArrayList<>()).getResult();
-        for (Hackathon other : hackathonRepository.findAll()) {
-            if (newH.equals(other)) return null;
-        }
-        hackathonRepository.save(newH);
-        notificationService.send("Sei un giudice!", "Sei appena diventato un giudice del nuovo hackathon " + h.name(), h.judgeId());
-        notificationService.send("Sei un mentore!", "Sei appena diventato un mentore del nuovo hackathon " + h.name(), h.mentorId());
-        return toResponse(hackathonRepository.getReferenceById(newH.getId()));
+    public boolean addMentor(Long hId, String email) {
+        User u = uRepo.findByEmail(email);
+        Hackathon h = hRepo.getReferenceById(hId);
+        if (!u.getRank().equals(Rank.STANDARD)) return false;
+        if (h.getStatus() == Status.IN_VALUTAZIONE || h.getStatus() == Status.CONCLUSO) return false;
+        u.setRank(Rank.MENTORE);
+        uRepo.save(u);
+        h.getMentors().add(u);
+        hRepo.save(h);
+        return true;
     }
 
-    public HackathonResponse updateHackathonInformation(HackathonUpdateRequester h) {
-        if (!updateValidator.validate(h)) return null;
-        Hackathon oldH = hackathonRepository.getReferenceById(h.id());
-        oldH.setName(h.name());
-        oldH.setMaxTeams(h.maxTeams());
-        oldH.setRegulation(h.regulation());
-        oldH.setDeadline(h.deadline());
-        oldH.setStartDate(h.startDate());
-        oldH.setEndDate(h.endDate());
-        oldH.setLocation(h.location());
-        oldH.setReward(h.reward());
-
-        return toResponse(hackathonRepository.save(oldH));
+    public boolean removeMentor(Long hId, Long mId) {
+        Hackathon h = hRepo.getReferenceById(hId);
+        if (h.getStatus() == Status.IN_VALUTAZIONE || h.getStatus() == Status.CONCLUSO) return false;
+        h.getMentors().removeIf(m -> m.getId().equals(mId));
+        hRepo.save(h);
+        return true;
     }
 
-    public boolean subscribeHackathon(SubscribeHackathonRequester r) {
-        User u = userRepository.findByEmail(r.email());
-        Hackathon h = hackathonRepository.getReferenceById(r.hackathonId());
-        if (u.getTeam() == null) return false;
-        for (Hackathon h2 : u.getTeam().getHackathons()) {
-            if (!h2.getStatus().equals(Status.CONCLUSO)) return false;
-        }
+    public boolean subscribeHackathon(Long hId, Long uId) {
+        User u = uRepo.getReferenceById(uId);
+        Hackathon h = hRepo.getReferenceById(hId);
+        if (u.getRank() != Rank.MEMBRO_TEAM) return false;
+        if (u.getTeam().getHackathons().getLast().getStatus() != Status.CONCLUSO) return false;
+        if (h.getStatus() != Status.IN_ISCRIZIONE) return false;
         if (u.getTeam().getDimension() > h.getMaxTeams()) return false;
         h.getParticipants().add(u.getTeam());
-        hackathonRepository.save(h);
+        hRepo.save(h);
         u.getTeam().getHackathons().add(h);
-        teamRepository.save(u.getTeam());
+        tRepo.save(u.getTeam());
         return true;
     }
 
-    public boolean addMentor(SubscribeHackathonRequester r) {
-        User u = userRepository.findByEmail(r.email());
-        Hackathon h = hackathonRepository.getReferenceById(r.hackathonId());
-        if (!u.getRank().equals(Rank.STANDARD)) return false;
-        if (!h.getEndDate().isAfter(LocalDateTime.now())) return false;
-        u.setRank(Rank.MENTORE);
-        userRepository.save(u);
-        h.getMentors().add(u);
-        hackathonRepository.save(h);
+    public boolean dropHackathon(Long hId, Long uId) {
+        Hackathon h = hRepo.getReferenceById(hId);
+        User u = uRepo.getReferenceById(uId);
+        Team t = tRepo.getReferenceById(u.getTeam().getId());
+        if (h.getStatus() == Status.CONCLUSO || h.getStatus() == Status.IN_VALUTAZIONE) return false;
+        h.getParticipants().removeIf(team -> team.getId().equals(u.getTeam().getId()));
+        hRepo.save(h);
+        t.getHackathons().removeLast();
+        tRepo.save(t);
         return true;
     }
 
-    public boolean declareWinner(Long id, String team) {
-        Hackathon h = hackathonRepository.getReferenceById(id);
-        Team t = teamRepository.findByName(team);
-        if (!h.getParticipants().contains(t) || !(h.getStatus() == Status.IN_VALUTAZIONE)) return false;
+    public boolean declareWinner(Long eId, Long hId, String team) {
+        Hackathon h = hRepo.getReferenceById(hId);
+        Team t = tRepo.findByName(team);
+        if (h.getHost().equals(uRepo.getReferenceById(eId)) || !h.getParticipants().contains(t) || !(h.getStatus() == Status.IN_VALUTAZIONE))
+            return false;
         String result;
         try {
-            result = paymentService.initiatePayment(h.getReward(), t.getMembers().getFirst().getEmail());
+            result = pSer.initiatePayment(h.getReward(), t.getMembers().getFirst().getEmail());
         } catch (Exception e) {
             return false;
         }
         if (result == null) return false;
         h.setStatus(Status.CONCLUSO);
-        hackathonRepository.save(h);
-        return true;
-    }
-
-    public boolean removeMentor(Long hId, Long mId) {
-        if (hId == null || mId == null) throw new IllegalArgumentException("ID mentore o ID Hackathon non possono essere nulli");
-        Hackathon h = hackathonRepository.getReferenceById(hId);
-        if (h.getStatus() == Status.CONCLUSO || h.getStatus() == Status.IN_VALUTAZIONE) throw new IllegalStateException("Non è possibile abbandonare un hackathon concluso o in valutazione");
-
-        h.getMentors().removeIf(m -> m.getId().equals(mId));
-        hackathonRepository.save(h);
-        return true;
-    }
-
-    public boolean dropHackathon(Long hId, Long tId) {
-        if (hId == null || tId == null) throw new IllegalArgumentException("ID team o ID Hackathon non possono essere nulli");
-        Hackathon h = hackathonRepository.getReferenceById(hId);
-        if (h.getStatus() == Status.CONCLUSO || h.getStatus() == Status.IN_VALUTAZIONE) throw new IllegalStateException("Non è possibile abbandonare un hackathon concluso o in valutazione");
-        h.getParticipants().removeIf(t -> t.getId().equals(tId));
-        hackathonRepository.save(h);
-        Team t = teamRepository.getReferenceById(tId);
-        t.getHackathons().removeIf(h2 -> h2.getId().equals(hId));
-        teamRepository.save(t);
+        hRepo.save(h);
         return true;
     }
 
