@@ -4,11 +4,13 @@ import it.unicam.cs.ids.hackhub.entity.dto.HelpRequestResponse;
 import it.unicam.cs.ids.hackhub.entity.requester.CallRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.HelpRequestRequester;
 import it.unicam.cs.ids.hackhub.service.HelpRequestService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//TODO: controllare commenti e impostare controllo risposta unificato.
+//TODO: controllare commenti
+
 /**
  * Controller di interfaccia per la gestione delle richieste di aiuto.
  * <p>
@@ -34,45 +36,26 @@ public class HelpRequestInterfaceController {
     }
 
     /**
-     * Restituisce l'elenco delle richieste di aiuto assegnate a un mentore.
+     * Crea una nuova richiesta di aiuto a partire dalla richiesta fornita.
      *
-     * @param mentorId l'identificativo del mentore
-     * @return la lista delle richieste di aiuto del mentore
+     * @param requested la richiesta di creazione della richiesta di aiuto
+     * @return la richiesta di aiuto creata
      */
-    @GetMapping("/showHelpRequest")
-    public ResponseEntity<List<HelpRequestResponse>> showMyHelpRequests(@RequestParam long mentorId) { //TODO: sistemare Long
-        List<HelpRequestResponse> response = service.showMyHelpRequests(mentorId);
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Restituisce la richiesta di aiuto selezionata tramite identificativo.
-     *
-     * @param id l'identificativo della richiesta di aiuto
-     * @return la richiesta di aiuto corrispondente all'id
-     */
-    @GetMapping("/showHelpRequest/{id}")
-    public ResponseEntity<HelpRequestResponse> showSelectedHelpRequest(@PathVariable long id) { //TODO: sistemare Long
-        HelpRequestResponse response = service.showSelectedHelpRequest(id);
-        if (response == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/createCall")
-    public ResponseEntity<String> createCall(@RequestBody CallRequester callRequester) {
-        String response = service.createCall(callRequester);
-        if (response == null) return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(response);
+    @PostMapping("/create")
+    public ResponseEntity<HelpRequestResponse> createHelpRequest(@RequestBody HelpRequestRequester requested) {
+        HelpRequestResponse response = service.createHelpRequest(requested);
+        if (response == null) return ResponseEntity.unprocessableEntity().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
      * Accetta una richiesta di aiuto, delegando l'operazione al servizio.
      **/
     @PostMapping("/accept/{id}")
-    public ResponseEntity<Void> acceptHelpRequest(@RequestParam String reply, @RequestParam String call, @PathVariable Long id) {
+    public ResponseEntity<Void> acceptHelpRequest(@PathVariable Long id, @RequestParam String reply, @RequestParam String call) {
         boolean response = service.completeHelpRequest(id, reply, call);
-        if (response) return ResponseEntity.ok().build();
-        return ResponseEntity.unprocessableEntity().build();
+        if (!response) return ResponseEntity.unprocessableEntity().build();
+        return ResponseEntity.status(204).build();
     }
 
     /**
@@ -83,22 +66,38 @@ public class HelpRequestInterfaceController {
     @PostMapping("/denied/{id}")
     public ResponseEntity<Void> deniedHelpRequest(@PathVariable Long id) {
         boolean response = service.completeHelpRequest(id, null, null);
-        if (response) return ResponseEntity.ok().build();
-        return ResponseEntity.unprocessableEntity().build();
+        if (!response) return ResponseEntity.unprocessableEntity().build();
+        return ResponseEntity.status(204).build();
+    }
+
+    @PostMapping("/createCall")
+    public ResponseEntity<String> createCall(@RequestBody CallRequester requested) {
+        String response = service.createCall(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
-     * Crea una nuova richiesta di aiuto a partire dalla richiesta fornita.
+     * Restituisce l'elenco delle richieste di aiuto assegnate a un mentore.
      *
-     * @param requested la richiesta di creazione della richiesta di aiuto
-     * @return la richiesta di aiuto creata
+     * @param mentorId l'identificativo del mentore
+     * @return la lista delle richieste di aiuto del mentore
      */
-    @PostMapping("/create")
-    public ResponseEntity<HelpRequestResponse> creationHelpRequest(@RequestBody HelpRequestRequester requested) {
-        HelpRequestResponse response = service.creationHelpRequest(requested);
-        if (response == null) return ResponseEntity.unprocessableEntity().build();
+    @GetMapping("/showHelpRequest")
+    public ResponseEntity<List<HelpRequestResponse>> showMyHelpRequestList(@RequestParam Long mentorId) {
+        return ResponseEntity.ok(service.showMyHelpRequestList(mentorId));
+    }
+
+    /**
+     * Restituisce la richiesta di aiuto selezionata tramite identificativo.
+     *
+     * @param id l'identificativo della richiesta di aiuto
+     * @return la richiesta di aiuto corrispondente all'id
+     */
+    @GetMapping("/showHelpRequest/{id}")
+    public ResponseEntity<HelpRequestResponse> showSelectedHelpRequest(@PathVariable Long id) {
+        HelpRequestResponse response = service.showSelectedHelpRequest(id);
+        if (response == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(response);
     }
 }
-
-//TODO: createHelpRequest, acceptHelpRequest, deniedHelpRequest, createCall, showMyHelpRequestList, showSelectedHelpRequest
