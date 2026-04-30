@@ -1,7 +1,7 @@
 package it.unicam.cs.ids.hackhub.entity.requester;
 
 public record TeamRequester(
-        String name,
-        String creatorEmail //TODO: sostituire con editorId
+        Long editorId,
+        String name
 ) {
 }

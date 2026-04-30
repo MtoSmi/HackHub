@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 //TODO: controllare commenti
+
 /**
  * Rappresenta una submission in un hackathon.
  * Una submission contiene le informazioni relative al risultato atteso dai team,
@@ -24,7 +25,7 @@ public class Submission {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     /**
      * Titolo della submission
@@ -57,11 +58,11 @@ public class Submission {
      */
     private boolean complete;
 
-    public Submission(String title, String description, LocalDateTime localDateTime, LocalDateTime localDateTime1) {
+    public Submission(String title, String description, LocalDateTime startDate, LocalDateTime endDate) {
         this.title = title;
         this.description = description;
-        this.startDate = localDateTime;
-        this.endDate = localDateTime1; //TODO: rinominare corretto
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.responses = new ArrayList<>();
         this.complete = false;
     }

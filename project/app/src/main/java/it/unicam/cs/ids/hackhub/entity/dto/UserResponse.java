@@ -7,4 +7,5 @@ public record UserResponse(
         String email,
         Long teamId,
         String rank
-) {}
+) {
+}
