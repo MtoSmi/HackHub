@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 //TODO: controllare commenti
+
 /**
  * Controller per interfaccia per la gestione delle operazioni sugli hackathon.
  * </p>
@@ -48,6 +49,7 @@ public class HackathonInterfaceController {
 
     /**
      * Aggiorna le informazioni di un hackathon esistente a partire dalla richiesta fornita.
+     *
      * @param requested la richiesta di aggiornamento dell'hackathon
      * @return l'hackathon aggiornato
      */
@@ -70,6 +72,7 @@ public class HackathonInterfaceController {
 
     /**
      * Restituisce la lista degli hackathon a cui l'utente identificato dall'id è iscritto.
+     *
      * @param id l'identificativo dell'utente
      * @return la lista degli hackathon a cui l'utente è iscritto
      */
@@ -120,8 +123,8 @@ public class HackathonInterfaceController {
     }
 
     @PostMapping("/declareWinner")
-    public ResponseEntity<Void> declareWinner(@RequestParam Long hId, @RequestParam String team) {
-        boolean response = service.declareWinner(hId, team);
+    public ResponseEntity<Void> declareWinner(@RequestParam Long eId, @RequestParam Long hId, @RequestParam String team) {
+        boolean response = service.declareWinner(eId, hId, team);
         if (!response) return ResponseEntity.unprocessableEntity().build();
         return ResponseEntity.ok().build();
     }
