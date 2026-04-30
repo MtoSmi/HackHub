@@ -7,7 +7,7 @@ import it.unicam.cs.ids.hackhub.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+//TODO: controllare commenti e unificare controllo risposta
 /**
  * Controller di interfaccia per la gestione delle operazioni sugli utenti.
  * Espone metodi di alto livello che delegano la logica al servizio
@@ -50,7 +50,7 @@ public class UserInterfaceController {
      * @param email l'identificativo dell'utente di cui mostrare le informazioni
      * @return le informazioni dell'account dell'utente corrispondente all'id
      */
-    @GetMapping("/showInformation/{email}")
+    @GetMapping("/showInformation/{email}") //TODO: prendere id non mail
     public ResponseEntity<UserResponse> showInformation(@PathVariable String email) {
         return ResponseEntity.ok(service.showInformation(email));
     }
@@ -68,8 +68,8 @@ public class UserInterfaceController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/rankUpgrade")
-    public ResponseEntity<Void> rankUpgrade(@RequestParam String email) {
+    @PostMapping("/rankUpgrade") //TODO: solo upgrade
+    public ResponseEntity<Void> rankUpgrade(@RequestParam String email) { //TODO: upgradeToHost
         boolean success = service.rankUpgrade(email);
         if (success) return ResponseEntity.ok().build();
         return ResponseEntity.unprocessableEntity().build();
@@ -90,3 +90,4 @@ public class UserInterfaceController {
     }
 
 }
+//TODO: registration, access, logout, updateUser, removeUser, showSelectedUser,  upgradeToHost

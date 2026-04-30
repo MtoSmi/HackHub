@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//TODO: controllare commenti e controllo unificato risposta
 /**
  * Controller per interfaccia per la gestione delle operazioni sulle Submission.
  * </p>
@@ -46,31 +46,32 @@ public class SubmissionInterfaceController {
         return service.creationSubmission(requested);
     }
 
-    @PostMapping("/evaluation")
+    @PostMapping("/evaluation") //TODO: evaluate
     public ResponseEntity<ResponseResponse> evaluateResponse(@RequestBody ValuationRequester requested) {
         ResponseResponse result = service.evaluateSubmission(requested);
         if (result == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok().body(result);
     }
 
-    @PostMapping("/reply")
+    @PostMapping("/reply") //TODO: send
     public ResponseEntity<ResponseResponse> sendSubmission(@RequestBody ResponseRequester requested) {
         ResponseResponse result = service.sendSubmission(requested);
         if (result == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok().body(result);
     }
 
-    @PostMapping("/updatereply")
+    @PostMapping("/updatereply") //TODO: resend
     public ResponseEntity<ResponseResponse> resendSubmission(@RequestBody ResponseUpdateRequester requested) {
         ResponseResponse result = service.resendSubmission(requested);
         if (result == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok().body(result);
     }
 
-    @GetMapping("/show/{id}")
+    @GetMapping("/show/{id}") //id dell'hackathon
     public ResponseEntity<List<SubmissionResponse>> showSubmissionList(@PathVariable Long id) {
         List<SubmissionResponse> result = service.showSubmissionList(id);
         if (result == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok().body(result);
     }
 }
+//TODO: createSubmission, sendSubmission, resendSubmission, evaluateSubmission, showSubmissionList

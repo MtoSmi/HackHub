@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//TODO: controllare commenti e unificare controllo risposta
 /**
  * Controller di interfaccia per la gestione delle violazioni.
  * <p>
@@ -37,7 +37,7 @@ public class ViolationInterfaceController {
      * @return la lista delle violazioni dell'host
      */
     @GetMapping("/showViolation")
-    public ResponseEntity<List<ViolationResponse>> showMyViolations(@RequestParam long hostId) {
+    public ResponseEntity<List<ViolationResponse>> showMyViolations(@RequestParam long hostId) { //TODO: Long
         List<ViolationResponse> response = service.showMyViolations(hostId);
         return ResponseEntity.ok(response);
     }
@@ -49,7 +49,7 @@ public class ViolationInterfaceController {
      * @return la violazione corrispondente all'id
      */
     @GetMapping("/showViolation/{id}")
-    public ResponseEntity<ViolationResponse> showSelectedViolation(@PathVariable long id) {
+    public ResponseEntity<ViolationResponse> showSelectedViolation(@PathVariable long id) { //TODO: Long
         ViolationResponse response = service.showSelectedViolation(id);
         if (response == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(response);
@@ -76,9 +76,10 @@ public class ViolationInterfaceController {
      * @return una risposta HTTP che indica l'esito dell'operazione
      */
     @PostMapping("/evaluate/{id}")
-    public ResponseEntity<Void> evaluateViolation(@PathVariable long id, @RequestParam String reply) {
+    public ResponseEntity<Void> evaluateViolation(@PathVariable long id, @RequestParam String reply) { //TODO: Long
         boolean response = service.evaluateViolation(id, reply);
         if (response) return ResponseEntity.ok().build();
         return ResponseEntity.unprocessableEntity().build();
     }
 }
+//TODO: createViolation, evaluateViolation, showMyViolatonList, showSelectedViolation

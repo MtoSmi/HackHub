@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//TODO: controllare commenti, inserire controllo risposta unificato.
 /**
  * Controller per interfaccia per la gestione delle operazioni sugli hackathon.
  * </p>
@@ -88,7 +88,7 @@ public class HackathonInterfaceController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/show/{email}")
+    @GetMapping("/show/{email}") //TODO: prendere come variabile l'id non la mail
     public ResponseEntity<List<HackathonResponse>> showMyHackathonList(@PathVariable String email) {
         return ResponseEntity.ok(service.showMyHackathonList(email));
     }
@@ -121,3 +121,5 @@ public class HackathonInterfaceController {
         return ResponseEntity.unprocessableEntity().build();
     }
 }
+
+//TODO: createHackathon, updateHackathon, showHackathonList, showMyHackathonList, showSelectedHackathon, addMentor, removeMentor, subscribeHackathon, dropHackathon, declareWinner

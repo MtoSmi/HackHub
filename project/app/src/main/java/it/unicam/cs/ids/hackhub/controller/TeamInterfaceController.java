@@ -9,7 +9,7 @@ import it.unicam.cs.ids.hackhub.service.TeamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+//TODO: controllare commenti e unificare controllo risposta
 /**
  * Controller di interfaccia per la gestione delle operazioni sui team.
  * </p>
@@ -40,7 +40,7 @@ public class TeamInterfaceController {
      * @param requested la richiesta di creazione del team
      * @return il team creato
      */
-    @PostMapping("/creation")
+    @PostMapping("/creation") //TODO: create
     public ResponseEntity<TeamResponse> creationTeam(@RequestBody TeamRequester requested) {
         TeamResponse created = service.creationTeam(requested);
         if (created == null) {
@@ -64,7 +64,7 @@ public class TeamInterfaceController {
         return ResponseEntity.ok(team);
     }
 
-    @PostMapping("/inviteMember/")
+    @PostMapping("/inviteMember")
     public ResponseEntity<Void> inviteMember(@RequestBody TeamInviteRequester requested) {
         boolean result = service.inviteMember(requested);
         if (result) {
@@ -94,3 +94,4 @@ public class TeamInterfaceController {
         }
     }
 }
+//TODO: createTeam, updateTeam, showSelectedTeam, inviteMember, acceptInvite, dropTeam

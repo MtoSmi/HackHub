@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//TODO: controllare commenti e impostare controllo risposta unificato.
 /**
  * Controller di interfaccia per la gestione delle richieste di aiuto.
  * <p>
@@ -40,7 +40,7 @@ public class HelpRequestInterfaceController {
      * @return la lista delle richieste di aiuto del mentore
      */
     @GetMapping("/showHelpRequest")
-    public ResponseEntity<List<HelpRequestResponse>> showMyHelpRequests(@RequestParam long mentorId) {
+    public ResponseEntity<List<HelpRequestResponse>> showMyHelpRequests(@RequestParam long mentorId) { //TODO: sistemare Long
         List<HelpRequestResponse> response = service.showMyHelpRequests(mentorId);
         return ResponseEntity.ok(response);
     }
@@ -52,7 +52,7 @@ public class HelpRequestInterfaceController {
      * @return la richiesta di aiuto corrispondente all'id
      */
     @GetMapping("/showHelpRequest/{id}")
-    public ResponseEntity<HelpRequestResponse> showSelectedHelpRequest(@PathVariable long id) {
+    public ResponseEntity<HelpRequestResponse> showSelectedHelpRequest(@PathVariable long id) { //TODO: sistemare Long
         HelpRequestResponse response = service.showSelectedHelpRequest(id);
         if (response == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(response);
@@ -100,3 +100,5 @@ public class HelpRequestInterfaceController {
         return ResponseEntity.ok(response);
     }
 }
+
+//TODO: createHelpRequest, acceptHelpRequest, deniedHelpRequest, createCall, showMyHelpRequestList, showSelectedHelpRequest

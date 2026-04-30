@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//TODO: controllare commenti e controllo unificato risposta
 /**
  * Controller per interfaccia per la gestione delle operazioni sulle notifiche.
  * </p>
@@ -36,7 +36,7 @@ public class NotificationInterfaceController {
      * @return la lista delle notifiche dell'utente
      */
     @GetMapping("/showMyNotification")
-    public ResponseEntity<List<NotificationResponse>> showMyNotifications(@RequestParam String email) {
+    public ResponseEntity<List<NotificationResponse>> showMyNotifications(@RequestParam String email) { //TODO: prendere id non mail
         List<NotificationResponse> notificationList = service.showMyNotifications(email);
         return ResponseEntity.ok(notificationList);
     }
@@ -47,7 +47,7 @@ public class NotificationInterfaceController {
      * @return la notifica corrispondente all'id
      */
     @GetMapping("/showMyNotification/{id}")
-    public ResponseEntity<NotificationResponse> showSelectedNotification(@PathVariable long id) {
+    public ResponseEntity<NotificationResponse> showSelectedNotification(@PathVariable long id) { //TODO: sistemare Long
         NotificationResponse notification = service.showSelectedNotification(id);
         if (notification != null) {
             return ResponseEntity.ok(notification);
@@ -56,3 +56,5 @@ public class NotificationInterfaceController {
         }
     }
 }
+
+//TODO: showMyNotificationList, showSelectedNotification
