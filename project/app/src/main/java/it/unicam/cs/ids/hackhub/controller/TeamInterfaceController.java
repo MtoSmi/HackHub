@@ -1,10 +1,7 @@
 package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.dto.TeamResponse;
-import it.unicam.cs.ids.hackhub.entity.requester.AcceptTeamInviteRequester;
-import it.unicam.cs.ids.hackhub.entity.requester.TeamInviteRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
-import it.unicam.cs.ids.hackhub.entity.requester.TeamUpdateRequester;
 import it.unicam.cs.ids.hackhub.service.TeamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +72,7 @@ public class TeamInterfaceController {
     }
 
     @PostMapping("/acceptInvite")
-    public ResponseEntity<Void> acceptInvite(@RequestBody AcceptTeamInviteRequester requested) {
+    public ResponseEntity<Void> acceptInvite(@RequestBody AcceptTeamInviteRequester requested) { // TODO: prendere come param userId e notificationId e recuperare le altre info dal database
         boolean result = service.acceptInvite(requested);
         if (result) {
             return ResponseEntity.status(HttpStatus.OK).build();
