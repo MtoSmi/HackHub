@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 //TODO: controllare commenti
+
 /**
  * Rappresenta una violazione nel sistema HackHub.
  * <p>
@@ -61,9 +62,9 @@ public class Violation {
      * Inizializza il flag di completamento a false.
      *
      * @param description la descrizione della violazione
-     * @param team il team associato alla violazione
-     * @param from il mentore che segnala la violazione
-     * @param to l'organizzatore che riceve la violazione
+     * @param team        il team associato alla violazione
+     * @param from        il mentore che segnala la violazione
+     * @param to          l'organizzatore che riceve la violazione
      */
     public Violation(String description, Team team, User from, User to) {
         this.description = description;

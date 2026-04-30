@@ -60,7 +60,7 @@ public class TeamService {
      * @param t il {@link TeamRequester} contenente i dati del team da creare
      * @return il {@link Team} creato e salvato nel repository, oppure {@code null} se la creazione non è consentita
      */
-    public TeamResponse creationTeam(TeamRequester t) {
+    public TeamResponse creationTeam(TeamRequester t) { //TODO: members e hackathons vengono creati nel costruttore
         if (!teamValidator.validate(t)) return null;
         Team team = new Team(t.name());
         User creator = userRepository.findByEmail(t.creatorEmail());

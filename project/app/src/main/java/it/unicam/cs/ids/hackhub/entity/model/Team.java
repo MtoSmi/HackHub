@@ -5,15 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 //TODO: controllare commenti
+
 /**
  * Rappresenta un team nel sistema HackHub.
  * Questa classe modella un team che può partecipare a uno o più hackathon,
  * con uno o più membri registrati nel sistema.
  */
 @Entity
-@Table
 @Getter
 @NoArgsConstructor
 @Setter
@@ -56,7 +57,9 @@ public class Team {
      */
     public Team(String name) {
         this.name = name;
-        this.dimension = 1; //TODO: controllare che dovrebbe essere fatto con size in creazione
+        this.dimension = 0;
+        this.members = new ArrayList<>();
+        this.hackathons = new ArrayList<>();
     }
 
     /**

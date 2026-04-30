@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 //TODO: controllare commenti
+
 /**
  * Rappresenta una richiesta di aiuto nel sistema HackHub.
  * <p>

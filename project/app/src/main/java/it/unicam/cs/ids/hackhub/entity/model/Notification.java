@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 //TODO: controllare commenti
+
 /**
  * Rappresenta una notifica nel sistema HackHub.
  * Questa classe modella una notifica che viene inviata a un utente per comunicare
