@@ -45,7 +45,7 @@ public class SubmissionInterfaceController {
      */
     @PostMapping("/create")
     public ResponseEntity<SubmissionResponse> createSubmission(@RequestBody SubmissionRequester requested) {
-        SubmissionResponse response = service.creationSubmission(requested);
+        SubmissionResponse response = service.createSubmission(requested);
         if (response == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

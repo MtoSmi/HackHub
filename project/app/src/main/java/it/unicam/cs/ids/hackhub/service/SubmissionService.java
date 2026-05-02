@@ -4,6 +4,7 @@ import it.unicam.cs.ids.hackhub.entity.dto.ResponseResponse;
 import it.unicam.cs.ids.hackhub.entity.dto.SubmissionResponse;
 import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.*;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Status;
 import it.unicam.cs.ids.hackhub.entity.requester.ResponseRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.ResponseUpdateRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
@@ -12,12 +13,13 @@ import it.unicam.cs.ids.hackhub.repository.*;
 import it.unicam.cs.ids.hackhub.validator.ResponseUpdateValidator;
 import it.unicam.cs.ids.hackhub.validator.ResponseValidator;
 import it.unicam.cs.ids.hackhub.validator.SubmissionValidator;
+import it.unicam.cs.ids.hackhub.validator.ValuationValidator;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+// TODO: da finire
 /**
  * Service per la gestione delle submission agli hackathon.
  * Fornisce le operazioni necessarie per creare e associare
@@ -25,30 +27,32 @@ import java.util.List;
  */
 @Service
 public class SubmissionService {
-    private final SubmissionValidator submissionValidator;
-    private final HackathonRepository hackathonRepository;
-    private final ResponseRepository responseRepository;
-    private final SubmissionRepository submissionRepository;
-    private final TeamRepository teamRepository;
-    private final ResponseValidator responseValidator;
+    private final HackathonRepository hRepo;
+    private final ResponseRepository rRepo;
+    private final SubmissionRepository sRepo;
+    private final TeamRepository tRepo;
+    private final UserRepository uRepo;
     private final ResponseUpdateValidator ruVal;
-    private final UserRepository userRepository;
+    private final ResponseValidator rVal;
+    private final SubmissionValidator sVal;
+    private final ValuationValidator vaVal;
 
     /**
      * Costruisce un'istanza di {@code SubmissionService} con le dipendenze fornite.
      *
-     * @param sValidator il validator utilizzato per verificare la correttezza delle submission
+     * @param sVal il validator utilizzato per verificare la correttezza delle submission
      * @param hRepo      il repository utilizzato per accedere e aggiornare gli hackathon
      */
-    public SubmissionService(SubmissionValidator sValidator, HackathonRepository hRepo, ResponseRepository responseRepository, SubmissionRepository submissionRepository, TeamRepository teamRepository, ResponseValidator responseValidator, UserRepository userRepository, ResponseUpdateValidator ruVal) {
-        this.submissionValidator = sValidator;
-        this.hackathonRepository = hRepo;
-        this.responseRepository = responseRepository;
-        this.submissionRepository = submissionRepository;
-        this.teamRepository = teamRepository;
-        this.responseValidator = responseValidator;
+    public SubmissionService(HackathonRepository hRepo, ResponseRepository rRepo, SubmissionRepository sRepo, TeamRepository tRepo, UserRepository uRepo, ResponseUpdateValidator ruVal, ResponseValidator rVal, SubmissionValidator sVal, ValuationValidator vaVal) {
+        this.hRepo = hRepo;
+        this.rRepo = rRepo;
+        this.sRepo = sRepo;
+        this.tRepo = tRepo;
+        this.uRepo = uRepo;
         this.ruVal = ruVal;
-        this.userRepository = userRepository;
+        this.rVal = rVal;
+        this.sVal = sVal;
+        this.vaVal = vaVal;
     }
 
     /**
@@ -58,62 +62,69 @@ public class SubmissionService {
      * In caso di successo, la submission viene aggiunta all'hackathon e
      * l'hackathon viene aggiornato nel repository.
      *
-     * @param s   il richiedente della submission contenente i dati da registrare
+     * @param requested   il richiedente della submission contenente i dati da registrare
      * @return la {@link Submission} creata, oppure {@code null} se la validazione fallisce
      */
-    public SubmissionResponse creationSubmission(SubmissionRequester s) {
-        if (!submissionValidator.validate(s)) return null;
-        Hackathon h = hackathonRepository.getReferenceById(s.hackathonId());
-        Submission submission = new Submission(s.title(), s.description(), s.startDate(), s.endDate());
-        submissionRepository.save(submission);
+    public SubmissionResponse createSubmission(SubmissionRequester requested) {
+        if (!sVal.validate(requested)) return null;
+        Hackathon h = hRepo.getReferenceById(requested.hackathonId());
+        Submission submission = new Submission(requested.title(), requested.description(), requested.startDate(), requested.endDate());
+        sRepo.save(submission);
         h.getSubmissions().add(submission);
-        hackathonRepository.save(h);
+        hRepo.save(h);
         return toResponse(submission);
     }
 
-    public ResponseResponse sendSubmission(ResponseRequester r) {
-        if (!responseValidator.validate(r)) return null;
-        Submission s = submissionRepository.getReferenceById(r.submissionId());
-        User u = userRepository.getReferenceById(r.sender());
+    public ResponseResponse sendSubmission(ResponseRequester requested) {
+        if (!rVal.validate(requested)) return null;
+        Submission s = sRepo.getReferenceById(requested.submissionId());
+        User u = uRepo.getReferenceById(requested.fromId());
         if (u.getRank() != Rank.MEMBRO_TEAM) return null;
         if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
         for (Response response : s.getResponses()) {
-            if (response.getSender().getId().equals(r.sender())) return null;
+            if (response.getFrom().getId().equals(requested.fromId())) return null;
         }
-        Response response = new Response(r.file());
+        Response response = new Response(requested.file());
         response.setSubmission(s);
-        response.setSender(teamRepository.getReferenceById(r.sender()));
-        responseRepository.save(response);
+        response.setFrom(tRepo.getReferenceById(requested.fromId()));
+        rRepo.save(response);
         s.getResponses().add(response);
-        submissionRepository.save(s);
+        sRepo.save(s);
         return toResponse(response);
     }
 
-    public ResponseResponse resendSubmission(ResponseUpdateRequester ru) {
-        if (!ruVal.validate(ru)) return null;
-        Response r = responseRepository.getReferenceById(ru.responseId());
-        Submission s = submissionRepository.getReferenceById(r.getSubmission().getId());
-        User u = userRepository.getReferenceById(ru.sender());
+    public ResponseResponse resendSubmission(ResponseUpdateRequester requested) {
+        if (!ruVal.validate(requested)) return null;
+        Response r = rRepo.getReferenceById(requested.responseId());
+        Submission s = sRepo.getReferenceById(r.getSubmission().getId());
+        User u = uRepo.getReferenceById(requested.editorId());
         if (u.getRank() != Rank.MEMBRO_TEAM) return null;
         if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
         s.getResponses().remove(r);
-        r.setFile(ru.file());
-        r.setSender(teamRepository.getReferenceById(ru.sender()));
-        responseRepository.save(r);
+        r.setFile(requested.file());
+        r.setFrom(tRepo.getReferenceById(requested.editorId()));
+        rRepo.save(r);
         s.getResponses().add(r);
-        submissionRepository.save(s);
+        sRepo.save(s);
         return toResponse(r);
     }
 
-    public ResponseResponse evaluateSubmission(ValuationRequester r) {
-        Response res = responseRepository.getReferenceById(r.responseId());
-        Valuation val = new Valuation(r.vote(), r.note());
-        res.setValuation(val);
-        return toResponse(responseRepository.save(res));
+    public ResponseResponse evaluateSubmission(ValuationRequester requested) {
+        // TODO: finire
+        if (vaVal.validate(requested)) return null;
+        Hackathon h = hRepo.getReferenceById(requested.hackathonId());
+        if (h.getStatus() != Status.IN_VALUTAZIONE) return null;
+        Submission s = sRepo.getReferenceById(requested.submissionId());
+        if (!h.getSubmissions().contains(s)) return null;
+        if (!requested.editorId().equals(h.getJudge().getId())) return null;
+        Response r = rRepo.getReferenceById(requested.responseId());
+        Valuation va = new Valuation(requested.vote(), requested.note());
+        r.setValuation(va);
+        return toResponse(rRepo.save(r));
     }
 
     public List<SubmissionResponse> showSubmissionList(Long id) {
-        Hackathon h = hackathonRepository.getReferenceById(id);
+        Hackathon h = hRepo.getReferenceById(id);
         List<SubmissionResponse> responses = new ArrayList<>();
         for (Submission submission : h.getSubmissions()) {
             responses.add(toResponse(submission));
@@ -125,9 +136,10 @@ public class SubmissionService {
         if (r == null) return null;
         return new ResponseResponse(
                 r.getId(),
-                r.getSubmission().getId(),
                 r.getFile(),
-                r.getValuation()
+                r.getFrom().getId(),
+                r.getSubmission().getId(),
+                r.getValuation().getId()
         );
     }
 

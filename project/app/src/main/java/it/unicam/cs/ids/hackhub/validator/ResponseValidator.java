@@ -3,6 +3,7 @@ package it.unicam.cs.ids.hackhub.validator;
 import it.unicam.cs.ids.hackhub.entity.model.Response;
 import it.unicam.cs.ids.hackhub.entity.requester.ResponseRequester;
 import org.springframework.stereotype.Component;
+// TODO: controllare commenti
 
 /**
  * Validator per le istanze di {@link Response}.
@@ -16,14 +17,16 @@ public class ResponseValidator implements Validator<ResponseRequester> {
      * - Il file non deve essere {@code null} o vuoto
      * - La submission non deve essere {@code null}
      *
-     * @param response da validare
+     * @param requested da validare
      * @return {@code true} se valido, {@code false} altrimenti
      */
     @Override
-    public boolean validate(ResponseRequester response) {
-        if (response == null) return false;
-        if (response.hackathonId() == null || response.submissionId() == null) return false;
-        if (response.file() == null || response.file().isBlank()) return false;
-        return response.sender() != null;
+    public boolean validate(ResponseRequester requested) {
+        if (requested == null) return false;
+        if (requested.editorId() == null) return false;
+        if (requested.hackathonId() == null) return false;
+        if (requested.submissionId() == null) return false;
+        if (requested.file() == null || requested.file().isBlank()) return false;
+        return requested.fromId() != null;
     }
 }

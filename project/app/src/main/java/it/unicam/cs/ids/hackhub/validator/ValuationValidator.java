@@ -16,12 +16,17 @@ public class ValuationValidator implements Validator<ValuationRequester> {
      * - Il voto deve essere compreso tra 0 e 10
      * - La nota non deve essere vuota o null
      *
-     * @param valuation da validare
+     * @param requested da validare
      * @return {@code true} se valido, {@code false} altrimenti
      */
     @Override
-    public boolean validate(ValuationRequester valuation) {
-        if (valuation.vote() < 0 || valuation.vote() > 10) return false;
-        return valuation.note() != null && !valuation.note().isBlank();
+    public boolean validate(ValuationRequester requested) {
+        if (requested == null) return false;
+        if (requested.editorId() == null) return false;
+        if (requested.hackathonId() == null) return false;
+        if (requested.submissionId() == null) return false;
+        if (requested.responseId() == null) return false;
+        if (requested.vote() < 0 || requested.vote() > 10) return false;
+        return requested.note() != null && !requested.note().isBlank();
     }
 }

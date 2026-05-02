@@ -7,6 +7,6 @@ public record ResponseResponse(
         String file,
         Long fromId,
         Long submissionId,
-        Valuation valuationId
+        Long valuationId
 ) {
 }

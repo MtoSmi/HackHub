@@ -5,6 +5,7 @@ import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+// TODO: controllare commenti
 
 /**
  * Validator per le istanze di {@link Submission}.
@@ -23,16 +24,19 @@ public class SubmissionValidator implements Validator<SubmissionRequester> {
      * - La data di inizio non sia già passata rispetto al momento attuale
      * - La data di inizio non sia successiva alla data di fine
      *
-     * @param s la submission da validare
+     * @param requested la submission da validare
      * @return {@code true} se la submission è valida, {@code false} altrimenti
      */
     @Override
-    public boolean validate(SubmissionRequester s) {
-        if (s == null) return false;
-        if (s.title() == null || s.title().isEmpty()) return false;
-        if (s.description() == null || s.description().isEmpty()) return false;
-        if (s.startDate() == null || s.endDate() == null) return false;
-        if (LocalDateTime.now().isAfter(s.startDate())) return false;
-        return !s.startDate().isAfter(s.endDate());
+    public boolean validate(SubmissionRequester requested) {
+        if (requested == null) return false;
+        if (requested.editorId() == null) return false;
+        if (requested.title() == null || requested.title().isEmpty()) return false;
+        if (requested.description() == null || requested.description().isEmpty()) return false;
+        if (requested.startDate() == null) return false;
+        if (requested.endDate() == null) return false;
+        if (LocalDateTime.now().isAfter(requested.startDate())) return false;
+        if (requested.startDate().isAfter(requested.endDate())) return false;
+        return requested.hackathonId() != null;
     }
 }
