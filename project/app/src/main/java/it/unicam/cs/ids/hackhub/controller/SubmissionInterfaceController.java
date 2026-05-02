@@ -7,11 +7,13 @@ import it.unicam.cs.ids.hackhub.entity.requester.ResponseUpdateRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.ValuationRequester;
 import it.unicam.cs.ids.hackhub.service.SubmissionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//TODO: controllare commenti e controllo unificato risposta
+//TODO: controllare commenti
+
 /**
  * Controller per interfaccia per la gestione delle operazioni sulle Submission.
  * </p>
@@ -42,29 +44,31 @@ public class SubmissionInterfaceController {
      * @return la sottomissione creata
      */
     @PostMapping("/create")
-    public SubmissionResponse creationSubmission(@RequestBody SubmissionRequester requested) {
-        return service.creationSubmission(requested);
+    public ResponseEntity<SubmissionResponse> createSubmission(@RequestBody SubmissionRequester requested) {
+        SubmissionResponse response = service.creationSubmission(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping("/evaluation") //TODO: evaluate
-    public ResponseEntity<ResponseResponse> evaluateResponse(@RequestBody ValuationRequester requested) {
-        ResponseResponse result = service.evaluateSubmission(requested);
-        if (result == null) return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok().body(result);
-    }
-
-    @PostMapping("/reply") //TODO: send
+    @PostMapping("/send")
     public ResponseEntity<ResponseResponse> sendSubmission(@RequestBody ResponseRequester requested) {
-        ResponseResponse result = service.sendSubmission(requested);
-        if (result == null) return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok().body(result);
+        ResponseResponse response = service.sendSubmission(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("/updatereply") //TODO: resend
+    @PostMapping("/resend")
     public ResponseEntity<ResponseResponse> resendSubmission(@RequestBody ResponseUpdateRequester requested) {
-        ResponseResponse result = service.resendSubmission(requested);
-        if (result == null) return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok().body(result);
+        ResponseResponse response = service.resendSubmission(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/evaluate")
+    public ResponseEntity<ResponseResponse> evaluateResponse(@RequestBody ValuationRequester requested) {
+        ResponseResponse response = service.evaluateSubmission(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/show/{id}") //id dell'hackathon
@@ -74,4 +78,3 @@ public class SubmissionInterfaceController {
         return ResponseEntity.ok().body(result);
     }
 }
-//TODO: createSubmission, sendSubmission, resendSubmission, evaluateSubmission, showSubmissionList
