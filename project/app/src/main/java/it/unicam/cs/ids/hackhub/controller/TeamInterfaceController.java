@@ -6,7 +6,8 @@ import it.unicam.cs.ids.hackhub.service.TeamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-//TODO: controllare commenti e unificare controllo risposta
+//TODO: controllare commenti
+
 /**
  * Controller di interfaccia per la gestione delle operazioni sui team.
  * </p>
@@ -37,58 +38,44 @@ public class TeamInterfaceController {
      * @param requested la richiesta di creazione del team
      * @return il team creato
      */
-    @PostMapping("/creation") //TODO: create
-    public ResponseEntity<TeamResponse> creationTeam(@RequestBody TeamRequester requested) {
-        TeamResponse created = service.creationTeam(requested);
-        if (created == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    @PostMapping("/create")
+    public ResponseEntity<TeamResponse> createTeam(@RequestBody TeamRequester requested) {
+        TeamResponse response = service.creationTeam(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<TeamResponse> updateTeam(@RequestBody TeamUpdateRequester requested) {
-        TeamResponse updated = service.updateTeam(requested);
-        if (updated == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<TeamResponse> updateTeam(@RequestBody TeamRequester requested) {
+        TeamResponse response = service.updateTeam(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(204).body(response);
     }
 
-    @GetMapping("/showInformation/{name}")
-    public ResponseEntity<TeamResponse> showInformation(@PathVariable String name) {
-        TeamResponse team = service.showInformation(name);
-        return ResponseEntity.ok(team);
+    @GetMapping("/show/{name}")
+    public ResponseEntity<TeamResponse> showSelectedTeam(@PathVariable String name) {
+        return ResponseEntity.ok(service.showSelectedTeam(name));
     }
 
     @PostMapping("/inviteMember")
-    public ResponseEntity<Void> inviteMember(@RequestBody TeamInviteRequester requested) {
-        boolean result = service.inviteMember(requested);
-        if (result) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
+    public ResponseEntity<Void> inviteMember(@RequestParam Long editorId, @RequestParam String email) {
+        boolean result = service.inviteMember(editorId, email);
+        if (!result) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/acceptInvite")
-    public ResponseEntity<Void> acceptInvite(@RequestBody AcceptTeamInviteRequester requested) { // TODO: prendere come param userId e notificationId e recuperare le altre info dal database
-        boolean result = service.acceptInvite(requested);
-        if (result) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
+    public ResponseEntity<Void> acceptInvite(@RequestParam Long userId, @RequestParam Long notificationId) {
+        boolean result = service.acceptInvite(userId, notificationId);
+        if (!result) ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping("/dropTeam")
+    @PostMapping("/drop")
     public ResponseEntity<Void> dropTeam(@RequestParam Long tId, @RequestParam Long uId) {
         boolean result = service.dropTeam(tId, uId);
-        if (result) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
+        if (!result) return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
-//TODO: createTeam, updateTeam, showSelectedTeam, inviteMember, acceptInvite, dropTeam
+//TODO: !createTeam, !updateTeam, !showSelectedTeam, !inviteMember, !acceptInvite, !dropTeam
