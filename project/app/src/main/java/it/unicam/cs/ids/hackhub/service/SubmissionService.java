@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-// TODO: da finire
+// TODO: controllare commenti
 /**
  * Service per la gestione delle submission agli hackathon.
  * Fornisce le operazioni necessarie per creare e associare
@@ -66,8 +66,9 @@ public class SubmissionService {
      * @return la {@link Submission} creata, oppure {@code null} se la validazione fallisce
      */
     public SubmissionResponse createSubmission(SubmissionRequester requested) {
-        if (!sVal.validate(requested)) return null;
+        if (sVal.validate(requested)) return null;
         Hackathon h = hRepo.getReferenceById(requested.hackathonId());
+        if (!h.getHost().getId().equals(requested.editorId())) return null;
         Submission submission = new Submission(requested.title(), requested.description(), requested.startDate(), requested.endDate());
         sRepo.save(submission);
         h.getSubmissions().add(submission);
@@ -76,41 +77,40 @@ public class SubmissionService {
     }
 
     public ResponseResponse sendSubmission(ResponseRequester requested) {
-        if (!rVal.validate(requested)) return null;
-        Submission s = sRepo.getReferenceById(requested.submissionId());
-        User u = uRepo.getReferenceById(requested.fromId());
+        if (rVal.validate(requested)) return null;
+        User u = uRepo.getReferenceById(requested.editorId());
         if (u.getRank() != Rank.MEMBRO_TEAM) return null;
+        if (!requested.fromId().equals(u.getTeam().getId())) return null;
+        Hackathon h = hRepo.getReferenceById(requested.hackathonId());
+        if (!h.getParticipants().contains(u.getTeam())) return null;
+        Submission s = sRepo.getReferenceById(requested.submissionId());
+        if (!h.getSubmissions().contains(s)) return null;
         if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
         for (Response response : s.getResponses()) {
             if (response.getFrom().getId().equals(requested.fromId())) return null;
         }
-        Response response = new Response(requested.file());
-        response.setSubmission(s);
-        response.setFrom(tRepo.getReferenceById(requested.fromId()));
-        rRepo.save(response);
-        s.getResponses().add(response);
-        sRepo.save(s);
-        return toResponse(response);
-    }
-
-    public ResponseResponse resendSubmission(ResponseUpdateRequester requested) {
-        if (!ruVal.validate(requested)) return null;
-        Response r = rRepo.getReferenceById(requested.responseId());
-        Submission s = sRepo.getReferenceById(r.getSubmission().getId());
-        User u = uRepo.getReferenceById(requested.editorId());
-        if (u.getRank() != Rank.MEMBRO_TEAM) return null;
-        if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
-        s.getResponses().remove(r);
-        r.setFile(requested.file());
-        r.setFrom(tRepo.getReferenceById(requested.editorId()));
+        Response r = new Response(requested.file());
+        r.setSubmission(s);
+        r.setFrom(tRepo.getReferenceById(requested.fromId()));
         rRepo.save(r);
         s.getResponses().add(r);
         sRepo.save(s);
         return toResponse(r);
     }
 
+    public ResponseResponse resendSubmission(ResponseUpdateRequester requested) {
+        if (ruVal.validate(requested)) return null;
+        User u = uRepo.getReferenceById(requested.editorId());
+        if (u.getRank() != Rank.MEMBRO_TEAM) return null;
+        Response r = rRepo.getReferenceById(requested.responseId());
+        if (!r.getFrom().equals(u.getTeam())) return null;
+        Submission s = sRepo.getReferenceById(r.getSubmission().getId());
+        if (s.getEndDate().isBefore(LocalDateTime.now())) return null;
+        r.setFile(requested.file());
+        return toResponse(rRepo.save(r));
+    }
+
     public ResponseResponse evaluateSubmission(ValuationRequester requested) {
-        // TODO: finire
         if (vaVal.validate(requested)) return null;
         Hackathon h = hRepo.getReferenceById(requested.hackathonId());
         if (h.getStatus() != Status.IN_VALUTAZIONE) return null;
@@ -118,6 +118,7 @@ public class SubmissionService {
         if (!h.getSubmissions().contains(s)) return null;
         if (!requested.editorId().equals(h.getJudge().getId())) return null;
         Response r = rRepo.getReferenceById(requested.responseId());
+        if (!s.getResponses().contains(r)) return null;
         Valuation va = new Valuation(requested.vote(), requested.note());
         r.setValuation(va);
         return toResponse(rRepo.save(r));

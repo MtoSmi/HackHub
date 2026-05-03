@@ -54,21 +54,21 @@ public class SubmissionInterfaceController {
     public ResponseEntity<ResponseResponse> sendSubmission(@RequestBody ResponseRequester requested) {
         ResponseResponse response = service.sendSubmission(requested);
         if (response == null) return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/resend")
     public ResponseEntity<ResponseResponse> resendSubmission(@RequestBody ResponseUpdateRequester requested) {
         ResponseResponse response = service.resendSubmission(requested);
         if (response == null) return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.status(201).body(response);
     }
 
     @PostMapping("/evaluate")
     public ResponseEntity<ResponseResponse> evaluateResponse(@RequestBody ValuationRequester requested) {
         ResponseResponse response = service.evaluateSubmission(requested);
         if (response == null) return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.status(201).body(response);
     }
 
     @GetMapping("/show/{id}") //id dell'hackathon
