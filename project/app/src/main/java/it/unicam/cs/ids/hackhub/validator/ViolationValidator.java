@@ -20,13 +20,13 @@ public class ViolationValidator implements Validator<ViolationRequester> {
      * - La descrizione è {@code null} o vuota
      * - Il teamId o hostId sono {@code null}
      *
-     * @param v l'entità da validare
+     * @param requested l'entità da validare
      * @return {@code true} se la segnalazione è valida, {@code false} altrimenti
      */
     @Override
-    public boolean validate(ViolationRequester v) {
-        if (v == null) return false;
-        if (v.description() == null || v.description().isBlank()) return false;
-        return v.teamId() != null && v.fromId() != null && v.toId() != null;
+    public boolean validate(ViolationRequester requested) {
+        if (requested == null) return false;
+        if (requested.description() == null || requested.description().isBlank()) return false;
+        return requested.teamId() != null && requested.fromId() != null && requested.toId() != null;
     }
 }
