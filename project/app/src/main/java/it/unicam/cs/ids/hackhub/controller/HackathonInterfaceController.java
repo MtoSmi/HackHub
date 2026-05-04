@@ -128,4 +128,11 @@ public class HackathonInterfaceController {
         if (!response) return ResponseEntity.unprocessableEntity().build();
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/timeMachine")
+    public ResponseEntity<Void>  timeMachine(@RequestParam Long hId) {
+        boolean response = service.timeMachine(hId);
+        if (!response) return ResponseEntity.unprocessableEntity().build();
+        return ResponseEntity.ok().build();
+    }
 }

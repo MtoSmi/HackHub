@@ -2,6 +2,7 @@ package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.entity.dto.TeamResponse;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
+import it.unicam.cs.ids.hackhub.entity.model.Notification;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
@@ -92,6 +93,8 @@ public class TeamService {
     public boolean acceptInvite(Long uId, Long nId) {
         User i = uRepo.getReferenceById(uId);
         Team t = uRepo.getReferenceById(extractSenderId(nRepo.getReferenceById(nId).getDescription())).getTeam();
+        Notification n = nRepo.getReferenceById(nId);
+        if (!n.getTo().getId().equals(uId)) return false;
         if (i.getRank() == Rank.STANDARD && t != null && !t.getMembers().contains(i)) {
             t.getMembers().add(i);
             t.setDimension(t.getMembers().size());
@@ -109,7 +112,7 @@ public class TeamService {
         Team t = tRepo.getReferenceById(tId);
         User u = uRepo.getReferenceById(uId);
         if (!t.getMembers().contains(u)) return false;
-        if (t.getHackathons().getLast().getStatus() != Status.CONCLUSO) return false;
+        if (t.getHackathons().isEmpty() && t.getHackathons().getLast().getStatus() != Status.CONCLUSO) return false;
         t.getMembers().remove(uRepo.getReferenceById(uId));
         t.setDimension(t.getMembers().size());
         tRepo.save(t);

@@ -119,6 +119,7 @@ public class HackathonService {
         if (h.getStatus() == Status.IN_VALUTAZIONE || h.getStatus() == Status.CONCLUSO) return false;
         u.setRank(Rank.MENTORE);
         uRepo.save(u);
+        nSer.send("Sei un mentore!", "Sei appena diventato un mentore del nuovo hackathon " + h.getName(), u.getId());
         h.getMentors().add(u);
         hRepo.save(h);
         return true;
@@ -126,8 +127,11 @@ public class HackathonService {
 
     public boolean removeMentor(Long hId, Long mId) {
         Hackathon h = hRepo.getReferenceById(hId);
+        User u = uRepo.getReferenceById(mId);
         if (h.getStatus() == Status.IN_VALUTAZIONE || h.getStatus() == Status.CONCLUSO) return false;
         h.getMentors().removeIf(m -> m.getId().equals(mId));
+        u.setRank(Rank.STANDARD);
+        uRepo.save(u);
         hRepo.save(h);
         return true;
     }
@@ -194,5 +198,23 @@ public class HackathonService {
                 h.getReward(),
                 h.getStatus().toString()
         );
+    }
+    // METODO MOCKUP PER FAR SCORRERE L'HAKCATHON SENZA ATTENDERE IL TEMPO
+    public boolean timeMachine(Long hId) {
+        Hackathon h = hRepo.getReferenceById(hId);
+        if (h.getStatus() == Status.IN_ISCRIZIONE) {
+            h.setStatus(Status.IN_CORSO);
+            hRepo.save(h);
+            return true;
+        } else if (h.getStatus() == Status.IN_CORSO) {
+            h.setStatus(Status.IN_VALUTAZIONE);
+            hRepo.save(h);
+            return true;
+        } else if (h.getStatus() == Status.IN_VALUTAZIONE) {
+            h.setStatus(Status.CONCLUSO);
+            hRepo.save(h);
+            return true;
+        }
+        return false;
     }
 }

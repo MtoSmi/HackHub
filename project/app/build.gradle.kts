@@ -45,6 +45,8 @@ dependencies {
     //PayPal API
     implementation("com.paypal.sdk:checkout-sdk:2.0.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.17.2")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.17.2")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

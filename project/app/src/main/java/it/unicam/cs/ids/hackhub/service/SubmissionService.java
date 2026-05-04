@@ -66,9 +66,10 @@ public class SubmissionService {
      * @return la {@link Submission} creata, oppure {@code null} se la validazione fallisce
      */
     public SubmissionResponse createSubmission(SubmissionRequester requested) {
-        if (sVal.validate(requested)) return null;
+        if (!sVal.validate(requested)) return null;
         Hackathon h = hRepo.getReferenceById(requested.hackathonId());
         if (!h.getHost().getId().equals(requested.editorId())) return null;
+        if (requested.startDate().isBefore(h.getStartDate()) || requested.endDate().isAfter(h.getEndDate())) return null;
         Submission submission = new Submission(requested.title(), requested.description(), requested.startDate(), requested.endDate());
         sRepo.save(submission);
         h.getSubmissions().add(submission);
@@ -77,7 +78,7 @@ public class SubmissionService {
     }
 
     public ResponseResponse sendSubmission(ResponseRequester requested) {
-        if (rVal.validate(requested)) return null;
+        if (!rVal.validate(requested)) return null;
         User u = uRepo.getReferenceById(requested.editorId());
         if (u.getRank() != Rank.MEMBRO_TEAM) return null;
         if (!requested.fromId().equals(u.getTeam().getId())) return null;
@@ -99,7 +100,7 @@ public class SubmissionService {
     }
 
     public ResponseResponse resendSubmission(ResponseUpdateRequester requested) {
-        if (ruVal.validate(requested)) return null;
+        if (!ruVal.validate(requested)) return null;
         User u = uRepo.getReferenceById(requested.editorId());
         if (u.getRank() != Rank.MEMBRO_TEAM) return null;
         Response r = rRepo.getReferenceById(requested.responseId());
@@ -111,7 +112,7 @@ public class SubmissionService {
     }
 
     public ResponseResponse evaluateSubmission(ValuationRequester requested) {
-        if (vaVal.validate(requested)) return null;
+        if (!vaVal.validate(requested)) return null;
         Hackathon h = hRepo.getReferenceById(requested.hackathonId());
         if (h.getStatus() != Status.IN_VALUTAZIONE) return null;
         Submission s = sRepo.getReferenceById(requested.submissionId());

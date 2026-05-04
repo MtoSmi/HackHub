@@ -73,7 +73,7 @@ public class ViolationService {
     }
 
     public ViolationResponse evaluateViolation(ViolationUpdateRequester requested) {
-        if (viuVal.validate(requested)) return null;
+        if (!viuVal.validate(requested)) return null;
         Violation violation = viRepo.getReferenceById(requested.violationId());
         if (violation.isCompleted()) return null;
         if (!violation.getTo().getId().equals(requested.editorId())) return null;
