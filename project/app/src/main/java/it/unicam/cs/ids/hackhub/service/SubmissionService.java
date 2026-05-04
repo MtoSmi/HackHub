@@ -32,6 +32,7 @@ public class SubmissionService {
     private final SubmissionRepository sRepo;
     private final TeamRepository tRepo;
     private final UserRepository uRepo;
+    private final ValuationRepository vaRepo;
     private final ResponseUpdateValidator ruVal;
     private final ResponseValidator rVal;
     private final SubmissionValidator sVal;
@@ -43,12 +44,13 @@ public class SubmissionService {
      * @param sVal il validator utilizzato per verificare la correttezza delle submission
      * @param hRepo      il repository utilizzato per accedere e aggiornare gli hackathon
      */
-    public SubmissionService(HackathonRepository hRepo, ResponseRepository rRepo, SubmissionRepository sRepo, TeamRepository tRepo, UserRepository uRepo, ResponseUpdateValidator ruVal, ResponseValidator rVal, SubmissionValidator sVal, ValuationValidator vaVal) {
+    public SubmissionService(HackathonRepository hRepo, ResponseRepository rRepo, SubmissionRepository sRepo, TeamRepository tRepo, UserRepository uRepo, ValuationRepository vaRepo, ResponseUpdateValidator ruVal, ResponseValidator rVal, SubmissionValidator sVal, ValuationValidator vaVal) {
         this.hRepo = hRepo;
         this.rRepo = rRepo;
         this.sRepo = sRepo;
         this.tRepo = tRepo;
         this.uRepo = uRepo;
+        this.vaRepo = vaRepo;
         this.ruVal = ruVal;
         this.rVal = rVal;
         this.sVal = sVal;
@@ -121,6 +123,7 @@ public class SubmissionService {
         Response r = rRepo.getReferenceById(requested.responseId());
         if (!s.getResponses().contains(r)) return null;
         Valuation va = new Valuation(requested.vote(), requested.note());
+        vaRepo.save(va);
         r.setValuation(va);
         return toResponse(rRepo.save(r));
     }
