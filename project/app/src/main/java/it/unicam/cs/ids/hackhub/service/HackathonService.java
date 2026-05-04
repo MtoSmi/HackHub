@@ -136,7 +136,7 @@ public class HackathonService {
         User u = uRepo.getReferenceById(uId);
         Hackathon h = hRepo.getReferenceById(hId);
         if (u.getRank() != Rank.MEMBRO_TEAM) return false;
-        if (u.getTeam().getHackathons().getLast().getStatus() != Status.CONCLUSO) return false;
+        if (!u.getTeam().getHackathons().isEmpty() && u.getTeam().getHackathons().getLast().getStatus() != Status.CONCLUSO) return false;
         if (h.getStatus() != Status.IN_ISCRIZIONE) return false;
         if (u.getTeam().getDimension() > h.getMaxTeams()) return false;
         h.getParticipants().add(u.getTeam());
