@@ -6,7 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//TODO: controllare commenti e controllo unificato risposta
+//TODO: controllare commenti
+
 /**
  * Controller per interfaccia per la gestione delle operazioni sulle notifiche.
  * </p>
@@ -32,29 +33,26 @@ public class NotificationInterfaceController {
 
     /**
      * Restituisce la lista di tutte le notifiche dell'utente specificato tramite identificativo.
-     * @param email l'identificativo dell'utente di cui mostrare le notifiche
+     *
+     * @param userId l'identificativo dell'utente di cui mostrare le notifiche
      * @return la lista delle notifiche dell'utente
      */
-    @GetMapping("/showMyNotification")
-    public ResponseEntity<List<NotificationResponse>> showMyNotifications(@RequestParam String email) { //TODO: prendere id non mail
-        List<NotificationResponse> notificationList = service.showMyNotifications(email);
+    @GetMapping("/show")
+    public ResponseEntity<List<NotificationResponse>> showMyNotifications(@RequestParam Long userId) {
+        List<NotificationResponse> notificationList = service.showMyNotificationList(userId);
         return ResponseEntity.ok(notificationList);
     }
 
     /**
      * Restituisce la notifica selezionata tramite identificativo.
+     *
      * @param id l'identificativo della notifica da mostrare
      * @return la notifica corrispondente all'id
      */
-    @GetMapping("/showMyNotification/{id}")
-    public ResponseEntity<NotificationResponse> showSelectedNotification(@PathVariable long id) { //TODO: sistemare Long
+    @GetMapping("/showSelected/{id}")
+    public ResponseEntity<NotificationResponse> showSelectedNotification(@PathVariable Long id) {
         NotificationResponse notification = service.showSelectedNotification(id);
-        if (notification != null) {
-            return ResponseEntity.ok(notification);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        if (notification == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(notification);
     }
 }
-
-//TODO: showMyNotificationList, showSelectedNotification
