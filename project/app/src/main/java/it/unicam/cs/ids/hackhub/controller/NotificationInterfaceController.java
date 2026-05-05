@@ -6,13 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//TODO: controllare commenti
 
 /**
  * Controller per interfaccia per la gestione delle operazioni sulle notifiche.
- * </p>
- * Questa classe espone metodi di alto livello che delegano la logica al servizio
- * {@link NotificationService}, fungendo da punto di accesso per il livello di presentazione.
  */
 @RestController
 @RequestMapping("api/v1/notification")
@@ -24,17 +20,14 @@ public class NotificationInterfaceController {
 
     /**
      * Costruisce il controller con il servizio richiesto.
-     *
-     * @param service il servizio da usare per le operazioni sulle notifiche
      */
     public NotificationInterfaceController(NotificationService service) {
         this.service = service;
     }
 
     /**
-     * Restituisce la lista di tutte le notifiche dell'utente specificato tramite identificativo.
+     * Restituisce la lista di tutte le notifiche dell'utente.
      *
-     * @param userId l'identificativo dell'utente di cui mostrare le notifiche
      * @return la lista delle notifiche dell'utente
      */
     @GetMapping("/show")
@@ -44,10 +37,9 @@ public class NotificationInterfaceController {
     }
 
     /**
-     * Restituisce la notifica selezionata tramite identificativo.
+     * Restituisce la notifica selezionata.
      *
-     * @param id l'identificativo della notifica da mostrare
-     * @return la notifica corrispondente all'id
+     * @return la notifica selezionata, NOT_FOUND se la notifica non esiste
      */
     @GetMapping("/showSelected/{id}")
     public ResponseEntity<NotificationResponse> showSelectedNotification(@PathVariable Long id) {

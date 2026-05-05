@@ -9,13 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//TODO: controllare commenti
 
 /**
  * Controller per interfaccia per la gestione delle operazioni sugli hackathon.
- * </p>
- * Questa classe espone metodi di alto livello che delegano la logica al servizio
- * {@link HackathonService}, fungendo da punto di accesso per il livello di presentazione.
  */
 @RestController
 @RequestMapping("/api/v1/hackathon")
@@ -27,8 +23,6 @@ public class HackathonInterfaceController {
 
     /**
      * Costruisce il controller con il servizio richiesto.
-     *
-     * @param service il servizio da usare per le operazioni sugli hackathon
      */
     public HackathonInterfaceController(HackathonService service) {
         this.service = service;
@@ -37,8 +31,7 @@ public class HackathonInterfaceController {
     /**
      * Crea un nuovo hackathon a partire dalla richiesta fornita.
      *
-     * @param requested la richiesta di creazione dell'hackathon
-     * @return l'hackathon creato
+     * @return CREATED se l'hackathon è stato creato con successo, BAD_REQUEST altrimenti
      */
     @PostMapping("/create")
     public ResponseEntity<HackathonResponse> createHackathon(@RequestBody HackathonRequester requested) {
@@ -50,20 +43,19 @@ public class HackathonInterfaceController {
     /**
      * Aggiorna le informazioni di un hackathon esistente a partire dalla richiesta fornita.
      *
-     * @param requested la richiesta di aggiornamento dell'hackathon
-     * @return l'hackathon aggiornato
+     * @return UPDATED se l'hackathon è stato aggiornato con successo, BAD_REQUEST altrimenti
      */
     @PostMapping("/update")
     public ResponseEntity<HackathonResponse> updateHackathon(@RequestBody HackathonUpdateRequester requested) {
         HackathonResponse response = service.updateHackathonInformation(requested);
         if (response == null) return ResponseEntity.badRequest().build();
-        return ResponseEntity.status(204).body(response);
+        return ResponseEntity.status(201).body(response);
     }
 
     /**
-     * Restituisce la lista di tutti gli hackathon disponibili nella piattaforma.
+     * Restituisce la lista di tutti gli hackathon presenti.
      *
-     * @return la lista degli hackathon
+     * @return la lista di tutti gli hackathon
      */
     @GetMapping("/showList")
     public ResponseEntity<List<HackathonResponse>> showHackathonList() {
@@ -71,7 +63,7 @@ public class HackathonInterfaceController {
     }
 
     /**
-     * Restituisce la lista degli hackathon a cui l'utente identificato dall'id è iscritto.
+     * Restituisce la lista degli hackathon a cui è iscritto l'utente.
      *
      * @param id l'identificativo dell'utente
      * @return la lista degli hackathon a cui l'utente è iscritto
@@ -82,10 +74,10 @@ public class HackathonInterfaceController {
     }
 
     /**
-     * Restituisce l'hackathon selezionato tramite identificativo.
+     * Restituisce l'hackathon selezionato.
      *
      * @param id l'identificativo dell'hackathon
-     * @return l'hackathon corrispondente all'id
+     * @return l'hackathon selezionato, NOT_FOUND se l'hackathon non esiste
      */
     @GetMapping("/showSelected/{id}")
     public ResponseEntity<HackathonResponse> showSelectedHackathon(@PathVariable Long id) {
@@ -94,6 +86,13 @@ public class HackathonInterfaceController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Aggiunge un mentore all'hackathon selezionato.
+     *
+     * @param hId   l'identificativo dell'hackathon
+     * @param email l'email del mentore da aggiungere
+     * @return ACCEPTED se il mentore è stato aggiunto con successo, METHOD_NOT_ALLOWED altrimenti
+     */
     @PostMapping("/addMentor")
     public ResponseEntity<Void> addMentor(@RequestParam Long hId, @RequestParam String email) {
         boolean response = service.addMentor(hId, email);
@@ -101,6 +100,13 @@ public class HackathonInterfaceController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
+    /**
+     * Rimuove un mentore dall'hackathon selezionato.
+     *
+     * @param hId l'identificativo dell'hackathon
+     * @param mId l'identificativo del mentore da rimuovere
+     * @return ACCEPTED se il mentore è stato rimosso con successo, METHOD_NOT_ALLOWED altrimenti
+     */
     @PostMapping("/removeMentor")
     public ResponseEntity<Void> removeMentor(@RequestParam Long hId, @RequestParam Long mId) {
         boolean response = service.removeMentor(hId, mId);
@@ -108,6 +114,13 @@ public class HackathonInterfaceController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
+    /**
+     * Iscrive un team all'hackathon selezionato.
+     *
+     * @param hId l'identificativo dell'hackathon
+     * @param uId l'identificativo dell'utente che vuole iscrivere il proprio team
+     * @return OK se il team è stato iscritto con successo, UNPROCESSABLE_ENTITY altrimenti
+     */
     @PostMapping("/subscribe")
     public ResponseEntity<Void> subscribeHackathon(@RequestParam Long hId, @RequestParam Long uId) {
         boolean response = service.subscribeHackathon(hId, uId);
@@ -115,6 +128,13 @@ public class HackathonInterfaceController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Rimuove l'iscrizione di un team all'hackathon selezionato.
+     *
+     * @param hId l'identificativo dell'hackathon
+     * @param uId l'identificativo dell'utente che vuole rimuovere l'iscrizione del proprio team
+     * @return OK se l'iscrizione è stata rimossa con successo, UNPROCESSABLE_ENTITY altrimenti
+     */
     @PostMapping("/drop")
     public ResponseEntity<Void> dropHackathon(@RequestParam Long hId, @RequestParam Long uId) {
         boolean response = service.dropHackathon(hId, uId);
@@ -122,6 +142,14 @@ public class HackathonInterfaceController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Dichiarazione del team vincitore dell'hackathon selezionato (Proclamazione e pagamento).
+     *
+     * @param eId  l'identificativo dell'utente che vuole dichiarare il vincitore
+     * @param hId  l'identificativo dell'hackathon
+     * @param team il nome del team vincitore
+     * @return OK se il vincitore è stato salvato e pagato con successo, UNPROCESSABLE_ENTITY altrimenti
+     */
     @PostMapping("/declareWinner")
     public ResponseEntity<Void> declareWinner(@RequestParam Long eId, @RequestParam Long hId, @RequestParam String team) {
         boolean response = service.declareWinner(eId, hId, team);
@@ -129,8 +157,14 @@ public class HackathonInterfaceController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * @param hId l'identificativo dell'hackathon da aggiornare
+     * @return OK se lo stato dell'hackathon è stato aggiornato con successo, UNPROCESSABLE_ENTITY altrimenti
+     * @apiNote Funzione di test per simulare il passaggio del tempo. Uso in fase di test.
+     * Permette di modificare lo stato di un hackathon in base alla data attuale, simulando il passaggio del tempo.
+     */
     @PostMapping("/timeMachine")
-    public ResponseEntity<Void>  timeMachine(@RequestParam Long hId) {
+    public ResponseEntity<Void> timeMachine(@RequestParam Long hId) {
         boolean response = service.timeMachine(hId);
         if (!response) return ResponseEntity.unprocessableEntity().build();
         return ResponseEntity.ok().build();

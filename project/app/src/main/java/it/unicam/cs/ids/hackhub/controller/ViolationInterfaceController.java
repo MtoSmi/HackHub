@@ -9,14 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//TODO: controllare commenti
 
 /**
- * Controller di interfaccia per la gestione delle violazioni.
- * <p>
- * Espone metodi di alto livello che delegano la logica al servizio
- * {@link ViolationService}, fungendo da punto di accesso per il livello
- * di presentazione.
+ * Controller per interfaccia per la gestione delle violazioni.
  */
 @RestController
 @RequestMapping("/api/v1/violation")
@@ -28,18 +23,15 @@ public class ViolationInterfaceController {
 
     /**
      * Costruisce il controller con il servizio richiesto.
-     *
-     * @param service il servizio da usare per le operazioni sulle violazioni
      */
     public ViolationInterfaceController(ViolationService service) {
         this.service = service;
     }
 
     /**
-     * Crea una nuova violazione con i dati forniti nel corpo della richiesta.
+     * Crea una nuova violazione.
      *
-     * @param requested i dati della violazione da creare
-     * @return la violazione creata
+     * @return CREATED se la violazione è stata creata con successo, UNPROCESSABLE_ENTITY altrimenti
      */
     @PostMapping("/create")
     public ResponseEntity<ViolationResponse> createViolation(@RequestBody ViolationRequester requested) {
@@ -48,6 +40,11 @@ public class ViolationInterfaceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * Valuta una violazione, aggiornandone lo stato.
+     *
+     * @return CREATED se la violazione è stata valutata con successo, BAD_REQUEST altrimenti
+     */
     @PostMapping("/evaluate")
     public ResponseEntity<ViolationResponse> evaluateViolation(@RequestBody ViolationUpdateRequester requested) {
         ViolationResponse response = service.evaluateViolation(requested);
@@ -56,10 +53,9 @@ public class ViolationInterfaceController {
     }
 
     /**
-     * Restituisce la lista di tutte le violazioni dell'host specificato tramite identificativo.
+     * Restituisce la lista di tutte le violazioni dell'organizzatore specificato.
      *
-     * @param hostId l'identificativo dell'host
-     * @return la lista delle violazioni dell'host
+     * @return la lista di tutte le violazioni associate all'organizzatore
      */
     @GetMapping("/showViolation")
     public ResponseEntity<List<ViolationResponse>> showMyViolationList(@RequestParam Long hostId) {
@@ -68,10 +64,9 @@ public class ViolationInterfaceController {
     }
 
     /**
-     * Restituisce la violazione selezionata tramite identificativo.
+     * Restituisce la violazione selezionata.
      *
-     * @param id l'identificativo della violazione
-     * @return la violazione corrispondente all'id
+     * @return i dettagli della violazione selezionata, NOT_FOUND se la violazione non esiste
      */
     @GetMapping("/showViolation/{id}")
     public ResponseEntity<ViolationResponse> showSelectedViolation(@PathVariable Long id) {

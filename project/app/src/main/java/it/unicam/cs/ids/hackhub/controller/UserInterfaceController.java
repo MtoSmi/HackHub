@@ -7,13 +7,9 @@ import it.unicam.cs.ids.hackhub.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-//TODO: controllare commenti
 
 /**
- * Controller di interfaccia per la gestione delle operazioni sugli utenti.
- * Espone metodi di alto livello che delegano la logica al servizio
- * {@link UserService}, fungendo da punto di accesso per il livello
- * di presentazione.
+ * Controller per interfaccia per la gestione delle operazioni sugli utenti.
  */
 @RestController
 @RequestMapping("/api/v1/user")
@@ -25,18 +21,15 @@ public class UserInterfaceController {
 
     /**
      * Costruisce il controller con il servizio richiesto.
-     *
-     * @param service il servizio da usare per le operazioni sugli utenti
      */
     public UserInterfaceController(UserService service) {
         this.service = service;
     }
 
     /**
-     * Registra un nuovo utente a partire dalla richiesta fornita.
+     * Registra un nuovo utente.
      *
-     * @param requested la richiesta di registrazione dell'utente
-     * @return l'utente registrato
+     * @return CREATED se l'utente è stato registrato con successo, BAD_REQUEST altrimenti
      */
     @PostMapping("/registration")
     public ResponseEntity<UserResponse> registration(@RequestBody UserRequester requested) {
@@ -45,6 +38,11 @@ public class UserInterfaceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * Permette a un utente di accedere al proprio account.
+     *
+     * @return OK se l'accesso è stato effettuato con successo, NOT_FOUND altrimenti
+     */
     @PostMapping("/access")
     public ResponseEntity<UserResponse> access(@RequestParam String email, @RequestParam String password) {
         UserResponse response = service.access(email, password);
@@ -52,12 +50,22 @@ public class UserInterfaceController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Permette a un utente di disconnettersi dal proprio account.
+     *
+     * @return OK se la disconnessione è stata effettuata con successo, BAD_REQUEST altrimenti
+     */
     @GetMapping("/logout")
     public ResponseEntity<Void> logout(@RequestParam Long id) {
         if (id == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Aggiorna le informazioni dell'account.
+     *
+     * @return UPDATED se le informazioni sono state aggiornate con successo, BAD_REQUEST altrimenti
+     */
     @PostMapping("/update")
     public ResponseEntity<UserResponse> updateUser(@RequestBody UserUpdateRequester requested) {
         UserResponse response = service.updateUser(requested);
@@ -65,6 +73,11 @@ public class UserInterfaceController {
         return ResponseEntity.status(201).body(response);
     }
 
+    /**
+     * Rimuove un utente dal sistema.
+     *
+     * @return OK se l'utente è stato rimosso con successo, UNPROCESSABLE_ENTITY altrimenti
+     */
     @PostMapping("/remove")
     public ResponseEntity<Void> removeUser(@RequestParam Long id) {
         boolean success = service.removeUser(id);
@@ -73,16 +86,20 @@ public class UserInterfaceController {
     }
 
     /**
-     * Restituisce le informazioni dell'account all'utente specificato tramite identificativo.
+     * Restituisce le informazioni dell'account all'utente specificato.
      *
-     * @param id l'identificativo dell'utente di cui mostrare le informazioni
-     * @return le informazioni dell'account dell'utente corrispondente all'id
+     * @return le informazioni dell'account
      */
     @GetMapping("/show/{id}")
     public ResponseEntity<UserResponse> showSelectedUser(@PathVariable Long id) {
         return ResponseEntity.ok(service.showSelectedUser(id));
     }
 
+    /**
+     * Aggiorna il ruolo di un utente STANDARD a HOST.
+     *
+     * @return OK se l'aggiornamento è stato effettuato con successo, METHOD_NOT_ALLOWED altrimenti
+     */
     @PostMapping("/upgrade")
     public ResponseEntity<Void> upgradeToHost(@RequestParam Long id) {
         boolean success = service.upgradeToHost(id);
@@ -90,4 +107,3 @@ public class UserInterfaceController {
         return ResponseEntity.ok().build();
     }
 }
-//TODO: !registration, !access, !logout, !updateUser, !removeUser, !showSelectedUser,  !upgradeToHost
