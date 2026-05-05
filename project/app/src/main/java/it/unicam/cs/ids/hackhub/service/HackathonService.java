@@ -70,6 +70,7 @@ public class HackathonService {
     public HackathonResponse updateHackathonInformation(HackathonUpdateRequester requested) {
         if (!huVal.validate(requested)) return null;
         Hackathon h = hRepo.getReferenceById(requested.id());
+        if (h.getHost().getId().equals(requested.editorId())) return null;
         h.setName(requested.name());
         h.setMaxTeams(requested.maxTeams());
         h.setRegulation(requested.regulation());
