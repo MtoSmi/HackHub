@@ -15,12 +15,9 @@ import it.unicam.cs.ids.hackhub.validator.HelpRequestValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-// TODO: controllare commenti
 
 /**
- * Service per la gestione delle richieste di aiuto all'interno della piattaforma HackHub.
- * Fornisce operazioni per la creazione, visualizzazione e completamento delle richieste di aiuto
- * tra i membri del team e i mentori.
+ * Service per la gestione delle richieste di aiuto.
  */
 @Service
 public class HelpRequestService {
@@ -32,12 +29,14 @@ public class HelpRequestService {
     private final HelpRequestValidator hrVal;
 
     /**
-     * Costruisce un nuovo {@code HelpRequestService} con le dipendenze necessarie.
+     * Costruttore del service.
      *
-     * @param hrRepo il repository per la gestione delle richieste di aiuto
-     * @param hrVal  il validator per le richieste di aiuto
-     * @param hRepo  il repository per la gestione degli hackathon
-     * @param nSer   il service per l'invio delle notifiche
+     * @param hRepo  HackathonRepository
+     * @param hrRepo HelpRequestRepository
+     * @param uRepo  UserRepository
+     * @param cSer   CalendarService
+     * @param nSer   NotificationService
+     * @param hrVal  HelpRequestValidator
      */
     public HelpRequestService(HackathonRepository hRepo, HelpRequestRepository hrRepo, UserRepository uRepo, CalendarService cSer, NotificationService nSer, HelpRequestValidator hrVal) {
         this.hRepo = hRepo;
@@ -49,16 +48,10 @@ public class HelpRequestService {
     }
 
     /**
-     * Crea una nuova richiesta di aiuto verificando che:
-     * - La richiesta superi la validazione
-     * - Il richiedente abbia il ruolo di {@code MEMBRO_TEAM}
-     * - Il destinatario abbia il ruolo di {@code MENTORE}
-     * - Il mentore destinatario e il team del richiedente siano coinvolti in almeno un hackathon in corso
-     * <p>
-     * In caso di successo, invia una notifica al mentore destinatario.
+     * Crea una nuova richiesta di aiuto a partire dai dati forniti.
      *
-     * @param requested il richiedente contenente le informazioni della richiesta di aiuto
-     * @return la {@link HelpRequest} creata, oppure {@code null} se la validazione fallisce
+     * @param requested i dati della richiesta di aiuto da creare
+     * @return la richiesta di aiuto creata, oppure {@code null} se i dati non sono validi
      */
     public HelpRequestResponse createHelpRequest(HelpRequestRequester requested) {
         if (!hrVal.validate(requested)) return null;
@@ -77,10 +70,12 @@ public class HelpRequestService {
     }
 
     /**
-     * Completa una richiesta di aiuto esistente aggiornando la risposta, la chiamata
-     * e impostandola come completata. Invia una notifica al membro del team che aveva
-     * effettuato la richiesta.
+     * Completa una richiesta di aiuto.
      *
+     * @param id    identificativo della richiesta di aiuto
+     * @param reply risposta fornita dal mentore, se null la richiesta viene rifiutata
+     * @param call  link alla call, se null viene indicato che la call non è disponibile
+     * @return {@code true} se la richiesta è stata completata con successo, {@code false} altrimenti
      */
     public boolean completeHelpRequest(Long id, String reply, String call) {
         HelpRequest helpRequest = hrRepo.getReferenceById(id);
@@ -96,6 +91,12 @@ public class HelpRequestService {
         return true;
     }
 
+    /**
+     * Crea una nuova call a partire dai dati forniti.
+     *
+     * @param requested i dati della call da creare
+     * @return il link alla call creata, oppure {@code null} se i dati non sono validi
+     */
     public String createCall(CallRequester requested) {
         User editor = uRepo.getReferenceById(requested.editorId());
         if (!editor.getRank().equals(Rank.MENTORE)) return null;
@@ -112,7 +113,7 @@ public class HelpRequestService {
      * Restituisce la lista delle richieste di aiuto ricevute da un determinato mentore.
      *
      * @param mentorId l'identificativo del mentore
-     * @return la lista delle {@link HelpRequest} associate al mentore specificato
+     * @return la lista delle richieste di aiuto ricevute dal mentore
      */
     public List<HelpRequestResponse> showMyHelpRequestList(Long mentorId) {
         if (mentorId == null) return null;
@@ -127,7 +128,7 @@ public class HelpRequestService {
      * Restituisce una specifica richiesta di aiuto in base al suo identificativo.
      *
      * @param id l'identificativo della richiesta di aiuto
-     * @return la {@link HelpRequest} corrispondente all'id fornito
+     * @return la richiesta di aiuto corrispondente all'identificativo fornito, oppure {@code null} se non esiste
      */
     public HelpRequestResponse showSelectedHelpRequest(Long id) {
         if (id == null) return null;

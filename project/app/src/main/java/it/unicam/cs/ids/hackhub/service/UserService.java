@@ -14,7 +14,6 @@ import java.util.Objects;
 
 /**
  * Service per la gestione degli utenti.
- * Fornisce operazioni per la registrazione e la visualizzazione delle informazioni degli utenti.
  */
 @Service
 public class UserService {
@@ -23,10 +22,11 @@ public class UserService {
     private final UserValidator uVal;
 
     /**
-     * Costruisce un nuovo {@code UserService} con il repository e il validator specificati.
+     * Costruttore del service.
      *
-     * @param uRepo il repository utilizzato per la persistenza degli utenti
-     * @param uVal  il validator utilizzato per verificare i dati degli utenti
+     * @param uRepo UserRepository
+     * @param uuVal UserUpdateValidator
+     * @param uVal  UserValidator
      */
     public UserService(UserRepository uRepo, UserUpdateValidator uuVal, UserValidator uVal) {
         this.uRepo = uRepo;
@@ -35,14 +35,10 @@ public class UserService {
     }
 
     /**
-     * Registra un nuovo utente nel sistema.
-     * La registrazione ha esito negativo se:
-     * - I dati dell'utente non superano la validazione
-     * - Esiste già un utente con lo stesso indirizzo email
-     * In caso di successo, all'utente viene assegnato il rango {@link Rank#STANDARD}.
+     * Registra un nuovo utente.
      *
-     * @param requested il richiedente contenente i dati del nuovo utente
-     * @return l'utente registrato, oppure {@code null} se la registrazione non è andata a buon fine
+     * @param requested le informazioni dell'utente da registrare
+     * @return l'utente registrato, oppure {@code null} se i dati non sono validi
      */
     public UserResponse registration(UserRequester requested) {
         if (!uVal.validate(requested)) return null;
@@ -51,7 +47,13 @@ public class UserService {
         return toResponse(uRepo.save(u));
     }
 
-
+    /**
+     * Accesso di un utente esistente.
+     *
+     * @param email    l'email dell'utente
+     * @param password la password dell'utente
+     * @return l'utente corrispondente alle credenziali fornite, oppure {@code null} se le credenziali sono errate
+     */
     public UserResponse access(String email, String password) {
         if (email == null || password == null) return null;
         User u = uRepo.findByEmail(email);
@@ -59,6 +61,12 @@ public class UserService {
         return toResponse(u);
     }
 
+    /**
+     * Aggiorna le informazioni di un utente.
+     *
+     * @param requested le informazioni aggiornate dell'utente
+     * @return l'utente aggiornato, oppure {@code null} se i dati non sono validi
+     */
     public UserResponse updateUser(UserUpdateRequester requested) {
         if (!uuVal.validate(requested)) return null;
         User e = uRepo.findByEmail(requested.email());
@@ -71,6 +79,12 @@ public class UserService {
         return toResponse(uRepo.save(uu));
     }
 
+    /**
+     * Rimuove un utente dal sistema.
+     *
+     * @param uId identificativo dell'utente da rimuovere
+     * @return {@code true} se l'utente è stato rimosso con successo, {@code false} altrimenti
+     */
     public boolean removeUser(Long uId) {
         if (uId == null) return false;
         uRepo.delete(uRepo.getReferenceById(uId));
@@ -87,6 +101,12 @@ public class UserService {
         return toResponse(uRepo.getReferenceById(uid));
     }
 
+    /**
+     * Aggiorna il ruolo di un utente da STANDARD a ORGANIZZATORE.
+     *
+     * @param uId identificativo dell'utente da aggiornare
+     * @return {@code true} se l'aggiornamento è stato effettuato con successo, {@code false} altrimenti
+     */
     public boolean upgradeToHost(Long uId) {
         User user = uRepo.getReferenceById(uId);
         if (user.getRank() != Rank.STANDARD) return false;

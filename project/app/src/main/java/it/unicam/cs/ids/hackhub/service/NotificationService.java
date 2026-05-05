@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Service per la gestione delle notifiche degli utenti.
- * Fornisce operazioni per inviare e visualizzare notifiche.
+ * Service per la gestione delle notifiche.
  */
 @Service
 public class NotificationService {
@@ -18,10 +17,10 @@ public class NotificationService {
     private final UserRepository uRepo;
 
     /**
-     * Costruisce un'istanza di {@code NotificationService} con i repository necessari.
+     * Costruttore del service.
      *
-     * @param nRepo il repository per la gestione delle notifiche
-     * @param uRepo il repository per la gestione degli utenti
+     * @param nRepo NotificationRepository
+     * @param uRepo UserRepository
      */
     public NotificationService(NotificationRepository nRepo, UserRepository uRepo) {
         this.nRepo = nRepo;
@@ -43,8 +42,8 @@ public class NotificationService {
     /**
      * Restituisce tutte le notifiche associate a un determinato utente.
      *
-     * @param id l'identificativo dell'utente di cui si vogliono visualizzare le notifiche
-     * @return una lista di {@link Notification} appartenenti all'utente
+     * @param id l'identificativo dell'utente
+     * @return le notifiche dell'utente con l'identificativo fornito
      */
     public List<NotificationResponse> showMyNotificationList(Long id) {
         return nRepo.findByTo(uRepo.getReferenceById(id)).stream().map(this::toResponse).toList();
@@ -54,7 +53,7 @@ public class NotificationService {
      * Restituisce una notifica specifica tramite il suo identificativo.
      *
      * @param id l'identificativo della notifica da visualizzare
-     * @return la {@link Notification} corrispondente all'identificativo fornito
+     * @return la notifica con l'identificativo fornito
      */
     public NotificationResponse showSelectedNotification(Long id) {
         return toResponse(nRepo.getReferenceById(id));

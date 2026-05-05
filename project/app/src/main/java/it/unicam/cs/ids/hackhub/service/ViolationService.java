@@ -16,12 +16,9 @@ import it.unicam.cs.ids.hackhub.validator.ViolationValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-// TODO: controllare commenti
 
 /**
  * Service per la gestione delle violazioni.
- * Fornisce operazioni per la visualizzazione e la creazione delle violazioni,
- * nonché per la valutazione delle stesse da parte degli host.
  */
 @Service
 public class ViolationService {
@@ -33,13 +30,14 @@ public class ViolationService {
     private final ViolationValidator viVal;
 
     /**
-     * Costruisce un nuovo {@code ViolationService} con i repository e i validator necessari.
+     * Costruttore del service.
      *
-     * @param viRepo il repository per la gestione delle violazioni
-     * @param viVal  il validator per le violazioni
-     * @param uRepo  il repository per la gestione degli utenti
-     * @param tRepo  il repository per la gestione dei team
-     * @param nSer   il service per l'invio delle notifiche
+     * @param tRepo  TeamRepository
+     * @param uRepo  UserRepository
+     * @param viRepo ViolationRepository
+     * @param nSer   NotificationService
+     * @param viuVal ViolationUpdateValidator
+     * @param viVal  ViolationValidator
      */
     public ViolationService(TeamRepository tRepo, UserRepository uRepo, ViolationRepository viRepo, NotificationService nSer, ViolationUpdateValidator viuVal, ViolationValidator viVal) {
         this.tRepo = tRepo;
@@ -51,7 +49,7 @@ public class ViolationService {
     }
 
     /**
-     * Crea una nuova violazione a partire dai dati forniti tramite {@link ViolationRequester}.
+     * Crea una nuova violazione a partire dai dati forniti.
      *
      * @param requested i dati della violazione da creare
      * @return la violazione creata, oppure {@code null} se i dati non sono validi
@@ -72,6 +70,12 @@ public class ViolationService {
         return toResponse(viRepo.save(violation));
     }
 
+    /**
+     * Valuta ua violazione.
+     *
+     * @param requested i dati della violazione da valutare
+     * @return la violazione valutata, oppure {@code null} se i dati non sono validi
+     */
     public ViolationResponse evaluateViolation(ViolationUpdateRequester requested) {
         if (!viuVal.validate(requested)) return null;
         Violation violation = viRepo.getReferenceById(requested.violationId());

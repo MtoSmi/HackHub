@@ -22,8 +22,6 @@ import java.util.List;
 
 /**
  * Service per la gestione degli hackathon.
- * Fornisce operazioni per la visualizzazione e la creazione degli hackathon,
- * delegando la persistenza al repository e la validazione al validator dedicato.
  */
 @Service
 public class HackathonService {
@@ -35,17 +33,33 @@ public class HackathonService {
     private final HackathonValidator hVal;
     private final HackathonUpdateValidator huVal;
 
-
-    public HackathonService(HackathonRepository hRepo, TeamRepository tRepo, UserRepository uRepo, HackathonValidator hVal, HackathonUpdateValidator huVal, NotificationService nSer, PaymentService pSer) {
+    /**
+     * Costruttore del service.
+     *
+     * @param hRepo HackathonRepository
+     * @param tRepo TeamRepository
+     * @param uRepo UserRepository
+     * @param nSer  NotificationService
+     * @param pSer  PaymentService
+     * @param hVal  HackathonValidator
+     * @param huVal HackathonUpdateValidator
+     */
+    public HackathonService(HackathonRepository hRepo, TeamRepository tRepo, UserRepository uRepo, NotificationService nSer, PaymentService pSer, HackathonValidator hVal, HackathonUpdateValidator huVal) {
         this.hRepo = hRepo;
         this.tRepo = tRepo;
         this.uRepo = uRepo;
-        this.hVal = hVal;
-        this.huVal = huVal;
         this.nSer = nSer;
         this.pSer = pSer;
+        this.hVal = hVal;
+        this.huVal = huVal;
     }
 
+    /**
+     * Crea un nuovo hackathon a partire dai dati forniti.
+     *
+     * @param requested i dati dell'hackathon da creare
+     * @return hackathon creato, oppure {@code null} se i dati non sono validi
+     */
     public HackathonResponse creationHackathon(HackathonRequester requested) {
         if (!hVal.validate(requested)) return null;
         if (!uRepo.getReferenceById(requested.hostId()).getRank().equals(Rank.ORGANIZZATORE)) return null;
@@ -67,6 +81,12 @@ public class HackathonService {
         return toResponse(hRepo.getReferenceById(newH.getId()));
     }
 
+    /**
+     * Aggiorna le informazioni di un hackathon esistente.
+     *
+     * @param requested i dati dell'hackathon da aggiornare
+     * @return hackathon aggiornato, oppure {@code null} se i dati non sono validi
+     */
     public HackathonResponse updateHackathonInformation(HackathonUpdateRequester requested) {
         if (!huVal.validate(requested)) return null;
         Hackathon h = hRepo.getReferenceById(requested.id());
@@ -83,9 +103,9 @@ public class HackathonService {
     }
 
     /**
-     * Restituisce la lista di tutti gli hackathon presenti nel sistema.
+     * Restituisce la lista degli hackathon.
      *
-     * @return una lista di {@link Hackathon}
+     * @return la lista degli hackathon presenti nel sistema
      */
     public List<HackathonResponse> showHackathonList() {
         List<HackathonResponse> responses = new ArrayList<>();
@@ -95,6 +115,12 @@ public class HackathonService {
         return responses;
     }
 
+    /**
+     * Restituisce la lista degli hackathon a cui partecipa l'utente.
+     *
+     * @param uId l'identificativo dell'utente
+     * @return la lista degli hackathon a cui partecipa l'utente
+     */
     public List<HackathonResponse> showMyHackathonList(Long uId) {
         List<HackathonResponse> responses = new ArrayList<>();
         for (Hackathon hackathon : uRepo.getReferenceById(uId).getTeam().getHackathons()) {
@@ -104,15 +130,22 @@ public class HackathonService {
     }
 
     /**
-     * Restituisce l'hackathon corrispondente all'identificativo fornito.
+     * Restituisce le informazioni di un hackathon a partire dal suo identificativo.
      *
-     * @param hId l'identificativo univoco dell'hackathon
-     * @return l'hackathon corrispondente, oppure {@code null} se non trovato
+     * @param hId l'identificativo dell'hackathon
+     * @return le informazioni dell'hackathon, oppure {@code null} se l'hackathon non esiste
      */
     public HackathonResponse showSelectedHackathon(Long hId) {
         return toResponse(hRepo.getReferenceById(hId));
     }
 
+    /**
+     * Aggiunge un mentore all'hackathon.
+     *
+     * @param hId   identificativo dell'hackathon
+     * @param email email dell'utente che vuole essere aggiunto come mentore
+     * @return {@code true} se l'utente è stato aggiunto come mentore, {@code false} altrimenti
+     */
     public boolean addMentor(Long hId, String email) {
         User u = uRepo.findByEmail(email);
         Hackathon h = hRepo.getReferenceById(hId);
@@ -126,6 +159,13 @@ public class HackathonService {
         return true;
     }
 
+    /**
+     * Rimuove un mentore dall'hackathon.
+     *
+     * @param hId identificativo dell'hackathon
+     * @param mId identificativo dell'utente che vuole essere rimosso come mentore
+     * @return {@code true} se l'utente è stato rimosso come mentore, {@code false} altrimenti
+     */
     public boolean removeMentor(Long hId, Long mId) {
         Hackathon h = hRepo.getReferenceById(hId);
         User u = uRepo.getReferenceById(mId);
@@ -137,11 +177,19 @@ public class HackathonService {
         return true;
     }
 
+    /**
+     * Iscrive un team all'hackathon.
+     *
+     * @param hId identificativo dell'hackathon
+     * @param uId identificativo dell'utente che vuole iscrivere il proprio team all'hackathon
+     * @return {@code true} se il team è stato iscritto all'hackathon, {@code false} altrimenti
+     */
     public boolean subscribeHackathon(Long hId, Long uId) {
         User u = uRepo.getReferenceById(uId);
         Hackathon h = hRepo.getReferenceById(hId);
         if (u.getRank() != Rank.MEMBRO_TEAM) return false;
-        if (!u.getTeam().getHackathons().isEmpty() && u.getTeam().getHackathons().getLast().getStatus() != Status.CONCLUSO) return false;
+        if (!u.getTeam().getHackathons().isEmpty() && u.getTeam().getHackathons().getLast().getStatus() != Status.CONCLUSO)
+            return false;
         if (h.getStatus() != Status.IN_ISCRIZIONE) return false;
         if (u.getTeam().getDimension() > h.getMaxTeams()) return false;
         h.getParticipants().add(u.getTeam());
@@ -151,6 +199,13 @@ public class HackathonService {
         return true;
     }
 
+    /**
+     * Rimuove un team dall'hackathon.
+     *
+     * @param hId identificativo dell'hackathon
+     * @param uId identificativo dell'utente che vuole rimuovere il proprio team dall'hackathon
+     * @return {@code true} se il team è stato rimosso dall'hackathon, {@code false} altrimenti
+     */
     public boolean dropHackathon(Long hId, Long uId) {
         Hackathon h = hRepo.getReferenceById(hId);
         User u = uRepo.getReferenceById(uId);
@@ -163,6 +218,14 @@ public class HackathonService {
         return true;
     }
 
+    /**
+     * Decreta il vincitore dell'hackathon.
+     *
+     * @param eId  l'identificativo dell'host
+     * @param hId  l'identificativo dell'hackathon
+     * @param team il nome del team vincitore
+     * @return {@code true} se il vincitore è stato decretato, {@code false} altrimenti
+     */
     public boolean declareWinner(Long eId, Long hId, String team) {
         Hackathon h = hRepo.getReferenceById(hId);
         Team t = tRepo.findByName(team);
@@ -200,7 +263,13 @@ public class HackathonService {
                 h.getStatus().toString()
         );
     }
-    // METODO MOCKUP PER FAR SCORRERE L'HAKCATHON SENZA ATTENDERE IL TEMPO
+
+    /**
+     * @param hId identificativo dell'hackathon
+     * @return {@code true} se l'hackathon è stato fatto scorrere, {@code false} altrimenti
+     * @apiNote Da utilizzare solo per scopi di testing
+     * Metodo mockup per far scorrere l'hackathon senza attendere il tempo.
+     */
     public boolean timeMachine(Long hId) {
         Hackathon h = hRepo.getReferenceById(hId);
         if (h.getStatus() == Status.IN_ISCRIZIONE) {

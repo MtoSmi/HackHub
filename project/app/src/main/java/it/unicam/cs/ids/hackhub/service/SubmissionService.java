@@ -20,11 +20,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-// TODO: controllare commenti
+
 /**
- * Service per la gestione delle submission agli hackathon.
- * Fornisce le operazioni necessarie per creare e associare
- * una submission a un hackathon specifico.
+ * Service per la gestione delle sottomissioni.
  */
 @Service
 public class SubmissionService {
@@ -40,10 +38,18 @@ public class SubmissionService {
     private final ValuationValidator vaVal;
 
     /**
-     * Costruisce un'istanza di {@code SubmissionService} con le dipendenze fornite.
+     * Costruttore del service.
      *
-     * @param sVal il validator utilizzato per verificare la correttezza delle submission
-     * @param hRepo      il repository utilizzato per accedere e aggiornare gli hackathon
+     * @param hRepo  HackathonRepository
+     * @param rRepo  ResponseRepository
+     * @param sRepo  SubmissionRepository
+     * @param tRepo  TeamRepository
+     * @param uRepo  UserRepository
+     * @param vaRepo ValuationRepository
+     * @param ruVal  ResponseUpdateValidator
+     * @param rVal   ResponseValidator
+     * @param sVal   SubmissionValidator
+     * @param vaVal  ValuationValidator
      */
     public SubmissionService(HackathonRepository hRepo, ResponseRepository rRepo, SubmissionRepository sRepo, TeamRepository tRepo, UserRepository uRepo, ValuationRepository vaRepo, ResponseUpdateValidator ruVal, ResponseValidator rVal, SubmissionValidator sVal, ValuationValidator vaVal) {
         this.hRepo = hRepo;
@@ -59,20 +65,17 @@ public class SubmissionService {
     }
 
     /**
-     * Crea una nuova submission e la associa all'hackathon specificato.
-     * La submission viene prima validata tramite il {@link SubmissionValidator}.
-     * Se la validazione fallisce, viene restituito {@code null}.
-     * In caso di successo, la submission viene aggiunta all'hackathon e
-     * l'hackathon viene aggiornato nel repository.
+     * Crea una nuova sottomissione a partire dai dati forniti.
      *
-     * @param requested   il richiedente della submission contenente i dati da registrare
-     * @return la {@link Submission} creata, oppure {@code null} se la validazione fallisce
+     * @param requested i dati della sottomissione da creare
+     * @return la sottomissione creata, oppure {@code null} se i dati non sono validi
      */
     public SubmissionResponse createSubmission(SubmissionRequester requested) {
         if (!sVal.validate(requested)) return null;
         Hackathon h = hRepo.getReferenceById(requested.hackathonId());
         if (!h.getHost().getId().equals(requested.editorId())) return null;
-        if (requested.startDate().isBefore(h.getStartDate()) || requested.endDate().isAfter(h.getEndDate())) return null;
+        if (requested.startDate().isBefore(h.getStartDate()) || requested.endDate().isAfter(h.getEndDate()))
+            return null;
         Submission submission = new Submission(requested.title(), requested.description(), requested.startDate(), requested.endDate());
         sRepo.save(submission);
         h.getSubmissions().add(submission);
@@ -80,6 +83,12 @@ public class SubmissionService {
         return toResponse(submission);
     }
 
+    /**
+     * Invia una risposta a una sottomissione.
+     *
+     * @param requested i dati della risposta da inviare
+     * @return la risposta inviata, oppure {@code null} se i dati non sono validi
+     */
     public ResponseResponse sendSubmission(ResponseRequester requested) {
         if (!rVal.validate(requested)) return null;
         User u = uRepo.getReferenceById(requested.editorId());
@@ -102,6 +111,12 @@ public class SubmissionService {
         return toResponse(r);
     }
 
+    /**
+     * Aggiorna una risposta a una sottomissione.
+     *
+     * @param requested i dati della risposta da aggiornare
+     * @return la risposta aggiornata, oppure {@code null} se i dati non sono validi
+     */
     public ResponseResponse resendSubmission(ResponseUpdateRequester requested) {
         if (!ruVal.validate(requested)) return null;
         User u = uRepo.getReferenceById(requested.editorId());
@@ -114,6 +129,12 @@ public class SubmissionService {
         return toResponse(rRepo.save(r));
     }
 
+    /**
+     * Valuta una sottomissione.
+     *
+     * @param requested i dati della valutazione da inviare
+     * @return la valutazione inviata, oppure {@code null} se i dati non sono validi
+     */
     public ValuationResponse evaluateSubmission(ValuationRequester requested) {
         if (!vaVal.validate(requested)) return null;
         Hackathon h = hRepo.getReferenceById(requested.hackathonId());
@@ -130,6 +151,12 @@ public class SubmissionService {
         return toResponse(va);
     }
 
+    /**
+     * Restituisce la lista delle sottomissioni di un hackathon.
+     *
+     * @param id identificativo dell'hackathon
+     * @return la lista delle sottomissioni dell'hackathon con l'identificativo fornito
+     */
     public List<SubmissionResponse> showSubmissionList(Long id) {
         Hackathon h = hRepo.getReferenceById(id);
         List<SubmissionResponse> responses = new ArrayList<>();

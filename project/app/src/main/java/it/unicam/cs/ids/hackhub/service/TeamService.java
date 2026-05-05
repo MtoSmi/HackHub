@@ -19,35 +19,37 @@ import java.util.regex.Pattern;
 
 /**
  * Service per la gestione dei team.
- * Fornisce le operazioni di business logic relative alla creazione e alla gestione dei team.
  */
 @Service
 public class TeamService {
     private final NotificationRepository nRepo;
     private final TeamRepository tRepo;
     private final UserRepository uRepo;
-    private final NotificationService nServ;
+    private final NotificationService nSer;
     private final TeamValidator tVal;
 
-    public TeamService(TeamRepository tRepo, UserRepository uRepo, NotificationService nSer, TeamValidator tValid, NotificationRepository nRepo) {
-        this.nServ = nSer;
+    /**
+     * Costruttore del service.
+     *
+     * @param nRepo NotificationRepository
+     * @param tRepo TeamRepository
+     * @param uRepo UserRepository
+     * @param nSer  NotificationService
+     * @param tVal  TeamValidator
+     */
+    public TeamService(NotificationRepository nRepo, TeamRepository tRepo, UserRepository uRepo, NotificationService nSer, TeamValidator tVal) {
+        this.nRepo = nRepo;
         this.tRepo = tRepo;
         this.uRepo = uRepo;
-        this.nRepo = nRepo;
-        this.tVal = tValid;
+        this.nSer = nSer;
+        this.tVal = tVal;
     }
 
     /**
-     * Crea un nuovo team a partire dai dati forniti nel {@link TeamRequester}.
-     * <p>
-     * La creazione viene rifiutata (restituendo {@code null}) nei seguenti casi:
-     * - I dati del team non superano la validazione.
-     * - Uno o più membri del team non hanno il rank {@link Rank#STANDARD}.
-     * - Esiste già un team con lo stesso nome.
-     * - Uno o più membri del team appartengono già a un altro team.
+     * Crea un nuovo team a partire dai dati forniti.
      *
-     * @param requested il {@link TeamRequester} contenente i dati del team da creare
-     * @return il {@link Team} creato e salvato nel repository, oppure {@code null} se la creazione non è consentita
+     * @param requested i dati del team da creare
+     * @return team creato, oppure {@code null} se i dati non sono validi
      */
     public TeamResponse creationTeam(TeamRequester requested) {
         if (!tVal.validate(requested)) return null;
@@ -66,6 +68,12 @@ public class TeamService {
         return toResponse(t);
     }
 
+    /**
+     * Aggiorna i dati di un team esistente.
+     *
+     * @param requested i dati del team da aggiornare
+     * @return team aggiornato, oppure {@code null} se i dati non sono validi
+     */
     public TeamResponse updateTeam(TeamRequester requested) {
         Team t = tRepo.getReferenceById(uRepo.getReferenceById(requested.editorId()).getTeam().getId());
         if (!t.getMembers().contains(uRepo.getReferenceById(requested.editorId()))) return null;
@@ -75,21 +83,41 @@ public class TeamService {
         return toResponse(tRepo.save(t));
     }
 
+    /**
+     * Ritorna i dati di un team.
+     *
+     * @param name nome del team da ricercare
+     * @return i dati del team con il nome fornito, oppure {@code null} se non esiste
+     */
     public TeamResponse showSelectedTeam(String name) {
         return toResponse(tRepo.findByName(name));
     }
 
+    /**
+     * Invia un invito a un utente.
+     *
+     * @param eId   identificativo dell'utente che invia l'invito
+     * @param email email dell'utente che riceve l'invito
+     * @return {@code true} se l'invito è stato inviato con successo, {@code false} altrimenti
+     */
     public boolean inviteMember(Long eId, String email) {
         User iu = uRepo.findByEmail(email);
         User tm = uRepo.getReferenceById(eId);
         Team t = tRepo.getReferenceById(tm.getTeam().getId());
         if (t.getMembers().contains(tm) && iu != null && iu.getRank() == Rank.STANDARD) {
-            nServ.send("Invito ricevuto!", "Sei stato iu a unirti al team " + t.getName() + " da " + tm.getName() + "{" + tm.getId() + "}", iu.getId());
+            nSer.send("Invito ricevuto!", "Sei stato iu a unirti al team " + t.getName() + " da " + tm.getName() + "{" + tm.getId() + "}", iu.getId());
             return true;
         }
         return false;
     }
 
+    /**
+     * Accetta un invito.
+     *
+     * @param uId identificativo dell'utente che accetta l'invito
+     * @param nId identificativo della notifica che contiene l'invito
+     * @return {@code true} se l'invito è stato accettato con successo, {@code false} altrimenti
+     */
     public boolean acceptInvite(Long uId, Long nId) {
         User i = uRepo.getReferenceById(uId);
         Team t = uRepo.getReferenceById(extractSenderId(nRepo.getReferenceById(nId).getDescription())).getTeam();
@@ -107,7 +135,13 @@ public class TeamService {
         return false;
     }
 
-
+    /**
+     * Rimuove un utente da un team.
+     *
+     * @param tId identificativo del team da cui rimuovere l'utente
+     * @param uId identificativo dell'utente da rimuovere dal team
+     * @return {@code true} se l'utente è stato rimosso con successo, {@code false} altrimenti
+     */
     public boolean dropTeam(Long tId, Long uId) {
         Team t = tRepo.getReferenceById(tId);
         User u = uRepo.getReferenceById(uId);
