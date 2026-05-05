@@ -1,0 +1,14 @@
+$kind: http-request
+description: Update an existing team's information.
+url: "{{baseUrl}}/api/v1/team/update"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "editorId": 1,
+      "name": "TeamAlpha Reloaded"
+    }
+order: 2000

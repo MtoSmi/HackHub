@@ -1,0 +1,7 @@
+$kind: http-request
+description: Remove a user account by ID.
+url: "{{baseUrl}}/api/v1/user/remove?id=1"
+method: POST
+queryParams:
+  id: "1"
+order: 5000

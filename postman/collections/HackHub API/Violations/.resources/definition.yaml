@@ -1,0 +1,3 @@
+$kind: collection
+description: Endpoints for reporting, evaluating, and reviewing rule violations during hackathons.
+order: 6000

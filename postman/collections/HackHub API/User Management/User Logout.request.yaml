@@ -1,0 +1,7 @@
+$kind: http-request
+description: Log out a user by their ID.
+url: "{{baseUrl}}/api/v1/user/logout?id=1"
+method: GET
+queryParams:
+  id: "1"
+order: 3000

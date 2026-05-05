@@ -1,0 +1,8 @@
+$kind: http-request
+description: Invite a new member to the team by email.
+url: "{{baseUrl}}/api/v1/team/inviteMember?editorId=1&email=newmember@example.com"
+method: POST
+queryParams:
+  editorId: "1"
+  email: newmember@example.com
+order: 4000

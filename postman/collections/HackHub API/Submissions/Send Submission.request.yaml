@@ -1,0 +1,17 @@
+$kind: http-request
+description: Submit a project to a hackathon.
+url: "{{baseUrl}}/api/v1/submission/send"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "editorId": 1,
+      "hackathonId": 1,
+      "submissionId": 1,
+      "file": "https://github.com/teamalpha/ai-scheduler",
+      "fromId": 1
+    }
+order: 2000

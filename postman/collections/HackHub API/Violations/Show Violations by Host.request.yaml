@@ -1,0 +1,7 @@
+$kind: http-request
+description: Retrieve all violations reported under a specific host.
+url: "{{baseUrl}}/api/v1/violation/showViolation?hostId=1"
+method: GET
+queryParams:
+  hostId: "1"
+order: 3000

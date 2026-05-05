@@ -1,0 +1,5 @@
+$kind: http-request
+description: Retrieve the full list of all hackathons.
+url: "{{baseUrl}}/api/v1/hackathon/showList"
+method: GET
+order: 3000

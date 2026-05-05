@@ -1,0 +1,7 @@
+$kind: http-request
+description: Upgrade a user's role (e.g., to organizer or mentor).
+url: "{{baseUrl}}/api/v1/user/upgrade?id=1"
+method: POST
+queryParams:
+  id: "1"
+order: 7000

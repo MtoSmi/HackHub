@@ -1,0 +1,17 @@
+$kind: http-request
+description: Update an existing user's profile information.
+url: "{{baseUrl}}/api/v1/user/update"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "id": 1,
+      "name": "Mario",
+      "surname": "Bianchi",
+      "email": "mario.bianchi@example.com",
+      "password": "NewPass456"
+    }
+order: 4000

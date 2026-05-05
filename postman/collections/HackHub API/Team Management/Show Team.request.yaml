@@ -1,0 +1,9 @@
+$kind: http-request
+description: Retrieve a team's details by its name.
+url: "{{baseUrl}}/api/v1/team/show/TeamAlpha"
+method: GET
+pathVariables:
+  - key: name
+    value: TeamAlpha
+    description: The name of the team to retrieve.
+order: 3000

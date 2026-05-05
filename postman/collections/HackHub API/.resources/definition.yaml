@@ -1,0 +1,4 @@
+$kind: collection
+description: Complete API collection for the HackHub platform, covering User Management, Hackathon Management, Team Management, Submissions, Help Requests, Violations, and Notifications.
+variables:
+  baseUrl: http://localhost:8080

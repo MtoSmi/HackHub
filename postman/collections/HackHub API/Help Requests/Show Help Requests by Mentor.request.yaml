@@ -1,0 +1,7 @@
+$kind: http-request
+description: Retrieve all help requests assigned to a specific mentor.
+url: "{{baseUrl}}/api/v1/helpRequest/showHelpRequest?mentorId=3"
+method: GET
+queryParams:
+  mentorId: "3"
+order: 5000

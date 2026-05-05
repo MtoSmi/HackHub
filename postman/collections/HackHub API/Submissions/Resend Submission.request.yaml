@@ -1,0 +1,15 @@
+$kind: http-request
+description: Resend or update a previously submitted project.
+url: "{{baseUrl}}/api/v1/submission/resend"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "editorId": 1,
+      "responseId": 1,
+      "file": "https://github.com/teamalpha/ai-scheduler-v2"
+    }
+order: 3000

@@ -1,0 +1,9 @@
+$kind: http-request
+description: Retrieve all hackathons associated with a specific user.
+url: "{{baseUrl}}/api/v1/hackathon/show/1"
+method: GET
+pathVariables:
+  - key: id
+    value: "1"
+    description: The user ID to retrieve associated hackathons.
+order: 4000

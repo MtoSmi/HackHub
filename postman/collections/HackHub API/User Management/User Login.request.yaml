@@ -1,0 +1,9 @@
+$kind: http-request
+description: Authenticate a user with email and password.
+url: "{{baseUrl}}/api/v1/user/access?email=mario.rossi@example.com&password=SecurePass123"
+method: POST
+queryParams:
+  email: mario.rossi@example.com
+  password: SecurePass123
+examples: .resources/User Login.resources/examples
+order: 2000

@@ -1,0 +1,9 @@
+$kind: http-request
+description: Deny a help request.
+url: "{{baseUrl}}/api/v1/helpRequest/denied/1"
+method: POST
+pathVariables:
+  - key: id
+    value: "1"
+    description: The help request ID to deny.
+order: 3000

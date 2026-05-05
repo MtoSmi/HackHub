@@ -1,0 +1,9 @@
+$kind: http-request
+description: Declare the winning team of a hackathon.
+url: "{{baseUrl}}/api/v1/hackathon/declareWinner?eId=2&hId=1&team=TeamAlpha"
+method: POST
+queryParams:
+  eId: "2"
+  hId: "1"
+  team: TeamAlpha
+order: 10000

@@ -1,0 +1,12 @@
+$kind: http-request
+description: Accept a help request and provide a reply and meeting link.
+url: "{{baseUrl}}/api/v1/helpRequest/accept/1?reply=I will help you tomorrow.&call=https://meet.google.com/abc-defg-hij"
+method: POST
+queryParams:
+  reply: I will help you tomorrow.
+  call: https://meet.google.com/abc-defg-hij
+pathVariables:
+  - key: id
+    value: "1"
+    description: The help request ID to accept.
+order: 2000

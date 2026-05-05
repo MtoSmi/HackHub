@@ -1,0 +1,8 @@
+$kind: http-request
+description: Remove a user's subscription from a hackathon.
+url: "{{baseUrl}}/api/v1/hackathon/drop?hId=1&uId=4"
+method: POST
+queryParams:
+  hId: "1"
+  uId: "4"
+order: 9000

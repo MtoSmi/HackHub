@@ -1,0 +1,8 @@
+$kind: http-request
+description: Accept a team invitation using a notification ID.
+url: "{{baseUrl}}/api/v1/team/acceptInvite?userId=5&notificationId=10"
+method: POST
+queryParams:
+  userId: "5"
+  notificationId: "10"
+order: 5000

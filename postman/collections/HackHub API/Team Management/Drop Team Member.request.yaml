@@ -1,0 +1,8 @@
+$kind: http-request
+description: Remove a member from a team.
+url: "{{baseUrl}}/api/v1/team/drop?tId=1&uId=5"
+method: POST
+queryParams:
+  tId: "1"
+  uId: "5"
+order: 6000
