@@ -2,6 +2,7 @@ package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.entity.dto.ResponseResponse;
 import it.unicam.cs.ids.hackhub.entity.dto.SubmissionResponse;
+import it.unicam.cs.ids.hackhub.entity.dto.ValuationResponse;
 import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.*;
 import it.unicam.cs.ids.hackhub.entity.model.enumeration.Status;
@@ -113,7 +114,7 @@ public class SubmissionService {
         return toResponse(rRepo.save(r));
     }
 
-    public ResponseResponse evaluateSubmission(ValuationRequester requested) {
+    public ValuationResponse evaluateSubmission(ValuationRequester requested) {
         if (!vaVal.validate(requested)) return null;
         Hackathon h = hRepo.getReferenceById(requested.hackathonId());
         if (h.getStatus() != Status.IN_VALUTAZIONE) return null;
@@ -125,7 +126,8 @@ public class SubmissionService {
         Valuation va = new Valuation(requested.vote(), requested.note());
         vaRepo.save(va);
         r.setValuation(va);
-        return toResponse(rRepo.save(r));
+        rRepo.save(r);
+        return toResponse(va);
     }
 
     public List<SubmissionResponse> showSubmissionList(Long id) {
@@ -158,6 +160,15 @@ public class SubmissionService {
                 s.getEndDate(),
                 s.getResponses().stream().map(Response::getId).toList(),
                 s.isComplete()
+        );
+    }
+
+    private ValuationResponse toResponse(Valuation va) {
+        if (va == null) return null;
+        return new ValuationResponse(
+                va.getId(),
+                va.getVote(),
+                va.getNote()
         );
     }
 }
