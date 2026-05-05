@@ -12,23 +12,16 @@ import java.util.List;
 
 /**
  * Implementazione concreta dell'interfaccia HackathonBuilder.
- * <p>
- * Questa classe fornisce l'implementazione del pattern Builder per la costruzione
- * di oggetti Hackathon. Utilizza la composizione per costruire gradualmente un'istanza
- * di Hackathon impostando le proprietà una per una. Lo stato iniziale dell'hackathon
- * è impostato su IN_ISCRIZIONE (fase di iscrizione).
  */
 public class HackathonConcreteBuilder implements HackathonBuilder {
 
     /**
-     * L'istanza di Hackathon in corso di costruzione
+     * L'istanza di Hackathon in corso di costruzione.
      */
     private final Hackathon hackathon;
 
     /**
-     * Costruttore predefinito.
-     * <p>
-     * Inizializza una nuova istanza di Hackathon con lo stato impostato su IN_ISCRIZIONE.
+     * Costruttore che inizializza un nuovo oggetto Hackathon e imposta lo stato iniziale a IN_ISCRIZIONE.
      */
     public HackathonConcreteBuilder() {
         this.hackathon = new Hackathon();
@@ -36,10 +29,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta il nome dell'hackathon.
-     *
-     * @param name il nome dell'hackathon
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
+     * Imposta il nome.
      */
     @Override
     public HackathonBuilder buildName(String name) {
@@ -48,10 +38,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta l'utente hostId (organizzatore) dell'hackathon.
-     *
-     * @param host l'oggetto User che rappresenta l'organizzatore
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
+     * Imposta l'organizzatore.
      */
     @Override
     public HackathonBuilder buildHost(User host) {
@@ -60,10 +47,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta l'utente giudice dell'hackathon.
-     *
-     * @param judge l'oggetto User che rappresenta il giudice
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
+     * Imposta l'utente giudice.
      */
     @Override
     public HackathonBuilder buildJudge(User judge) {
@@ -73,10 +57,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta la lista degli utenti mentori per l'hackathon.
-     *
-     * @param mentors una Lista di oggetti User che rappresentano i mentori
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
+     * Imposta la lista dei mentori.
      */
     @Override
     public HackathonBuilder buildMentors(List<User> mentors) {
@@ -88,10 +69,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta la lista dei team partecipanti all'hackathon.
-     *
-     * @param participants una Lista di oggetti Team che rappresentano i partecipanti
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
+     * Imposta la lista dei team partecipanti.
      */
     @Override
     public HackathonBuilder buildParticipants(List<Team> participants) {
@@ -100,10 +78,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta il numero massimo di team consentiti nell'hackathon.
-     *
-     * @param maxTeam il numero massimo di team
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
+     * Imposta il numero massimo di membri del team consentiti.
      */
     @Override
     public HackathonBuilder buildMaxTeam(int maxTeam) {
@@ -112,9 +87,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta la lista delle sottomissioni dell'hackathon.
-     *
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
+     * Imposta la lista delle sottomissioni.
      */
     @Override
     public HackathonBuilder buildSubmissions() {
@@ -123,10 +96,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta il regolamento dell'hackathon.
-     *
-     * @param regulation il testo del regolamento
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
+     * Imposta il regolamento.
      */
     @Override
     public HackathonBuilder buildRegulation(String regulation) {
@@ -135,10 +105,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta la scadenza di iscrizione all'hackathon.
-     *
-     * @param deadline il LocalDateTime che rappresenta la scadenza di iscrizione
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
+     * Imposta la scadenza di iscrizione.
      */
     @Override
     public HackathonBuilder buildDeadline(LocalDateTime deadline) {
@@ -147,10 +114,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta la data e l'ora di inizio dell'hackathon.
-     *
-     * @param startDate il LocalDateTime che rappresenta la data di inizio
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
+     * Imposta la data e l'ora di inizio.
      */
     @Override
     public HackathonBuilder buildStartDate(LocalDateTime startDate) {
@@ -160,9 +124,6 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
 
     /**
      * Imposta la data e l'ora di fine dell'hackathon.
-     *
-     * @param endDate il LocalDateTime che rappresenta la data di fine
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
      */
     @Override
     public HackathonBuilder buildEndDate(LocalDateTime endDate) {
@@ -171,10 +132,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta la località dell'hackathon.
-     *
-     * @param location la descrizione della località o l'indirizzo
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
+     * Imposta la località di svolgimento.
      */
     @Override
     public HackathonBuilder buildLocation(String location) {
@@ -183,10 +141,7 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Imposta l'importo del premio dell'hackathon.
-     *
-     * @param reward l'importo del premio come valore double
-     * @return questa istanza HackathonConcreteBuilder per il concatenamento dei metodi
+     * Imposta l'importo del premio.
      */
     @Override
     public HackathonBuilder buildReward(double reward) {
@@ -195,9 +150,9 @@ public class HackathonConcreteBuilder implements HackathonBuilder {
     }
 
     /**
-     * Costruisce e restituisce l'oggetto Hackathon finale.
+     * Costruisce e restituisce l'oggetto Hackathon.
      *
-     * @return l'istanza di Hackathon completamente configurata
+     * @return una nuova istanza di Hackathon con tutte le proprietà configurate
      */
     public Hackathon getResult() {
         return hackathon;

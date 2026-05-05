@@ -12,6 +12,10 @@ import org.springframework.util.StringUtils;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Classe di configurazione per PayPal che gestisce le credenziali e l'endpoint dell'API.
+ * Le credenziali possono essere fornite tramite variabili d'ambiente, file JSON o configurazione Spring.
+ */
 @Getter
 @Component
 public class PayPalConfiguration {
@@ -34,10 +38,13 @@ public class PayPalConfiguration {
     private String resolvedClientId;
     private String resolvedClientSecret;
 
+    /**
+     * Inizializza la configurazione PayPal risolvendo le credenziali e l'endpoint.
+     */
     @PostConstruct
     public void init() {
         if (StringUtils.hasText(clientId) && StringUtils.hasText(clientSecret)) {
-            resolvedBaseUrl = StringUtils.hasText(baseUrl) ? baseUrl : "https://api-m.sandbox.paypal.com";
+            resolvedBaseUrl = StringUtils.hasText(baseUrl) ? baseUrl : "https://api-m.sandbox.paypal.com"; // Sandbox di default
             resolvedClientId = clientId.trim();
             resolvedClientSecret = clientSecret.trim();
         } else {
@@ -52,6 +59,9 @@ public class PayPalConfiguration {
         httpClient = new PayPalHttpClient(environment);
     }
 
+    /**
+     * Carica le credenziali PayPal da un file JSON specificato da credentialsPath.
+     */
     private void loadFromJson() {
         try {
             ObjectMapper mapper = new ObjectMapper();
