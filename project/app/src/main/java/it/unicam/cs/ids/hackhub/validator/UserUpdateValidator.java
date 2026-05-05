@@ -1,35 +1,31 @@
 package it.unicam.cs.ids.hackhub.validator;
 
-import it.unicam.cs.ids.hackhub.entity.model.User;
 import it.unicam.cs.ids.hackhub.entity.requester.UserUpdateRequester;
 import org.springframework.stereotype.Component;
 
 /**
- * Implementazione di {@link Validator} per la validazione degli oggetti {@link User}.
- * Verifica che i campi principali dell'utente siano presenti e validi.
+ * Validator per gli utenti in fase di aggiornamento.
  */
 @Component
 public class UserUpdateValidator implements Validator<UserUpdateRequester> {
-
     /**
-     * Valida un oggetto {@link User} verificando che i campi obbligatori siano presenti e non vuoti.
-     *
-     * Le condizioni di validità sono:
-     * - L'utente non deve essere {@code null}
-     * - Il nome non deve essere {@code null} né vuoto
-     * - Il cognome non deve essere {@code null} né vuoto
+     * Valida un oggetto {@link UserUpdateRequester} verificando i seguenti vincoli:
+     * - L'id non deve essere {@code null}
+     * - Il nome non deve essere {@code null} o vuoto
+     * - Il cognome non deve essere {@code null} o vuoto
      * - L'email non deve essere {@code null}, vuota e deve contenere il carattere {@code @}
-     * - La password non deve essere {@code null} né vuota
+     * - La password non deve essere {@code null} o vuota
      *
-     * @param u l'oggetto {@link User} da validare
-     * @return {@code true} se l'utente è valido, {@code false} altrimenti
+     * @param requested l'entità da validare
+     * @return {@code true} se valido, {@code false} altrimenti
      */
     @Override
-    public boolean validate(UserUpdateRequester u) {
-        if(u == null) return false;
-        if(u.name() == null || u.name().isBlank()) return false;
-        if(u.surname() == null || u.surname().isBlank()) return false;
-        if(u.email() == null || u.email().isBlank() || !u.email().contains("@")) return false;
-        return u.password() != null && !u.password().isBlank();
+    public boolean validate(UserUpdateRequester requested) {
+        if (requested == null) return false;
+        if (requested.id() == null) return false;
+        if (requested.name() == null || requested.name().isBlank()) return false;
+        if (requested.surname() == null || requested.surname().isBlank()) return false;
+        if (requested.email() == null || requested.email().isBlank() || !requested.email().contains("@")) return false;
+        return requested.password() != null && !requested.password().isBlank();
     }
 }

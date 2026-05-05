@@ -1,31 +1,26 @@
 package it.unicam.cs.ids.hackhub.validator;
 
-import it.unicam.cs.ids.hackhub.entity.model.Submission;
 import it.unicam.cs.ids.hackhub.entity.requester.SubmissionRequester;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-// TODO: controllare commenti
 
 /**
- * Validator per le istanze di {@link Submission}.
- * Implementa l'interfaccia {@link Validator} per verificare che una submission
- * rispetti tutti i vincoli necessari prima di essere accettata nel sistema.
+ * Validator per le sottomissioni in fase di creazione.
  */
 @Component
 public class SubmissionValidator implements Validator<SubmissionRequester> {
-
     /**
-     * Valida una {@link Submission} verificando che:
-     * - L'oggetto non sia {@code null}
-     * - Il titolo non sia {@code null} né vuoto
-     * - La descrizione non sia {@code null} né vuota
-     * - La data di inizio e la data di fine non siano {@code null}
-     * - La data di inizio non sia già passata rispetto al momento attuale
-     * - La data di inizio non sia successiva alla data di fine
+     * Valida un oggetto {@link SubmissionRequester} verificando i seguenti vincoli:
+     * - L'editor non deve essere {@code null}
+     * - Il titolo non deve essere {@code null} o vuoto
+     * - La descrizione non deve essere {@code null} o vuota
+     * - La data di inizio deve essere nel futuro
+     * - La data di inizio deve essere prima della data di fine
+     * - L'hackathon non deve essere {@code null}
      *
-     * @param requested la submission da validare
-     * @return {@code true} se la submission è valida, {@code false} altrimenti
+     * @param requested l'entità da validare
+     * @return {@code true} se valido, {@code false} altrimenti
      */
     @Override
     public boolean validate(SubmissionRequester requested) {
