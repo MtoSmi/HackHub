@@ -49,7 +49,6 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.17.2")
 }
 
-// Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)

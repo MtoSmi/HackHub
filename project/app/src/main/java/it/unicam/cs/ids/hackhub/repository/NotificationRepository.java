@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Repository per la gestione delle operazioni CRUD relative alla {@link Notification}.
+ * Repository per l'entità Notification per la gestione delle operazioni CRUD.
  */
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {

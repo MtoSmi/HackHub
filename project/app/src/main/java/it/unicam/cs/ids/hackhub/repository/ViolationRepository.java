@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Repository per la gestione delle operazioni CRUD relative alla {@link Violation}.
+ * Repository per l'entità Violation per la gestione delle operazioni CRUD.
  */
 @Repository
 public interface ViolationRepository extends JpaRepository<Violation, Long> {

@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repository per la gestione delle operazioni CRUD relative alla {@link Submission}.
+ * Repository per l'entità Submission per la gestione delle operazioni CRUD.
  */
 @Repository
 public interface SubmissionRepository extends JpaRepository<Submission, Long> {

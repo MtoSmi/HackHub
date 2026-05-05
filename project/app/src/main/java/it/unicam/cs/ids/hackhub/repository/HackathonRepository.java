@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Repository per la gestione delle operazioni CRUD relative all' {@link Hackathon}.
+ * Repository per l'entità Hackathon per la gestione delle operazioni CRUD.
  */
 @Repository
 public interface HackathonRepository extends JpaRepository<Hackathon, Long> {

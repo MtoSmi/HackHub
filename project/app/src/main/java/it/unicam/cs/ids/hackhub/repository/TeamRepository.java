@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repository per la gestione delle operazioni CRUD relative al {@link Team}.
+ * Repository per l'entità Team per la gestione delle operazioni CRUD.
  */
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {

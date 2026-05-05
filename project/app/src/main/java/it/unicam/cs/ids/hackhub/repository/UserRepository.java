@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repository per la gestione delle operazioni CRUD relative allo {@link User}.
+ * Repository per l'entità User per la gestione delle operazioni CRUD.
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
