@@ -1,41 +1,186 @@
 # HackHub
-L’obiettivo del progetto è realizzare **HackHub**, una piattaforma web per la gestione di **hackathon**. Gli hackathon sono eventi **di gruppo**  ai quali possono partecipare dei team. Ogni hackathon segue un ciclo di vita con quattro stati: _in iscrizione, in corso, in valutazione e concluso_. La piattaforma supporta l’organizzazione degli hackathon, la registrazione dei team, ed il caricamento delle sottomissioni. Si immaginano almeno i seguenti attori:
 
-## Membro dello Staff
-Personale assegnato a uno specifico hackathon (un **Organizzatore**, un **Giudice** o un **Mentore**). Può consultare l’elenco di tutti gli hackathon nel sistema. Può accedere alle sottomissioni dei team, ma solo per gli hackathon cui è assegnato come staff.
+HackHub è una piattaforma **web backend REST** per la gestione di **hackathon** sviluppata in **Java 21** con **Spring Boot**.
+Il progetto nasce come soluzione all’assegnamento del corso di **Ingegneria del Software** dell’Università di Camerino e punta a coprire l’intero ciclo di vita di un hackathon: dalla creazione dell’evento fino alla proclamazione del team vincitore.
 
-## Organizzatore
-L’Organizzatore è un membro dello staff che crea nuovi hackathon definendo le informazioni essenziali _(nome, regolamento, scadenza iscrizioni, date di inizio e fine, luogo, premio in denaro, dimensione massima del team,_ un **Giudice** e uno o più **Mentori**). Se lo reputa necessario, L’Organizzatore può aggiungere più Mentori all'hackathon anche successivamente alla sua creazione. Quando tutte le sottomissioni di un hackathon sono state giudicate dal **Giudice**, l’Organizzatore proclama un solo team vincitore. 
+## Obiettivo del progetto
 
-## Mentore
-Il Mentore è  un membro dello staff che affianca i team durante l’hackathon. Dalla piattaforma visualizza le richieste di supporto inviate dai team e può proporre una call, la cui prenotazione è gestita tramite un sistema calendar esterno. Se nota una violazione del regolamento da parte di un team, può segnalare il team all’Organizzatore per le decisioni del caso.
+L’obiettivo è realizzare un sistema in grado di gestire:
 
-## Giudice
-Il Giudice è un membro dello staff incaricato di valutare le sottomissioni alla conclusione dell’hackathon cui è stato assegnato. Può visualizzare tutte le sottomissioni dei team relative a quell’ hackathon e, per ciascuna, rilasciare una valutazione composta da un breve giudizio scritto e da un punteggio numerico compreso tra 0 e 10. 
+- la creazione e la consultazione degli hackathon;
+- la registrazione dei team e degli utenti;
+- la partecipazione degli hackathon da parte dei team;
+- il caricamento delle sottomissioni;
+- la valutazione finale da parte del giudice;
+- le richieste di supporto ai mentori;
+- la segnalazione di violazioni del regolamento;
+- la comunicazione con servizi esterni per **organizzare delle call** e **pagamento del premio**.
 
-## Membro del Team
-Il Membro del Team può consultare tutti gli hackathon, iscrivere il proprio team a un hackathon, ed inviare la sottomissione entro la scadenza prevista. Fino a tale scadenza il membro può ancora aggiornare la sottomissione.
+La piattaforma è pensata principalmente come **API REST**, quindi può essere usata da una qualunque interfaccia grafica o da client come Postman.
 
-## Utente
-L’Utente registrato gestisce la propria partecipazione agli hackathon attraverso i team: può creare un nuovo team invitando altri utenti della piattaforma oppure accettare un invito a unirsi a un team esistente. In qualunque momento un utente può appartenere a **un solo** team.
+## Il compito assegnato
 
-## Visitatore
-Il Visitatore è un utente non autenticato che accede liberamente al sito per consultare le informazioni pubbliche sugli hackathon. Non può accedere ad altre funzionalità finché non effettua la registrazione e l’accesso.
+La consegna richiedeva di modellare una piattaforma per la gestione di hackathon con i seguenti vincoli principali:
 
-## Calendar
-Il sistema di **Calendar** è un servizio esterno utilizzato esclusivamente per pianificare le call tra mentore e team. La piattaforma vi delega la prenotazione degli slot.
+- sviluppo in **Java** e successivo porting su **Spring Boot**;
+- supporto a un ciclo di vita di un hackathon con quattro stati: **in iscrizione**, **in corso**, **in valutazione**, **concluso**;
+- presenza di più attori con permessi differenti;
+- utilizzo di almeno **due design pattern** diversi dal Singleton;
+- possibilità di limitare lo strato di presentazione ad API REST o linea di comando.
 
-## Sistema di Pagamento
-Il sistema di pagamento è un servizio esterno utilizzato per erogare il premio in denaro al team vincitore.
+HackHub implementa questo scenario con un backend strutturato, persistenza locale e integrazioni verso servizi esterni.
 
-### Vincoli e Dettagli Tecnici
-- Il progetto deve essere sviluppato in Java e successivamente portato su **Spring Boot**.
-- Lo strato di presentazione può essere sviluppato con strumenti a scelta dello studente ed eventualmente può limitarsi alla linea di comando e/o API REST.
-- Si devono utilizzare almeno due design pattern diversi dal Singleton.
+## Funzionalità implementate
 
----
-Università di Camerino - Scuola di Scienze e Tecnologie
+### Gestione hackathon
 
-Ingengeria del Software A.S. 2025/2026 
+- creazione di nuovi hackathon;
+- aggiornamento dei dati dell’hackathon;
+- visualizzazione della lista completa degli hackathon;
+- visualizzazione dei dettagli di un singolo hackathon;
+- selezione dell’hackathon corrente;
+- aggiunta e rimozione dei mentori;
+- iscrizione e abbandono dei team;
+- proclamazione del team vincitore;
 
-Gruppo: Git Pushers
+### Gestione utenti e team
+
+- registrazione e aggiornamento utenti;
+- creazione e aggiornamento team;
+- inviti tra utenti per entrare in un team;
+- vincolo che ogni utente possa appartenere a **un solo team** alla volta;
+- consultazione delle informazioni relative al proprio team.
+
+### Gestione sottomissioni
+
+- invio della sottomissione da parte dei team;
+- aggiornamento della sottomissione fino alla scadenza prevista;
+- consultazione delle sottomissioni da parte degli attori autorizzati;
+- valutazione finale con punteggio numerico e giudizio scritto.
+
+### Supporto, violazioni e notifiche
+
+- apertura di richieste di supporto da parte di un utente;
+- risposta dei mentori alle richieste;
+- pianificazione di call tramite integrazione con un servizio calendar esterno;
+- segnalazione delle violazioni del regolamento;
+- consultazione delle violazioni registrate;
+- gestione di notifiche interne alla piattaforma.
+
+### Integrazioni esterne
+
+- **Google Calendar** per la prenotazione delle call tra mentore e team;
+- **PayPal** per l’erogazione del premio in denaro al team vincitore.
+
+## Ruoli supportati
+
+| Ruolo                  | Responsabilità principali                                                 |
+|------------------------|---------------------------------------------------------------------------|
+| **Visitatore**         | Consulta le informazioni pubbliche sugli hackathon.                       |
+| **Utente**             | Gestisce la propria partecipazione, crea o accetta inviti ai team.        |
+| **Membro del Team**    | Partecipa agli hackathon, invia e aggiorna la sottomissione.              |
+| **Membro dello Staff** | Consulta gli hackathon e le informazioni riservate agli eventi assegnati. |
+| **Organizzatore**      | Crea hackathon, gestisce mentori e proclama il vincitore.                 |
+| **Mentore**            | Gestisce richieste di supporto, propone call, segnala violazioni.         |
+| **Giudice**            | Valuta le sottomissioni al termine dell’hackathon.                        |
+
+## Tecnologie utilizzate
+
+- **Java 21**
+- **Spring Boot 3.2**
+- **Spring Web** per le API REST
+- **Spring Data JPA** per la persistenza
+- **H2 Database** come database locale file-based
+- **Swagger / OpenAPI** per la documentazione delle API
+- **Lombok** per ridurre il boilerplate
+- **Google Calendar API**
+- **PayPal Checkout SDK**
+- **JUnit 5** e **Spring Boot Test** per i test
+
+## Architettura e design pattern
+
+Il progetto adotta una struttura a livelli con componenti separati per:
+
+- **controller**: esposizione delle API REST;
+- **service**: logica applicativa;
+- **repository**: accesso ai dati;
+- **requester/model/dto**: modello del dominio e oggetti di scambio;
+- **validator**: validazione degli input;
+- **design pattern**: implementazioni dedicate dei pattern scelti.
+
+### Design pattern utilizzati
+
+- **Builder**: utilizzato per la costruzione degli oggetti `Hackathon` in modo progressivo e controllato;
+- **Strategy**: utilizzato per astrarre il comportamento di pagamento, in particolare l’integrazione con PayPal.
+
+## Configurazione e avvio
+
+### Requisiti
+
+- Java 21
+- Gradle Wrapper incluso nel progetto
+
+### Avvio dell’applicazione
+
+Da terminale, nella cartella `project/app`:
+
+```powershell
+./gradlew bootRun
+```
+
+Su Windows PowerShell, se necessario:
+
+```powershell
+.\gradlew.bat bootRun
+```
+
+### Database
+
+Il progetto usa H2 in modalità file-based:
+
+- database: `./data/hackhubdb`
+- console H2: `/h2-console`
+
+### Credenziali esterne
+
+Le integrazioni con servizi esterni usano file di configurazione e variabili d’ambiente:
+
+- Google Calendar: `./config/calendar-credentials.json`
+- PayPal: `./config/paypal-credentials.json`
+- in alternativa, è possibile configurare le variabili:
+  - `GOOGLE_CALENDAR_CREDENTIAL_PATH`
+  - `PAYPAL_BASE_URL`
+  - `PAYPAL_CLIENT_ID`
+  - `PAYPAL_CLIENT_SECRET`
+  - `PAYPAL_CREDENTIALS_PATH`
+
+## Documentazione API
+
+La documentazione OpenAPI/Swagger è disponibile avviando il progetto e aprendo:
+
+- `http://localhost:8080/swagger-ui/index.html`
+
+## Struttura del progetto
+
+- `controller/` — endpoint REST
+- `service/` — logica di business
+- `repository/` — accesso ai dati
+- `entity/model/` — entità del dominio
+- `entity/dto/` — oggetti di risposta
+- `entity/requester/` — oggetti di richiesta
+- `validator/` — validazioni
+- `designpattern/` — implementazioni di Builder e Strategy
+- `config/` — credenziali e file esterni
+- `postman/` — collezioni, ambienti e test API
+
+## Stato del progetto
+
+HackHub è stato sviluppato come backend completo per la gestione di hackathon, con persistenza locale, validazione degli input, documentazione API e integrazioni verso servizi esterni per calendario e pagamento.
+
+## Informazioni accademiche
+
+**Università di Camerino** – Scuola di Scienze e Tecnologie  
+**Ingegneria del Software** A.S. 2025/2026  
+**Gruppo:** Git Pushers
+
+
