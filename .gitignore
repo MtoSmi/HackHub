@@ -39,3 +39,8 @@ replay_pid*
 
 # Credential PayPal Api
 /project/app/config/paypal-credentials.json
+# Postman
+/.postman/
+/postman/environments/
+/postman/flows/
+/postman/globals/

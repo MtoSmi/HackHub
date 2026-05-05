@@ -1,0 +1,7 @@
+$kind: http-request
+description: Retrieve all notifications for a specific user.
+url: "{{baseUrl}}/api/v1/notification/show?userId=1"
+method: GET
+queryParams:
+  userId: "1"
+order: 1000

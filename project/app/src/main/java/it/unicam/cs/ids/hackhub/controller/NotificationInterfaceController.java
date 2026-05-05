@@ -9,9 +9,6 @@ import java.util.List;
 
 /**
  * Controller per interfaccia per la gestione delle operazioni sulle notifiche.
- * </p>
- * Questa classe espone metodi di alto livello che delegano la logica al servizio
- * {@link NotificationService}, fungendo da punto di accesso per il livello di presentazione.
  */
 @RestController
 @RequestMapping("api/v1/notification")
@@ -23,36 +20,31 @@ public class NotificationInterfaceController {
 
     /**
      * Costruisce il controller con il servizio richiesto.
-     *
-     * @param service il servizio da usare per le operazioni sulle notifiche
      */
     public NotificationInterfaceController(NotificationService service) {
         this.service = service;
     }
 
     /**
-     * Restituisce la lista di tutte le notifiche dell'utente specificato tramite identificativo.
-     * @param email l'identificativo dell'utente di cui mostrare le notifiche
+     * Restituisce la lista di tutte le notifiche dell'utente.
+     *
      * @return la lista delle notifiche dell'utente
      */
-    @GetMapping("/showMyNotification")
-    public ResponseEntity<List<NotificationResponse>> showMyNotifications(@RequestParam String email) {
-        List<NotificationResponse> notificationList = service.showMyNotifications(email);
+    @GetMapping("/show")
+    public ResponseEntity<List<NotificationResponse>> showMyNotifications(@RequestParam Long userId) {
+        List<NotificationResponse> notificationList = service.showMyNotificationList(userId);
         return ResponseEntity.ok(notificationList);
     }
 
     /**
-     * Restituisce la notifica selezionata tramite identificativo.
-     * @param id l'identificativo della notifica da mostrare
-     * @return la notifica corrispondente all'id
+     * Restituisce la notifica selezionata.
+     *
+     * @return la notifica selezionata, NOT_FOUND se la notifica non esiste
      */
-    @GetMapping("/showMyNotification/{id}")
-    public ResponseEntity<NotificationResponse> showSelectedNotification(@PathVariable long id) {
+    @GetMapping("/showSelected/{id}")
+    public ResponseEntity<NotificationResponse> showSelectedNotification(@PathVariable Long id) {
         NotificationResponse notification = service.showSelectedNotification(id);
-        if (notification != null) {
-            return ResponseEntity.ok(notification);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        if (notification == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(notification);
     }
 }

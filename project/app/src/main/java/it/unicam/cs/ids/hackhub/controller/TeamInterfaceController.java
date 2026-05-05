@@ -1,21 +1,14 @@
 package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.dto.TeamResponse;
-import it.unicam.cs.ids.hackhub.entity.requester.AcceptTeamInviteRequester;
-import it.unicam.cs.ids.hackhub.entity.requester.TeamInviteRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
-import it.unicam.cs.ids.hackhub.entity.requester.TeamUpdateRequester;
 import it.unicam.cs.ids.hackhub.service.TeamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Controller di interfaccia per la gestione delle operazioni sui team.
- * </p>
- * Espone metodi di alto livello che delegano la logica al servizio
- * {@link TeamService}, fungendo da punto di accesso per il livello
- * di presentazione.
+ * Controller per interfaccia per la gestione delle operazioni sui team.
  */
 @RestController
 @RequestMapping("/api/v1/team")
@@ -27,70 +20,79 @@ public class TeamInterfaceController {
 
     /**
      * Costruisce il controller con il servizio richiesto.
-     *
-     * @param service il servizio da usare per le operazioni sui team
      */
     public TeamInterfaceController(TeamService service) {
         this.service = service;
     }
 
     /**
-     * Crea un nuovo team a partire dalla richiesta fornita.
+     * Crea un nuovo team.
      *
-     * @param requested la richiesta di creazione del team
-     * @return il team creato
+     * @return CREATED se il team è stato creato con successo, BAD_REQUEST altrimenti
+     *
      */
-    @PostMapping("/creation")
-    public ResponseEntity<TeamResponse> creationTeam(@RequestBody TeamRequester requested) {
-        TeamResponse created = service.creationTeam(requested);
-        if (created == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    @PostMapping("/create")
+    public ResponseEntity<TeamResponse> createTeam(@RequestBody TeamRequester requested) {
+        TeamResponse response = service.creationTeam(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * Aggiorna le informazioni di un team esistente.
+     *
+     * @return UPDATED se il team è stato aggiornato con successo, BAD_REQUEST altrimenti
+     */
     @PostMapping("/update")
-    public ResponseEntity<TeamResponse> updateTeam(@RequestBody TeamUpdateRequester requested) {
-        TeamResponse updated = service.updateTeam(requested);
-        if (updated == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<TeamResponse> updateTeam(@RequestBody TeamRequester requested) {
+        TeamResponse response = service.updateTeam(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(204).body(response);
     }
 
-    @GetMapping("/showInformation/{name}")
-    public ResponseEntity<TeamResponse> showInformation(@PathVariable String name) {
-        TeamResponse team = service.showInformation(name);
-        return ResponseEntity.ok(team);
+    /**
+     * Restituisce i dettagli del team selezionato.
+     *
+     * @return i dettagli del team selezionato.
+     */
+    @GetMapping("/show/{name}")
+    public ResponseEntity<TeamResponse> showSelectedTeam(@PathVariable String name) {
+        return ResponseEntity.ok(service.showSelectedTeam(name));
     }
 
-    @PostMapping("/inviteMember/")
-    public ResponseEntity<Void> inviteMember(@RequestBody TeamInviteRequester requested) {
-        boolean result = service.inviteMember(requested);
-        if (result) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
+    /**
+     * Invia un invito a un utente per unirsi al team.
+     *
+     * @return OK se l'invito è stato inviato con successo, BAD_REQUEST altrimenti
+     */
+    @PostMapping("/inviteMember")
+    public ResponseEntity<Void> inviteMember(@RequestParam Long editorId, @RequestParam String email) {
+        boolean result = service.inviteMember(editorId, email);
+        if (!result) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().build();
     }
 
+    /**
+     * Accetta un invito.
+     *
+     * @return OK se l'invito è stato accettato con successo, BAD_REQUEST altrimenti
+     */
     @PostMapping("/acceptInvite")
-    public ResponseEntity<Void> acceptInvite(@RequestBody AcceptTeamInviteRequester requested) {
-        boolean result = service.acceptInvite(requested);
-        if (result) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
+    public ResponseEntity<Void> acceptInvite(@RequestParam Long userId, @RequestParam Long notificationId) {
+        boolean result = service.acceptInvite(userId, notificationId);
+        if (!result) ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping("/dropTeam")
+    /**
+     * Abbandona il team.
+     *
+     * @return OK se il membro ha abbandonato il team con successo, METHOD_NOT_ALLOWED altrimenti
+     */
+    @PostMapping("/drop")
     public ResponseEntity<Void> dropTeam(@RequestParam Long tId, @RequestParam Long uId) {
         boolean result = service.dropTeam(tId, uId);
-        if (result) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
+        if (!result) return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

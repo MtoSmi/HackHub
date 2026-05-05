@@ -7,9 +7,6 @@ import lombok.Setter;
 
 /**
  * Rappresenta una notifica nel sistema HackHub.
- * Questa classe modella una notifica che viene inviata a un utente per comunicare
- * informazioni importanti come aggiornamenti su hackathon, risultati di valutazioni,
- * o altri avvisi relativi al sistema.
  */
 @Entity
 @Getter
@@ -17,34 +14,30 @@ import lombok.Setter;
 @Setter
 public class Notification {
     /**
-     * Identificatore univoco della notifica
+     * Identificatore univoco
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
-     * Titolo della notifica
+     * Titolo
      */
     private String title;
 
     /**
-     * Descrizione dettagliata del contenuto della notifica
+     * Descrizione
      */
     private String description;
 
     /**
-     * Utente destinatario della notifica
+     * Utente destinatario
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User to;
 
     /**
-     * Costruisce una nuova notifica con i parametri essenziali.
-     *
-     * @param title       il titolo della notifica
-     * @param description la descrizione dettagliata della notifica
-     * @param to          l'utente destinatario della notifica
+     * Costruttore della notifica.
      */
     public Notification(String title, String description, User to) {
         this.title = title;

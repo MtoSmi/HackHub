@@ -1,0 +1,14 @@
+$kind: http-request
+description: Create a new team.
+url: "{{baseUrl}}/api/v1/team/create"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "editorId": 1,
+      "name": "TeamAlpha"
+    }
+order: 1000

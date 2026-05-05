@@ -1,0 +1,8 @@
+$kind: http-request
+description: Subscribe a user to a hackathon.
+url: "{{baseUrl}}/api/v1/hackathon/subscribe?hId=1&uId=4"
+method: POST
+queryParams:
+  hId: "1"
+  uId: "4"
+order: 8000

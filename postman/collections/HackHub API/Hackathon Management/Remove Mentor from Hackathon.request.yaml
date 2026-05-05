@@ -1,0 +1,8 @@
+$kind: http-request
+description: Remove a mentor from a hackathon.
+url: "{{baseUrl}}/api/v1/hackathon/removeMentor?hId=1&mId=3"
+method: POST
+queryParams:
+  hId: "1"
+  mId: "3"
+order: 7000

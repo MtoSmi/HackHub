@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Repository per la gestione delle operazioni CRUD relative all' {@link HelpRequest}.
+ * Repository per l'entità HelpRequest per la gestione delle operazioni CRUD.
  */
 @Repository
 public interface HelpRequestRepository extends JpaRepository<HelpRequest, Long> {

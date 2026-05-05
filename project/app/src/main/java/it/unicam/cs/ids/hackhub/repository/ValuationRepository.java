@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repository per la gestione delle operazioni CRUD relative alla {@link Valuation}.
+ * Repository per l'entità Valuation per la gestione delle operazioni CRUD.
  */
 @Repository
 public interface ValuationRepository extends JpaRepository<Valuation, Long> {

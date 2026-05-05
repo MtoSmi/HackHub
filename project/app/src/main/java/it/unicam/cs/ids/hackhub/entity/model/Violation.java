@@ -7,9 +7,6 @@ import lombok.Setter;
 
 /**
  * Rappresenta una violazione nel sistema HackHub.
- * <p>
- * Questa classe modella una violazione segnalata da un mentore su un team.
- * L'organizzatore riceve la violazione e può gestirla fornendo una risposta.
  */
 @Entity
 @Getter
@@ -17,53 +14,47 @@ import lombok.Setter;
 @Setter
 public class Violation {
     /**
-     * Identificatore univoco della violazione
+     * Identificatore univoco
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
-     * Descrizione della violazione
+     * Descrizione
      */
     private String description;
 
     /**
-     * Risposta fornita dal host in merito alla violazione
+     * Risposta fornita dal host
      */
     private String reply;
 
     /**
      * Team a cui è associata la violazione
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
     /**
      * Mentore che ha segnalato la violazione
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User from;
 
     /**
      * Organizzatore che riceve la violazione
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User to;
 
     /**
-     * Indica se la violazione è stata gestita
+     * Stato della violazione, true se è stata completata, false altrimenti
      */
     private boolean completed;
 
     /**
-     * Costruisce una nuova violazione con i parametri essenziali.
-     * Inizializza il flag di completamento a false.
-     *
-     * @param description la descrizione della violazione
-     * @param team il team associato alla violazione
-     * @param from il mentore che segnala la violazione
-     * @param to l'organizzatore che riceve la violazione
+     * Costruttore della violazione.
      */
     public Violation(String description, Team team, User from, User to) {
         this.description = description;
@@ -87,7 +78,7 @@ public class Violation {
                 ", reply='" + reply + '\'' +
                 ", teamId=" + (team == null ? null : team.getId()) +
                 ", fromId=" + (from == null ? null : from.getId()) +
-                ", fromId=" + (to == null ? null : to.getId()) +
+                ", toId=" + (to == null ? null : to.getId()) +
                 ", completed=" + completed +
                 '}';
     }

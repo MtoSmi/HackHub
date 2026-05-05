@@ -1,0 +1,9 @@
+$kind: http-request
+description: Retrieve a user's profile by their ID.
+url: "{{baseUrl}}/api/v1/user/show/1"
+method: GET
+pathVariables:
+  - key: id
+    value: "1"
+    description: The ID of the user to retrieve.
+order: 6000

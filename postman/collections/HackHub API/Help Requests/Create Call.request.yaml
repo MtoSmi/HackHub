@@ -1,0 +1,17 @@
+$kind: http-request
+description: Schedule a mentoring call linked to a help request.
+url: "{{baseUrl}}/api/v1/helpRequest/createCall"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "editorId": 3,
+      "title": "Mentoring Session - TeamAlpha",
+      "start": "2025-06-11T10:00:00",
+      "end": "2025-06-11T11:00:00",
+      "helpRequestId": 1
+    }
+order: 4000

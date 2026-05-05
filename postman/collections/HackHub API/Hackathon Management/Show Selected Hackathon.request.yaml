@@ -1,0 +1,9 @@
+$kind: http-request
+description: Retrieve details of a specific hackathon by its ID.
+url: "{{baseUrl}}/api/v1/hackathon/showSelected/1"
+method: GET
+pathVariables:
+  - key: id
+    value: "1"
+    description: The hackathon ID to retrieve.
+order: 5000

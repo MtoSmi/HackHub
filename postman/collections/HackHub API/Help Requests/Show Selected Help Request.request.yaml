@@ -1,0 +1,9 @@
+$kind: http-request
+description: Retrieve details of a specific help request by its ID.
+url: "{{baseUrl}}/api/v1/helpRequest/showHelpRequest/1"
+method: GET
+pathVariables:
+  - key: id
+    value: "1"
+    description: The help request ID to retrieve.
+order: 6000

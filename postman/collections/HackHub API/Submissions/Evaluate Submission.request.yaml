@@ -1,0 +1,18 @@
+$kind: http-request
+description: Evaluate and score a hackathon submission.
+url: "{{baseUrl}}/api/v1/submission/evaluate"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "editorId": 2,
+      "hackathonId": 1,
+      "submissionId": 1,
+      "responseId": 1,
+      "vote": 9,
+      "note": "Excellent implementation with great UX."
+    }
+order: 4000

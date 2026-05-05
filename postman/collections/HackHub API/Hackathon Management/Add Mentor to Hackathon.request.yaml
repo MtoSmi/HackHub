@@ -1,0 +1,8 @@
+$kind: http-request
+description: Add a mentor to a hackathon by their email address.
+url: "{{baseUrl}}/api/v1/hackathon/addMentor?hId=1&email=mentor@example.com"
+method: POST
+queryParams:
+  hId: "1"
+  email: mentor@example.com
+order: 6000

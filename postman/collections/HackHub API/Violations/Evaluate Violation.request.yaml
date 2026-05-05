@@ -1,0 +1,15 @@
+$kind: http-request
+description: Evaluate and respond to a reported violation.
+url: "{{baseUrl}}/api/v1/violation/evaluate"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "editorId": 1,
+      "violationId": 1,
+      "reply": "Warning issued. Team must provide attribution within 24 hours."
+    }
+order: 2000

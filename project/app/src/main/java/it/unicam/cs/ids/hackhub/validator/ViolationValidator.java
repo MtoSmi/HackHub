@@ -4,29 +4,24 @@ import it.unicam.cs.ids.hackhub.entity.requester.ViolationRequester;
 import org.springframework.stereotype.Component;
 
 /**
- * Validator per le segnalazioni di violazione ({@link ViolationRequester}).
- * Implementa l'interfaccia {@link Validator} per verificare la correttezza
- * dei dati di una segnalazione di violazione prima della sua elaborazione.
+ * Validator per le violazioni in fase di creazione.
  */
 @Component
 public class ViolationValidator implements Validator<ViolationRequester> {
-
     /**
-     * Valida una segnalazione di violazione verificando che tutti i campi obbligatori
-     * siano presenti e corretti.
+     * Valida un oggetto {@link ViolationRequester} verificando i seguenti vincoli:
+     * - La descrizione non deve essere {@code null} o vuota
+     * - L'id del team non deve essere {@code null}
+     * - L'id dell'editor non deve essere {@code null}
+     * - L'id del giudice non deve essere {@code null}
      *
-     * La validazione fallisce nei seguenti casi:
-     * - La segnalazione è {@code null}
-     * - La descrizione è {@code null} o vuota
-     * - Il teamId o hostId sono {@code null}
-     *
-     * @param v l'entità da validare
-     * @return {@code true} se la segnalazione è valida, {@code false} altrimenti
+     * @param requested l'entità da validare
+     * @return {@code true} se valido, {@code false} altrimenti
      */
     @Override
-    public boolean validate(ViolationRequester v) {
-        if (v == null) return false;
-        if (v.description() == null || v.description().isBlank()) return false;
-        return v.teamId() != null && v.fromId() != null && v.toId() != null;
+    public boolean validate(ViolationRequester requested) {
+        if (requested == null) return false;
+        if (requested.description() == null || requested.description().isBlank()) return false;
+        return requested.teamId() != null && requested.fromId() != null && requested.toId() != null;
     }
 }

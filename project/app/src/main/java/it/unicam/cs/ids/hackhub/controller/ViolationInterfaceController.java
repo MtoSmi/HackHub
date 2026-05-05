@@ -2,18 +2,16 @@ package it.unicam.cs.ids.hackhub.controller;
 
 import it.unicam.cs.ids.hackhub.entity.dto.ViolationResponse;
 import it.unicam.cs.ids.hackhub.entity.requester.ViolationRequester;
+import it.unicam.cs.ids.hackhub.entity.requester.ViolationUpdateRequester;
 import it.unicam.cs.ids.hackhub.service.ViolationService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Controller di interfaccia per la gestione delle violazioni.
- * <p>
- * Espone metodi di alto livello che delegano la logica al servizio
- * {@link ViolationService}, fungendo da punto di accesso per il livello
- * di presentazione.
+ * Controller per interfaccia per la gestione delle violazioni.
  */
 @RestController
 @RequestMapping("/api/v1/violation")
@@ -25,60 +23,55 @@ public class ViolationInterfaceController {
 
     /**
      * Costruisce il controller con il servizio richiesto.
-     *
-     * @param service il servizio da usare per le operazioni sulle violazioni
      */
-    public ViolationInterfaceController(ViolationService service) { this.service = service; }
-
-    /**
-     * Restituisce la lista di tutte le violazioni dell'host specificato tramite identificativo.
-     *
-     * @param hostId l'identificativo dell'host
-     * @return la lista delle violazioni dell'host
-     */
-    @GetMapping("/showViolation")
-    public ResponseEntity<List<ViolationResponse>> showMyViolations(@RequestParam long hostId) {
-        List<ViolationResponse> response = service.showMyViolations(hostId);
-        return ResponseEntity.ok(response);
+    public ViolationInterfaceController(ViolationService service) {
+        this.service = service;
     }
 
     /**
-     * Restituisce la violazione selezionata tramite identificativo.
+     * Crea una nuova violazione.
      *
-     * @param id l'identificativo della violazione
-     * @return la violazione corrispondente all'id
-     */
-    @GetMapping("/showViolation/{id}")
-    public ResponseEntity<ViolationResponse> showSelectedViolation(@PathVariable long id) {
-        ViolationResponse response = service.showSelectedViolation(id);
-        if (response == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Crea una nuova violazione con i dati forniti nel corpo della richiesta.
-     *
-     * @param requested i dati della violazione da creare
-     * @return la violazione creata
+     * @return CREATED se la violazione è stata creata con successo, UNPROCESSABLE_ENTITY altrimenti
      */
     @PostMapping("/create")
     public ResponseEntity<ViolationResponse> createViolation(@RequestBody ViolationRequester requested) {
         ViolationResponse response = service.createViolation(requested);
         if (response == null) return ResponseEntity.unprocessableEntity().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * Valuta una violazione, aggiornandone lo stato.
+     *
+     * @return CREATED se la violazione è stata valutata con successo, BAD_REQUEST altrimenti
+     */
+    @PostMapping("/evaluate")
+    public ResponseEntity<ViolationResponse> evaluateViolation(@RequestBody ViolationUpdateRequester requested) {
+        ViolationResponse response = service.evaluateViolation(requested);
+        if (response == null) return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(201).build();
+    }
+
+    /**
+     * Restituisce la lista di tutte le violazioni dell'organizzatore specificato.
+     *
+     * @return la lista di tutte le violazioni associate all'organizzatore
+     */
+    @GetMapping("/showViolation")
+    public ResponseEntity<List<ViolationResponse>> showMyViolationList(@RequestParam Long hostId) {
+        List<ViolationResponse> response = service.showMyViolationList(hostId);
         return ResponseEntity.ok(response);
     }
 
     /**
-     * Valuta la violazione selezionata tramite identificativo.
+     * Restituisce la violazione selezionata.
      *
-     * @param id l'identificativo della violazione da valutare
-     * @param reply la risposta alla violazione da salvare
-     * @return una risposta HTTP che indica l'esito dell'operazione
+     * @return i dettagli della violazione selezionata, NOT_FOUND se la violazione non esiste
      */
-    @PostMapping("/evaluate/{id}")
-    public ResponseEntity<Void> evaluateViolation(@PathVariable long id, @RequestParam String reply) {
-        boolean response = service.evaluateViolation(id, reply);
-        if (response) return ResponseEntity.ok().build();
-        return ResponseEntity.unprocessableEntity().build();
+    @GetMapping("/showViolation/{id}")
+    public ResponseEntity<ViolationResponse> showSelectedViolation(@PathVariable Long id) {
+        ViolationResponse response = service.showSelectedViolation(id);
+        if (response == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(response);
     }
 }

@@ -17,45 +17,107 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Service per la gestione delle richieste di aiuto all'interno della piattaforma HackHub.
- * Fornisce operazioni per la creazione, visualizzazione e completamento delle richieste di aiuto
- * tra i membri del team e i mentori.
+ * Service per la gestione delle richieste di aiuto.
  */
 @Service
 public class HelpRequestService {
-    private final HelpRequestRepository helpRequestRepository;
-    private final HelpRequestValidator helpRequestValidator;
-    private final HackathonRepository hackathonRepository;
-    private final NotificationService notificationService;
-    private final UserRepository userRepository;
-    private final CalendarService calendarService;
+    private final HackathonRepository hRepo;
+    private final HelpRequestRepository hrRepo;
+    private final UserRepository uRepo;
+    private final CalendarService cSer;
+    private final NotificationService nSer;
+    private final HelpRequestValidator hrVal;
 
     /**
-     * Costruisce un nuovo {@code HelpRequestService} con le dipendenze necessarie.
+     * Costruttore del service.
      *
-     * @param hrRepo      il repository per la gestione delle richieste di aiuto
-     * @param hrValidator il validator per le richieste di aiuto
-     * @param hRepo       il repository per la gestione degli hackathon
-     * @param nService    il service per l'invio delle notifiche
+     * @param hRepo  HackathonRepository
+     * @param hrRepo HelpRequestRepository
+     * @param uRepo  UserRepository
+     * @param cSer   CalendarService
+     * @param nSer   NotificationService
+     * @param hrVal  HelpRequestValidator
      */
-    public HelpRequestService(HelpRequestRepository hrRepo, HelpRequestValidator hrValidator, HackathonRepository hRepo, NotificationService nService, UserRepository urepo, CalendarService calendarService) {
-        this.helpRequestRepository = hrRepo;
-        this.helpRequestValidator = hrValidator;
-        this.hackathonRepository = hRepo;
-        this.notificationService = nService;
-        this.userRepository = urepo;
-        this.calendarService = calendarService;
+    public HelpRequestService(HackathonRepository hRepo, HelpRequestRepository hrRepo, UserRepository uRepo, CalendarService cSer, NotificationService nSer, HelpRequestValidator hrVal) {
+        this.hRepo = hRepo;
+        this.hrRepo = hrRepo;
+        this.uRepo = uRepo;
+        this.cSer = cSer;
+        this.nSer = nSer;
+        this.hrVal = hrVal;
+    }
+
+    /**
+     * Crea una nuova richiesta di aiuto a partire dai dati forniti.
+     *
+     * @param requested i dati della richiesta di aiuto da creare
+     * @return la richiesta di aiuto creata, oppure {@code null} se i dati non sono validi
+     */
+    public HelpRequestResponse createHelpRequest(HelpRequestRequester requested) {
+        if (!hrVal.validate(requested)) return null;
+        User from = uRepo.getReferenceById(requested.fromId());
+        User to = uRepo.getReferenceById(requested.toId());
+        if (!from.getRank().equals(Rank.MEMBRO_TEAM) || !to.getRank().equals(Rank.MENTORE)) return null;
+        for (Hackathon hackathon : hRepo.findByStatus(Status.IN_CORSO)) {
+            if (!hackathon.getParticipants().contains(from.getTeam()) || !hackathon.getMentors().contains(to))
+                return null;
+        }
+        HelpRequest helpRequest = new HelpRequest(requested.title(), requested.description(), from, to);
+        nSer.send("Richiesta di aiuto!",
+                "Hai ricevuto una richiesta di aiuto dal team " + from.getTeam().getName(),
+                to.getId());
+        return toResponse(hrRepo.save(helpRequest));
+    }
+
+    /**
+     * Completa una richiesta di aiuto.
+     *
+     * @param id    identificativo della richiesta di aiuto
+     * @param reply risposta fornita dal mentore, se null la richiesta viene rifiutata
+     * @param call  link alla call, se null viene indicato che la call non è disponibile
+     * @return {@code true} se la richiesta è stata completata con successo, {@code false} altrimenti
+     */
+    public boolean completeHelpRequest(Long id, String reply, String call) {
+        HelpRequest helpRequest = hrRepo.getReferenceById(id);
+        if (reply == null) helpRequest.setReply("La richiesta di aiuto è stata rifiutata.");
+        else helpRequest.setReply(reply);
+        if (call == null) helpRequest.setCall("Call non disponibile.");
+        else helpRequest.setCall(call);
+        helpRequest.setCompleted(true);
+        hrRepo.save(helpRequest);
+        nSer.send("Richiesta di aiuto completata!",
+                "Hai ricevuto una risposta dal mentore " + helpRequest.getTo().getName(),
+                helpRequest.getFrom().getId());
+        return true;
+    }
+
+    /**
+     * Crea una nuova call a partire dai dati forniti.
+     *
+     * @param requested i dati della call da creare
+     * @return il link alla call creata, oppure {@code null} se i dati non sono validi
+     */
+    public String createCall(CallRequester requested) {
+        User editor = uRepo.getReferenceById(requested.editorId());
+        if (!editor.getRank().equals(Rank.MENTORE)) return null;
+        String call;
+        try {
+            call = cSer.createEvent(requested);
+        } catch (Exception e) {
+            return null;
+        }
+        return call;
     }
 
     /**
      * Restituisce la lista delle richieste di aiuto ricevute da un determinato mentore.
      *
      * @param mentorId l'identificativo del mentore
-     * @return la lista delle {@link HelpRequest} associate al mentore specificato
+     * @return la lista delle richieste di aiuto ricevute dal mentore
      */
-    public List<HelpRequestResponse> showMyHelpRequests(Long mentorId) {
-        User user = userRepository.getReferenceById(mentorId);
-        return helpRequestRepository.findByTo(user)
+    public List<HelpRequestResponse> showMyHelpRequestList(Long mentorId) {
+        if (mentorId == null) return null;
+        return hrRepo.findByTo(uRepo.getReferenceById(mentorId))
                 .stream()
                 .map(this::toResponse)
                 .toList();
@@ -66,78 +128,23 @@ public class HelpRequestService {
      * Restituisce una specifica richiesta di aiuto in base al suo identificativo.
      *
      * @param id l'identificativo della richiesta di aiuto
-     * @return la {@link HelpRequest} corrispondente all'id fornito
+     * @return la richiesta di aiuto corrispondente all'identificativo fornito, oppure {@code null} se non esiste
      */
     public HelpRequestResponse showSelectedHelpRequest(Long id) {
-        return toResponse(helpRequestRepository.getReferenceById(id));
+        if (id == null) return null;
+        return toResponse(hrRepo.getReferenceById(id));
     }
 
-    /**
-     * Crea una nuova richiesta di aiuto verificando che:
-     * - La richiesta superi la validazione
-     * - Il richiedente abbia il ruolo di {@code MEMBRO_TEAM}
-     * - Il destinatario abbia il ruolo di {@code MENTORE}
-     * - Il mentore destinatario e il team del richiedente siano coinvolti in almeno un hackathon in corso
-     * <p>
-     * In caso di successo, invia una notifica al mentore destinatario.
-     *
-     * @param hr il richiedente contenente le informazioni della richiesta di aiuto
-     * @return la {@link HelpRequest} creata, oppure {@code null} se la validazione fallisce
-     */
-    public HelpRequestResponse creationHelpRequest(HelpRequestRequester hr) {
-        if (!helpRequestValidator.validate(hr)) return null;
-        User u = userRepository.getReferenceById(hr.fromId());
-        User m = userRepository.getReferenceById(hr.toId());
-        if (!u.getRank().equals(Rank.MEMBRO_TEAM)) return null;
-        if (!m.getRank().equals(Rank.MENTORE)) return null;
-        for (Hackathon h : hackathonRepository.findByStatus(Status.IN_CORSO)) {
-            if (!h.getMentors().contains(m)) return null;
-            if (!h.getParticipants().contains(u.getTeam())) return null;
-        }
-        HelpRequest helpRequest = new HelpRequest(hr.title(), hr.description(), u, m);
-        notificationService.send("Richiesta di aiuto!",
-                "Hai ricevuto una richiesta di aiuto da " + u.getName(),
-                m.getId());
-        return toResponse(helpRequestRepository.save(helpRequest));
-    }
-
-    public String createCall(CallRequester callRequester) {
-        String result;
-        try {
-            result = calendarService.createEvent(callRequester);
-        } catch (Exception e) {
-            return null;
-        }
-        return result;
-    }
-
-    /**
-     * Completa una richiesta di aiuto esistente aggiornando la risposta, la chiamata
-     * e impostandola come completata. Invia una notifica al membro del team che aveva
-     * effettuato la richiesta.
-     *
-     */
-    public boolean completeHelpRequest(Long id, String r, String c) {
-        HelpRequest hr = helpRequestRepository.getReferenceById(id);
-        if (r == null) hr.setReply("La richiesta di aiuto è stata rifiutata.");
-        else hr.setReply(r);
-        hr.setCall(c);
-        hr.setCompleted(true);
-        helpRequestRepository.save(hr);
-        notificationService.send("Richiesta di aiuto completata!", "La tua richiesta di aiuto è stata completata dal mentore " + hr.getTo().getName(), hr.getFrom().getId());
-        return true;
-    }
-
-    private HelpRequestResponse toResponse(HelpRequest hr) {
-        if (hr == null) return null;
-        return new HelpRequestResponse(hr.getId(),
-                hr.getTitle(),
-                hr.getDescription(),
-                hr.getReply(),
-                hr.getFrom().getId(),
-                hr.getTo().getId(),
-                hr.getCall(),
-                hr.isCompleted());
+    private HelpRequestResponse toResponse(HelpRequest helpRequest) {
+        if (helpRequest == null) return null;
+        return new HelpRequestResponse(helpRequest.getId(),
+                helpRequest.getTitle(),
+                helpRequest.getDescription(),
+                helpRequest.getReply(),
+                helpRequest.getFrom().getId(),
+                helpRequest.getTo().getId(),
+                helpRequest.getCall(),
+                helpRequest.isCompleted());
     }
 
 }

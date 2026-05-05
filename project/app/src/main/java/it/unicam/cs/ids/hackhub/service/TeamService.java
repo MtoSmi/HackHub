@@ -1,145 +1,158 @@
 package it.unicam.cs.ids.hackhub.service;
 
 import it.unicam.cs.ids.hackhub.entity.dto.TeamResponse;
-import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.Hackathon;
 import it.unicam.cs.ids.hackhub.entity.model.Notification;
 import it.unicam.cs.ids.hackhub.entity.model.Team;
 import it.unicam.cs.ids.hackhub.entity.model.User;
+import it.unicam.cs.ids.hackhub.entity.model.enumeration.Rank;
 import it.unicam.cs.ids.hackhub.entity.model.enumeration.Status;
-import it.unicam.cs.ids.hackhub.entity.requester.AcceptTeamInviteRequester;
-import it.unicam.cs.ids.hackhub.entity.requester.TeamInviteRequester;
 import it.unicam.cs.ids.hackhub.entity.requester.TeamRequester;
-import it.unicam.cs.ids.hackhub.entity.requester.TeamUpdateRequester;
 import it.unicam.cs.ids.hackhub.repository.NotificationRepository;
 import it.unicam.cs.ids.hackhub.repository.TeamRepository;
 import it.unicam.cs.ids.hackhub.repository.UserRepository;
 import it.unicam.cs.ids.hackhub.validator.TeamValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Service per la gestione dei team.
- * Fornisce le operazioni di business logic relative alla creazione e alla gestione dei team.
  */
 @Service
 public class TeamService {
-    private final TeamRepository teamRepository;
-    private final UserRepository userRepository;
-    private final NotificationService notificationService;
-    private final TeamValidator teamValidator;
-    private final NotificationRepository notificationRepository;
+    private final NotificationRepository nRepo;
+    private final TeamRepository tRepo;
+    private final UserRepository uRepo;
+    private final NotificationService nSer;
+    private final TeamValidator tVal;
 
     /**
-     * Costruisce un nuovo {@code TeamService} con il repository e il validatore specificati.
+     * Costruttore del service.
      *
-     * @param tRepo  il repository dei team da utilizzare per la persistenza
-     * @param tValid il validator da utilizzare per la verifica dei dati del team
+     * @param nRepo NotificationRepository
+     * @param tRepo TeamRepository
+     * @param uRepo UserRepository
+     * @param nSer  NotificationService
+     * @param tVal  TeamValidator
      */
-    public TeamService(TeamRepository tRepo, UserRepository uRepo, NotificationService nService, TeamValidator tValid, NotificationRepository notificationRepository) {
-        this.teamRepository = tRepo;
-        this.userRepository = uRepo;
-        this.notificationService = nService;
-        this.teamValidator = tValid;
-        this.notificationRepository = notificationRepository;
+    public TeamService(NotificationRepository nRepo, TeamRepository tRepo, UserRepository uRepo, NotificationService nSer, TeamValidator tVal) {
+        this.nRepo = nRepo;
+        this.tRepo = tRepo;
+        this.uRepo = uRepo;
+        this.nSer = nSer;
+        this.tVal = tVal;
     }
 
     /**
-     * Crea un nuovo team a partire dai dati forniti nel {@link TeamRequester}.
-     * <p>
-     * La creazione viene rifiutata (restituendo {@code null}) nei seguenti casi:
-     * - I dati del team non superano la validazione.
-     * - Uno o più membri del team non hanno il rank {@link Rank#STANDARD}.
-     * - Esiste già un team con lo stesso nome.
-     * - Uno o più membri del team appartengono già a un altro team.
+     * Crea un nuovo team a partire dai dati forniti.
      *
-     * @param t il {@link TeamRequester} contenente i dati del team da creare
-     * @return il {@link Team} creato e salvato nel repository, oppure {@code null} se la creazione non è consentita
+     * @param requested i dati del team da creare
+     * @return team creato, oppure {@code null} se i dati non sono validi
      */
-    public TeamResponse creationTeam(TeamRequester t) {
-        if (!teamValidator.validate(t)) return null;
-        Team team = new Team(t.name());
-        User creator = userRepository.findByEmail(t.creatorEmail());
-        if (creator == null || creator.getRank() != Rank.STANDARD) return null;
-        List<User> members = new ArrayList<>();
-        members.add(creator);
-        team.setMembers(members);
-
-        for (Team other : teamRepository.findAll()) {
-            if (team.getName().equals(other.getName())) return null;
+    public TeamResponse creationTeam(TeamRequester requested) {
+        if (!tVal.validate(requested)) return null;
+        User c = uRepo.getReferenceById(requested.editorId());
+        if (c.getRank() != Rank.STANDARD) return null;
+        for (Team o : tRepo.findAll()) {
+            if (requested.name().equals(o.getName())) return null;
         }
-        team.setDimension(team.getMembers().size());
-        team.setHackathons(new LinkedList<>());
-        teamRepository.save(team);
-        creator.setTeam(teamRepository.findByName(team.getName()));
-        creator.setRank(Rank.MEMBRO_TEAM);
-        userRepository.save(creator);
-        return toResponse(teamRepository.findByName(team.getName()));
+        Team t = new Team(requested.name());
+        t.getMembers().add(c);
+        t.setDimension(t.getMembers().size());
+        tRepo.save(t);
+        c.setTeam(tRepo.findByName(t.getName()));
+        c.setRank(Rank.MEMBRO_TEAM);
+        uRepo.save(c);
+        return toResponse(t);
     }
 
-    public TeamResponse showInformation(String name) {
-        return toResponse(teamRepository.findByName(name));
+    /**
+     * Aggiorna i dati di un team esistente.
+     *
+     * @param requested i dati del team da aggiornare
+     * @return team aggiornato, oppure {@code null} se i dati non sono validi
+     */
+    public TeamResponse updateTeam(TeamRequester requested) {
+        Team t = tRepo.getReferenceById(uRepo.getReferenceById(requested.editorId()).getTeam().getId());
+        if (!t.getMembers().contains(uRepo.getReferenceById(requested.editorId()))) return null;
+        if (requested.name() == null || requested.name().isEmpty()) return null;
+        for (Team other : tRepo.findAll()) if (t.getName().equals(other.getName())) return null;
+        t.setName(requested.name());
+        return toResponse(tRepo.save(t));
     }
 
-    public boolean inviteMember(TeamInviteRequester r) {
-        User invitato = userRepository.findByEmail(r.invitedEmail());
-        User invitante = userRepository.findByEmail(r.invitingEmail());
-        Team team = teamRepository.getReferenceById(r.teamId());
-        if (invitante != null && team.getMembers().contains(invitante) && invitato != null && invitato.getRank() == Rank.STANDARD) {
-            notificationService.send("Invito ricevuto!", "Sei stato invitato a unirti al team " + team.getName() + " da " + invitante.getName(), invitato.getId());
+    /**
+     * Ritorna i dati di un team.
+     *
+     * @param name nome del team da ricercare
+     * @return i dati del team con il nome fornito, oppure {@code null} se non esiste
+     */
+    public TeamResponse showSelectedTeam(String name) {
+        return toResponse(tRepo.findByName(name));
+    }
+
+    /**
+     * Invia un invito a un utente.
+     *
+     * @param eId   identificativo dell'utente che invia l'invito
+     * @param email email dell'utente che riceve l'invito
+     * @return {@code true} se l'invito è stato inviato con successo, {@code false} altrimenti
+     */
+    public boolean inviteMember(Long eId, String email) {
+        User iu = uRepo.findByEmail(email);
+        User tm = uRepo.getReferenceById(eId);
+        Team t = tRepo.getReferenceById(tm.getTeam().getId());
+        if (t.getMembers().contains(tm) && iu != null && iu.getRank() == Rank.STANDARD) {
+            nSer.send("Invito ricevuto!", "Sei stato iu a unirti al team " + t.getName() + " da " + tm.getName() + "{" + tm.getId() + "}", iu.getId());
             return true;
         }
         return false;
-
     }
 
-    public boolean acceptInvite(AcceptTeamInviteRequester r) {
-        User user = userRepository.findByEmail(r.invitedEmail());
-        Team team = teamRepository.findByName(r.team());
-        Notification notification = notificationRepository.getReferenceById(r.notificationId());
-        if (user != null && user.getRank() == Rank.STANDARD && team != null && !team.getMembers().contains(user) && notification.getDescription().contains(team.getName())) {
-            List<User> members = team.getMembers();
-            members.add(user);
-            team.setMembers(members);
-            team.setDimension(team.getMembers().size());
-            teamRepository.save(team);
-            user.setRank(Rank.MEMBRO_TEAM);
-            user.setTeam(team);
-            userRepository.save(user);
+    /**
+     * Accetta un invito.
+     *
+     * @param uId identificativo dell'utente che accetta l'invito
+     * @param nId identificativo della notifica che contiene l'invito
+     * @return {@code true} se l'invito è stato accettato con successo, {@code false} altrimenti
+     */
+    public boolean acceptInvite(Long uId, Long nId) {
+        User i = uRepo.getReferenceById(uId);
+        Team t = uRepo.getReferenceById(extractSenderId(nRepo.getReferenceById(nId).getDescription())).getTeam();
+        Notification n = nRepo.getReferenceById(nId);
+        if (!n.getTo().getId().equals(uId)) return false;
+        if (i.getRank() == Rank.STANDARD && t != null && !t.getMembers().contains(i)) {
+            t.getMembers().add(i);
+            t.setDimension(t.getMembers().size());
+            tRepo.save(t);
+            i.setRank(Rank.MEMBRO_TEAM);
+            i.setTeam(t);
+            uRepo.save(i);
             return true;
         }
         return false;
     }
 
-    public TeamResponse updateTeam(TeamUpdateRequester tu) {
-        Team team = teamRepository.getReferenceById(tu.teamId());
-        if (!team.getMembers().contains(userRepository.getReferenceById(tu.editorId()))) throw new IllegalArgumentException("Utente non autorizzato a modificare il team");
-        if (tu.name() == null || tu.name().isEmpty()) throw new IllegalArgumentException("Il nome del team non può essere vuoto");
-        for (Team other : teamRepository.findAll()) {
-            if (team.getName().equals(other.getName())) throw new IllegalArgumentException("Esiste già un team con questo nome");
-        }
-        team.setName(tu.name());
-        teamRepository.save(team);
-        return toResponse(teamRepository.getReferenceById(tu.teamId()));
-
-    }
-
+    /**
+     * Rimuove un utente da un team.
+     *
+     * @param tId identificativo del team da cui rimuovere l'utente
+     * @param uId identificativo dell'utente da rimuovere dal team
+     * @return {@code true} se l'utente è stato rimosso con successo, {@code false} altrimenti
+     */
     public boolean dropTeam(Long tId, Long uId) {
-        if (tId == null || uId == null) throw new IllegalArgumentException("ID del team e dell'utente non possono essere null");
-        Team team = teamRepository.getReferenceById(tId);
-        if (!team.getMembers().contains(userRepository.getReferenceById(uId))) throw new IllegalArgumentException("Utente non presente nel team");
-        if (team.getHackathons().getLast().getStatus() != Status.CONCLUSO) throw new IllegalStateException("Impossibile abbandonare il team durante un hackathon in corso");
-        team.getMembers().remove(userRepository.getReferenceById(uId));
-        team.setDimension(team.getMembers().size());
-        teamRepository.save(team);
-        User user = userRepository.getReferenceById(uId);
-        user.setTeam(null);
-        user.setRank(Rank.STANDARD);
-        userRepository.save(user);
+        Team t = tRepo.getReferenceById(tId);
+        User u = uRepo.getReferenceById(uId);
+        if (!t.getMembers().contains(u)) return false;
+        if (t.getHackathons().isEmpty() && t.getHackathons().getLast().getStatus() != Status.CONCLUSO) return false;
+        t.getMembers().remove(uRepo.getReferenceById(uId));
+        t.setDimension(t.getMembers().size());
+        tRepo.save(t);
+        u.setTeam(null);
+        u.setRank(Rank.STANDARD);
+        uRepo.save(u);
         return true;
     }
 
@@ -152,5 +165,19 @@ public class TeamService {
                 team.getMembers().stream().map(User::getId).toList(),
                 team.getHackathons().stream().map(Hackathon::getId).toList()
         );
+    }
+
+    private Long extractSenderId(String notification) {
+        if (notification == null) return null;
+        Pattern p = Pattern.compile("\\{\\s*(\\d+)\\s*}\\s*$");
+        Matcher m = p.matcher(notification);
+        if (m.find()) {
+            try {
+                return Long.parseLong(m.group(1));
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        return null;
     }
 }

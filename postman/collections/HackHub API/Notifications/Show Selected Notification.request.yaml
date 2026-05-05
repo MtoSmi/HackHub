@@ -1,0 +1,9 @@
+$kind: http-request
+description: Retrieve details of a specific notification by its ID.
+url: "{{baseUrl}}/api/v1/notification/showSelected/1"
+method: GET
+pathVariables:
+  - key: id
+    value: "1"
+    description: The notification ID to retrieve.
+order: 2000

@@ -1,0 +1,16 @@
+$kind: http-request
+description: Register a new user account.
+url: "{{baseUrl}}/api/v1/user/registration"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Mario",
+      "surname": "Rossi",
+      "email": "mario.rossi@example.com",
+      "password": "SecurePass123"
+    }
+order: 1000

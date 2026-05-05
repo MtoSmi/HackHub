@@ -7,9 +7,6 @@ import lombok.Setter;
 
 /**
  * Rappresenta una richiesta di aiuto nel sistema HackHub.
- * <p>
- * Questa classe modella una richiesta di assistenza inviata da un utente a un altro utente(mentore).
- * La richiesta può essere completata e ricevere una risposta.
  */
 @Entity
 @Getter
@@ -17,57 +14,51 @@ import lombok.Setter;
 @Setter
 public class HelpRequest {
     /**
-     * Identificatore univoco della richiesta di aiuto
+     * Identificatore univoco
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
-     * Titolo o argomento della richiesta di aiuto
+     * Titolo
      */
     private String title;
 
     /**
-     * Descrizione dettagliata della richiesta di aiuto
+     * Descrizione
      */
     private String description;
 
     /**
-     * Risposta fornita dal mentore destinatario della richiesta
+     * Risposta fornita dal mentore
      */
     private String reply;
 
     /**
      * Utente che ha inviato la richiesta di aiuto
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User from;
 
     /**
-     * Mentore che riceve la richiesta di aiuto e deve fornire assistenza
+     * Mentore che riceve la richiesta di aiuto
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User to;
 
     /**
-     * Link o identificativo della chiamata virtuale/riunione per l'aiuto
+     * Identificativo univoco dell'evento presente sul calendar esterno
      */
     private String call;
 
     /**
-     * Indica se la richiesta di aiuto è stata gestita
+     * Stato della richiesta si aiuto, true se è stata completata, false altrimenti
      */
     private boolean completed;
 
     /**
-     * Costruisce una nuova richiesta di aiuto con i parametri essenziali.
-     * Inizializza il flag di completamento a false.
-     *
-     * @param title       il titolo della richiesta di aiuto
-     * @param description la descrizione dettagliata del problema
-     * @param from        l'utente che invia la richiesta di aiuto
-     * @param to          l'utente (mentore) destinatario della richiesta
+     * Costruttore della richiesta di aiuto.
      */
     public HelpRequest(String title, String description, User from, User to) {
         this.title = title;
@@ -82,7 +73,7 @@ public class HelpRequest {
     /**
      * Restituisce una rappresentazione in stringa della richiesta di aiuto.
      *
-     * @return una stringa contenente tutti gli attributi della richiesta
+     * @return una stringa contenente tutti gli attributi della richiesta di aiuto
      */
     @Override
     public String toString() {

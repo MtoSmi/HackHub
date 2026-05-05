@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repository per la gestione delle operazioni CRUD relative alla {@link Response}.
+ * Repository per l'entità Response per la gestione delle operazioni CRUD.
  */
 @Repository
 public interface ResponseRepository extends JpaRepository<Response, Long> {
