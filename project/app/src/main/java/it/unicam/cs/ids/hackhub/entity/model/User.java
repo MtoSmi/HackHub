@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-//TODO: controllare commenti
 
 /**
  * Rappresenta un utente del sistema HackHub.
@@ -17,30 +16,30 @@ import lombok.Setter;
 @Table(name = "users")
 public class User {
     /**
-     * Identificatore univoco dell'utente
+     * Identificatore univoco
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
-     * Nome dell'utente
+     * Nome
      */
     private String name;
 
     /**
-     * Cognome dell'utente
+     * Cognome
      */
     private String surname;
 
     /**
-     * Indirizzo email dell'utente
+     * Indirizzo email
      */
     @Column(unique = true)
     private String email;
 
     /**
-     * Password dell'utente
+     * Password
      */
     private String password;
 
@@ -57,13 +56,7 @@ public class User {
     private Rank rank;
 
     /**
-     * Costruisce un nuovo utente con i dati di base.
-     * Inizializza il team a null e il rank a STANDARD.
-     *
-     * @param name     il nome dell'utente
-     * @param surname  il cognome dell'utente
-     * @param email    l'indirizzo email dell'utente
-     * @param password la password dell'utente
+     * Costruttore dell'utente.
      */
     public User(String name, String surname, String email, String password) {
         this.name = name;

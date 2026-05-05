@@ -5,31 +5,56 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-//TODO: aggiungere commenti
+/**
+ * Rappresenta una risposta a una sottomissione nel sistema HackHub.
+ */
 @Entity
 @Getter
 @NoArgsConstructor
 @Setter
 public class Response {
+    /**
+     * Identificatore univoco
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * File contenente la risposta
+     */
     private String file;
 
+    /**
+     * Utente che ha inviato la risposta
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     private Team from;
 
+    /**
+     * Sottomissione a cui è associata la risposta
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     private Submission submission;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    /**
+     * Valutazione associata alla risposta, se presente
+     */
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Valuation valuation;
 
+    /**
+     * Costruttore della risposta.
+     */
     public Response(String file) {
         this.file = file;
     }
 
+    /**
+     * Restituisce una rappresentazione in stringa della risposta.
+     *
+     * @return una stringa contenente tutti gli attributi della risposta
+     */
     @Override
     public String toString() {
         return "Response{" +

@@ -8,13 +8,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-//TODO: sistemare commenti
 
 /**
  * Rappresenta un hackathon nel sistema HackHub.
- * <p>
- * Questa classe modella un evento hackathon con tutte le informazioni necessarie
- * per gestire partecipanti, team, giudici, mentori, scadenze e stati di avanzamento.
  */
 @Entity
 @Getter
@@ -22,54 +18,54 @@ import java.util.List;
 @Setter
 public class Hackathon {
     /**
-     * Identificatore univoco dell'hackathon
+     * Identificatore univoco
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
-     * Nome dell'hackathon
+     * Nome
      */
     private String name;
 
     /**
-     * Utente che organizza l'hackathon
+     * Organizzatore
      */
     @ManyToOne
     private User host;
 
     /**
-     * Utente giudice delle sottomissioni
+     * Giudice
      */
     @ManyToOne
     private User judge;
 
     /**
-     * Lista dei mentori disponibili per l'hackathon
+     * Lista dei mentori
      */
     @ManyToMany
     private List<User> mentors;
 
     /**
-     * Lista dei team partecipanti all'hackathon
+     * Lista dei team partecipanti
      */
     @ManyToMany
     private List<Team> participants;
 
     /**
-     * Numero massimo di partecipanti per team che possono partecipare
+     * Numero massimo di partecipanti per team
      */
     private int maxTeams;
 
     /**
-     * Lista delle sottomissioni legate all'hackathon
+     * Lista delle sottomissioni
      */
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Submission> submissions;
 
     /**
-     * Regolamento dell'hackathon
+     * Regolamento
      */
     private String regulation;
 
@@ -79,35 +75,35 @@ public class Hackathon {
     private LocalDateTime deadline;
 
     /**
-     * Data e ora di inizio dell'hackathon
+     * Data e ora di inizio
      */
     private LocalDateTime startDate;
 
     /**
-     * Data e ora di fine dell'hackathon
+     * Data e ora di fine
      */
     private LocalDateTime endDate;
 
     /**
-     * Luogo fisico dove si svolge l'hackathon
+     * Luogo fisico dove si svolge
      */
     private String location;
 
     /**
-     * Premio in denaro per il vincitore dell'hackathon
+     * Premio in denaro per il vincitore
      */
     private double reward;
 
     /**
-     * Stato attuale dell'hackathon
+     * Stato attuale
      */
     @Enumerated(EnumType.STRING)
     private Status status;
 
     /**
-     * Restituisce una rappresentazione in stringa dell'hackathon.
+     * Restituisce una rappresentazione in stringa di un hackathon.
      *
-     * @return una stringa contenente tutti gli attributi dell'hackathon
+     * @return una stringa contenente tutti gli attributi di un hackathon
      */
     @Override
     public String toString() {

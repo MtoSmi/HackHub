@@ -8,12 +8,9 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-//TODO: controllare commenti
 
 /**
- * Rappresenta una submission in un hackathon.
- * Una submission contiene le informazioni relative al risultato atteso dai team,
- * incluse le risposte fornite dai team e lo stato di completamento.
+ * Rappresenta una sottomissione di un hackathon nel sistema HackHub.
  */
 @Entity
 @Getter
@@ -21,43 +18,46 @@ import java.util.List;
 @Setter
 public class Submission {
     /**
-     * Identificatore univoco della submission
+     * Identificatore univoco
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
-     * Titolo della submission
+     * Titolo
      */
     private String title;
 
     /**
-     * Descrizione dettagliata della submission
+     * Descrizione
      */
     private String description;
 
     /**
-     * Data e ora di inizio della submission
+     * Data e ora di inizio
      */
     private LocalDateTime startDate;
 
     /**
-     * Data e ora di fine della submission
+     * Data e ora di fine
      */
     private LocalDateTime endDate;
 
     /**
      * Lista delle risposte associate alla submission
      */
-    @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Response> responses;
 
     /**
-     * Indica se la submission è completa
+     * Stato della sottomissione, true se è stata completata, false altrimenti
      */
     private boolean complete;
 
+    /**
+     * Costruttore della sottomissione.
+     */
     public Submission(String title, String description, LocalDateTime startDate, LocalDateTime endDate) {
         this.title = title;
         this.description = description;
@@ -67,6 +67,11 @@ public class Submission {
         this.complete = false;
     }
 
+    /**
+     * Restituisce una rappresentazione in stringa della sottomissione.
+     *
+     * @return una stringa contenente tutti gli attributi della sottomissione
+     */
     @Override
     public String toString() {
         return "Submission{" +
